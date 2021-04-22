@@ -1,8 +1,8 @@
 from typing import Dict, List
 
-from app.db import transaction
-from app.models import Pokemon
-from app.repositories import evolution_repo, pokemon_repo, pokemon_type_repo, \
+from src.db import transaction
+from src.models import Pokemon
+from src.repositories import evolution_repo, pokemon_repo, pokemon_type_repo, \
     type_repo
 
 

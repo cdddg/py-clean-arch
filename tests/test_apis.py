@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
 
-from app.db import get_engine, get_session
-from app.main import app
-from app.models import Base, Pokemon
+from src.db import get_engine, get_session
+from src.main import app
+from src.models import Base, Pokemon
 
 client = TestClient(app)
 

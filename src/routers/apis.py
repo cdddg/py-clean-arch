@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi_utils.inferring_router import InferringRouter
 
-from app import facade
+from src import facade
 from .schemas import AddEvolutionParams, CreatePokemonParams, HelloWorldNode, \
     PokemonNode, UpdatePokemonParams
 

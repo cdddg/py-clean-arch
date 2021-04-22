@@ -2,10 +2,10 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from app.db import get_engine
-from app.models import Base
-from app.routers import apis
-from app.routers.schemas import HTTPBadRequest
+from src.db import get_engine
+from src.models import Base
+from src.routers import apis
+from src.routers.schemas import HTTPBadRequest
 
 Base.metadata.create_all(get_engine())
 

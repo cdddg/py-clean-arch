@@ -1,8 +1,8 @@
 from typing import List
 
-from app.db import get_session
-from app.exceptions import PokemonNotFound, PokemonUnknownError
-from app.models import Evolution, Pokemon, PokemonType, Type
+from src.db import get_session
+from src.exceptions import PokemonNotFound, PokemonUnknownError
+from src.models import Evolution, Pokemon, PokemonType, Type
 
 
 class BaseRepository:
