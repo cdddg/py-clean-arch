@@ -1,4 +1,6 @@
-fastapi==0.63.0
+PyMySQL==1.0.2
 fastapi-utils==0.2.1
+fastapi==0.63.0
+pytest-env==0.6.2
+requests==2.25.1
 uvicorn==0.13.4
-
