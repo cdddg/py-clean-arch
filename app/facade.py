@@ -3,7 +3,7 @@ from typing import Dict, List
 from app.db import transaction
 from app.models import Pokemon
 from app.repositories import evolution_repo, pokemon_repo, pokemon_type_repo, \
-    type_repo, evolution_relationship_repo
+    type_repo
 
 
 @transaction()
@@ -34,45 +34,23 @@ def update_pokemon(pokemon_no: str, body: object):
 
 
 @transaction()
-def delete_pokemon(pokemon_no: str):
+def delete_pokemon_and_evolution_relationship(pokemon_no: str):
     pokemon = pokemon_repo.get(pokemon_no)
     pokemon_repo.delete(pokemon_no)
-    evolution_repo.delete(pokemon_id=pokemon.id)
-    evolution_repo.delete(evolution_after_id=pokemon.id)
+    evolution_repo.delete_before_pokemon(pokemon.id)
+    evolution_repo.delete_after_pokemon(pokemon.id)
 
     return pokemon.to_dict()
 
 
 @transaction()
-def add_evolution(pokemon_no: str, evolutions: List[object]):
+def add_evolution(pokemon_no: str, evolutions_no: List[str]):
     origin_pokemon = pokemon_repo.get(pokemon_no)
 
-    for row in evolutions:
-        # create
-        evolution_pokemon = pokemon_repo.get(row.pokemon_no)
-        evolution = evolution_repo.get_or_create(
-            origin_id=origin_pokemon.id,
-            after_id=evolution_pokemon.id,
-            _sequence=row.sequence
-        )
-        evolution_relationship_repo.create_or_update(
-            relationship_id=origin_pokemon.relationship_id,
-            evolution_id=evolution.id
+    for no in evolutions_no:
+        evolution_pokemon = pokemon_repo.get(no)
+        evolution_repo.get_or_create(
+            before_id=origin_pokemon.id, after_id=evolution_pokemon.id
         )
 
-        # update other relationship_id to newest
-        others = evolution_repo.get_pokemons(
-            origin_id=origin_pokemon.id,
-            after_id=evolution_pokemon.id,
-        )
-        relationships = evolution_relationship_repo.get_relationships(
-            evolutions_id=[row.id for row in others]
-        )
-        evolution_relationship_repo.update_relationships_id(
-            rows_id=[row.relationship_id for row in relationships],
-            relationship_id=origin_pokemon.relationship_id
-        )
-        pokemon_repo.update_relationships_id(
-            rows_id=[evolution_pokemon.relationship_id],
-            relationship_id=origin_pokemon.relationship_id
-        )
+    return origin_pokemon.to_dict()

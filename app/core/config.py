@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     SQLALCHEMY_DATABASE_URI: str = os.environ.get(
         "SQLALCHEMY_DATABASE_URI", "sqlite:///sqlite.db"
     )
-    SQLALCHEMY_ECHO: bool = True
+    SQLALCHEMY_ECHO: bool = os.environ.get("SQLALCHEMY_ECHO", False)
 
     class Config:
         case_sensitive = True

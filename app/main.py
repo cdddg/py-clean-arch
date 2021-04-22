@@ -9,6 +9,7 @@ from app.routers.schemas import HTTPBadRequest
 
 Base.metadata.create_all(get_engine())
 
+
 app = FastAPI(
     responses={400: {"model": HTTPBadRequest}},
 )

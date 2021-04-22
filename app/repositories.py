@@ -1,12 +1,11 @@
-from sqlalchemy import or_
 from typing import List
+
 from app.db import get_session
 from app.exceptions import PokemonNotFound, PokemonUnknownError
-from app.models import Evolution, Pokemon, PokemonType, Type, EvolutionRelationship
+from app.models import Evolution, Pokemon, PokemonType, Type
 
 
 class BaseRepository:
-
     MODEL_CLS = None
 
     @property
@@ -23,10 +22,9 @@ class BaseRepository:
 
 
 class PokemonRepository(BaseRepository):
-
     MODEL_CLS = Pokemon
 
-    def get(self, pokemon_no):
+    def get(self, pokemon_no: str):
         try:
             return (
                 self._session.query(self.MODEL_CLS)
@@ -48,14 +46,14 @@ class PokemonRepository(BaseRepository):
             .all()
         )
 
-    def update_relationships_id(self, rows_id, relationship_id):
-        return self._session.query(self.MODEL_CLS).filter(
-            self.MODEL_CLS.relationship_id.in_(rows_id)
-        ).update(
-            dict(relationship_id=relationship_id)
+    def update_relationships_id(self, rows_id: List[str], relationship_id: str):
+        return (
+            self._session.query(self.MODEL_CLS)
+            .filter(self.MODEL_CLS.relationship_id.in_(rows_id))
+            .update(dict(relationship_id=relationship_id))
         )
 
-    def delete(self, pokemon_no):
+    def delete(self, pokemon_no: str):
         return (
             self._session.query(self.MODEL_CLS)
             .filter_by(no=pokemon_no)
@@ -64,10 +62,9 @@ class PokemonRepository(BaseRepository):
 
 
 class TypeRepository(BaseRepository):
-
     MODEL_CLS = Type
 
-    def get_or_create(self, name):
+    def get_or_create(self, name: str):
         type_ = (
             self._session.query(self.MODEL_CLS)
             .filter_by(name=name)
@@ -80,13 +77,12 @@ class TypeRepository(BaseRepository):
 
 
 class PokemonTypeRepository(BaseRepository):
-
     MODEL_CLS = PokemonType
 
-    def find(self, id):
+    def find(self, id: str):
         return self._session.query(self.MODEL_CLS).filter_by(id=id).all()
 
-    def delete(self, pokemon_id):
+    def delete(self, pokemon_id: str):
         return (
             self._session.query(self.MODEL_CLS)
             .filter_by(pokemon_id=pokemon_id)
@@ -95,73 +91,40 @@ class PokemonTypeRepository(BaseRepository):
 
 
 class EvolutionRepository(BaseRepository):
-
     MODEL_CLS = Evolution
 
-    def get_or_create(self, origin_id, after_id, _sequence):
-        pokemon = self._session.query(self.MODEL_CLS).filter_by(origin_id=origin_id, after_id=after_id).one_or_none()
+    def get_or_create(self, before_id: str, after_id: str):
+        pokemon = (
+            self._session.query(self.MODEL_CLS)
+            .filter_by(before_id=before_id, after_id=after_id)
+            .one_or_none()
+        )
         if not pokemon:
             pokemon = self.add(
                 self.MODEL_CLS(
-                    origin_id=origin_id,
+                    before_id=before_id,
                     after_id=after_id,
-                    sequence=_sequence,
                 )
             )
 
         return pokemon
 
-    def get_pokemons(self, origin_id, after_id):
+    def delete_before_pokemon(self, before_id: str):
         return (
             self._session.query(self.MODEL_CLS)
-            .filter(
-                or_(
-                    self.MODEL_CLS.after_id == origin_id,
-                    self.MODEL_CLS.origin_id == after_id,
-                )
-            )
-            .all()
+            .filter_by(before_id=before_id)
+            .delete()
         )
 
-
-class EvolutionRelationshipRepository(BaseRepository):
-
-    MODEL_CLS = EvolutionRelationship
-
-    def create_or_update(self, relationship_id, evolution_id):
-        relationship = self._session.query(self.MODEL_CLS) \
-            .filter_by(evolution_id=evolution_id) \
-            .one_or_none()
-        if not relationship:
-            relationship = self.add(
-                self.MODEL_CLS(
-                    relationship_id=relationship_id,
-                    evolution_id=evolution_id
-                )
-            )
-        else:
-            relationship.relationship_id = relationship_id
-
-        return relationship
-
-    def get_relationships(self, evolutions_id: List[str]):
-        return self._session.query(self.MODEL_CLS).filter(
-            self.MODEL_CLS.evolution_id.in_(evolutions_id)
-        ).all()
-
-    def update_relationship_id(self, rows_id, relationship_id):
-        return self._session.query(self.MODEL_CLS).filter(
-            self.MODEL_CLS.relationship_id.in_(rows_id)
-        ).update(
-            dict(relationship_id=relationship_id)
+    def delete_after_pokemon(self, after_id: str):
+        return (
+            self._session.query(self.MODEL_CLS)
+            .filter_by(after_id=after_id)
+            .delete()
         )
-
-    def delete(self, **kwargs):
-        return self._session.query(self.MODEL_CLS).filter_by(**kwargs).delete()
 
 
 pokemon_repo = PokemonRepository()
 type_repo = TypeRepository()
 pokemon_type_repo = PokemonTypeRepository()
 evolution_repo = EvolutionRepository()
-evolution_relationship_repo = EvolutionRelationshipRepository()

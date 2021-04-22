@@ -3,8 +3,8 @@ from typing import List
 from fastapi_utils.inferring_router import InferringRouter
 
 from app import facade
-from .schemas import AddEvolutionParams, CreatePokemonParames, \
-    HelloWorldNode, PokemonNode, UpdatePokemonParams
+from .schemas import AddEvolutionParams, CreatePokemonParams, HelloWorldNode, \
+    PokemonNode, UpdatePokemonParams
 
 router = InferringRouter(prefix="/api")
 
@@ -15,12 +15,11 @@ def hello() -> HelloWorldNode:
 
 
 @router.post("/pokemon/create")
-def create_pokemon(body: CreatePokemonParames) -> PokemonNode:
+def create_pokemon(body: CreatePokemonParams) -> PokemonNode:
     return facade.add_pokemon(
         no=body.no,
         name=body.name,
         types=body.types,
-        evolutions=body.evolutions
     )
 
 
@@ -46,7 +45,7 @@ def delete_pokemon_and_evolution_relationship(no: str):
 
 @router.post("/pokemon/{no}/evolution")
 def add_evolution(no: str, body: AddEvolutionParams) -> PokemonNode:
-    return facade.add_evolution(pokemon_no=no, evolutions=body.evolutions)
+    return facade.add_evolution(pokemon_no=no, evolutions_no=body.evolutions_no)
 
 
 @router.delete("/pokemon/{no}/evolution")

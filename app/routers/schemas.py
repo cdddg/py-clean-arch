@@ -1,9 +1,9 @@
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
 
 
-class CreatePokemonParames(BaseModel):
+class CreatePokemonParams(BaseModel):
     no: str
     name: str
     types: List[str]
@@ -15,11 +15,7 @@ class UpdatePokemonParams(BaseModel):
 
 
 class AddEvolutionParams(BaseModel):
-    class EvolutionNode(BaseModel):
-        pokemon_no: str
-        sequence: int
-
-    evolutions: List[EvolutionNode]
+    evolutions_no: List[str]
 
 
 class HTTPBadRequest(BaseModel):
@@ -35,9 +31,19 @@ class TypeNode(BaseModel):
     name: str
 
 
+class EvolutionNode(BaseModel):
+    class EvolutionPokemonNode(BaseModel):
+        id: str
+        no: str
+        name: str
+
+    before: List[EvolutionPokemonNode]
+    after: List[EvolutionPokemonNode]
+
+
 class PokemonNode(BaseModel):
     id: str
     no: str
     name: str
     types: List[TypeNode]
-    evolutions: Optional[Dict]
+    evolutions: EvolutionNode

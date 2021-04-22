@@ -10,23 +10,23 @@ Base = declarative_base()
 class Pokemon(Base):
     __tablename__ = "pokemon"
 
-    id = Column(String, primary_key=True, default=build_uui4)
-    no = Column(String, index=True, unique=True, comment="number")
-    name = Column(String)
-    relationship_id = Column(String, default=build_uui4)
-    # hp = Column(Integer, nullable=True)
-    # attack = Column(Integer, nullable=True)
-    # defense = Column(Integer, nullable=True)
-    # sp_atk = Column(Integer, nullable=True)
-    # sp_def = Column(Integer, nullable=True)
-    # speed = Column(Integer, nullable=True)
+    id = Column(String(32), primary_key=True, default=build_uui4)
+    no = Column(String(32), index=True, unique=True, comment="number")
+    name = Column(String(256))
+    hp = Column(Integer, nullable=True)
+    attack = Column(Integer, nullable=True)
+    defense = Column(Integer, nullable=True)
+    sp_atk = Column(Integer, nullable=True)
+    sp_def = Column(Integer, nullable=True)
+    speed = Column(Integer, nullable=True)
 
     types = relationship("Type", secondary="pokemon_type", backref="pokemon")
-    # evolutions = relationship(
-    #     "Evolution",
-    #     primaryjoin="Pokemon.evolution_group_id==Evolution.group_id",
-    #     order_by="Evolution.serial",
-    # )
+    before_evolutions = relationship(
+        "Evolution", primaryjoin="Evolution.after_id==Pokemon.id"
+    )
+    after_evolutions = relationship(
+        "Evolution", primaryjoin="Evolution.before_id==Pokemon.id"
+    )
 
     @property
     def data(self):
@@ -39,38 +39,40 @@ class Pokemon(Base):
     def to_dict(self):
         data = self.data
         data["types"] = [{"id": row.id, "name": row.name} for row in self.types]
-        data["evolutions"] = []
-
+        data["evolutions"] = {
+            "before": [
+                row.before_pokemon.data for row in self.before_evolutions
+            ],
+            "after": [row.after_pokemon.data for row in self.after_evolutions],
+        }
         return data
 
 
 class Type(Base):
     __tablename__ = "type"
 
-    id = Column(String, primary_key=True, default=build_uui4)
-    name = Column(String)
+    id = Column(String(32), primary_key=True, default=build_uui4)
+    name = Column(String(256))
 
 
 class PokemonType(Base):
     __tablename__ = "pokemon_type"
 
     id = Column("id", Integer, primary_key=True)
-    pokemon_id = Column(String, ForeignKey("pokemon.id"))
-    type_id = Column(String, ForeignKey("type.id"))
+    pokemon_id = Column(String(256), ForeignKey("pokemon.id"))
+    type_id = Column(String(256), ForeignKey("type.id"))
 
 
 class Evolution(Base):
     __tablename__ = "evolution"
 
-    id = Column(String, primary_key=True, default=build_uui4)
-    origin_id = Column(String, ForeignKey("pokemon.id", ondelete="CASCADE"))
-    after_id = Column(String, ForeignKey("pokemon.id", ondelete="CASCADE"))
-    sequence = Column(Integer)
+    id = Column(String(256), primary_key=True, default=build_uui4)
+    before_id = Column(String(256), ForeignKey("pokemon.id"))
+    after_id = Column(String(256), ForeignKey("pokemon.id"))
 
-
-class EvolutionRelationship(Base):
-    __tablename__ = "evolution_relationship"
-
-    id = Column(Integer, primary_key=True)
-    relationship_id = Column(String)
-    evolution_id = Column(String, ForeignKey("evolution.id", ondelete="CASCADE"))
+    before_pokemon = relationship(
+        "Pokemon", foreign_keys=[before_id], back_populates="after_evolutions"
+    )
+    after_pokemon = relationship(
+        "Pokemon", foreign_keys=[after_id], back_populates="before_evolutions"
+    )
