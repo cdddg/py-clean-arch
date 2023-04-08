@@ -1,0 +1,49 @@
+from asyncio import current_task
+
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_scoped_session,
+    create_async_engine,
+)
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.decl_api import DeclarativeMeta
+
+from . import IS_TEST, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_ECHO
+from .test import pytest_scope_func
+
+async_engine = create_async_engine(
+    SQLALCHEMY_DATABASE_URI,
+    echo=SQLALCHEMY_ECHO,
+    isolation_level='SERIALIZABLE',
+)
+
+print('--async_engine', async_engine, SQLALCHEMY_DATABASE_URI)
+
+
+AsyncScopedSession = async_scoped_session(
+    sessionmaker(
+        async_engine,
+        expire_on_commit=False,
+        autoflush=False,
+        autocommit=False,
+        class_=AsyncSession,
+    ),
+    scopefunc=current_task if not IS_TEST else pytest_scope_func,
+)
+
+
+def get_async_engine() -> AsyncEngine:
+    return async_engine
+
+
+# pylint: disable=no-member,redefined-outer-name
+async def initialize_db(declarative_meta: DeclarativeMeta, async_engine: AsyncEngine):
+    async with async_engine.begin() as connection:
+        print('Creating db Tables...')
+        for k in declarative_meta.metadata.tables.keys():
+            print(f'  - {k}')
+        await connection.run_sync(declarative_meta.metadata.create_all)
+        print('Create tables successful.')
+
+    await async_engine.dispose()

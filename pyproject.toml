@@ -1,0 +1,81 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "py-clean-arch"
+version = "2.0.0"
+description = ""
+authors = ["cdddg2@gmail.com"]
+readme = "README.md"
+packages = [{include = "py_clean_arch"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "<=1.0.0"
+fastapi-utils = "^0.2.1"
+pydantic = "<=2.0.0"
+sqlalchemy = "<=2.0.0"
+uvicorn = "^0.21.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+isort = "^5.12.0"
+pre-commit = "^3.2.2"
+pylint = "^2.17.2"
+pylint-quotes = "^0.2.3"
+remove-print-statements = "^0.5.0"
+sqlalchemy-stubs = "^0.4"
+sqlalchemy2-stubs = "^0.0.2a33"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.2.2"
+pytest-env = "^0.8.1"
+
+[tool.black]
+line-length = 100
+skip-string-normalization = true
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pylint.master]
+init-hook='import sys; sys.path.append(".")'
+
+[tool.pylint.messages_control]
+max-line-length = 100
+extension-pkg-whitelist = "pydantic"
+disable = [
+    "R",
+    "arguments-differ",
+    "broad-except",
+    "fixme",
+    "invalid-name",
+    "logging-fstring-interpolation",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "missing-module-docstring",
+    "no-self-argument",
+    "pointless-statement",
+    "protected-access",
+    "raise-missing-from",
+    "singleton-comparison",
+    "super-init-not-called",
+    "too-many-lines",
+    "unidiomatic-typecheck",
+    "unnecessary-lambda",
+    "unused-argument",
+    "unused-import",
+    "line-too-long",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.2"
+addopts = "-s -x -vv"
+env = [
+    "TEST=true",
+    "SQLALCHEMY_ECHO=false",
+    # "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:"
+    "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///./src/tests/test.db"
+]

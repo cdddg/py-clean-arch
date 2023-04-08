@@ -6,4 +6,4 @@ def build_uui4():
 
 
 def public_dict(object_):
-    return {k: v for k, v in vars(object_).items() if not k.startswith("_")}
+    return {k: v for k, v in vars(object_).items() if not k.startswith('_')}
