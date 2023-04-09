@@ -27,23 +27,6 @@ class Pokemon(DeclarativeMeta):
         'PokemonEvolution', primaryjoin='PokemonEvolution.before_no==Pokemon.no', lazy='raise'
     )
 
-    # @property
-    # def data(self) -> dict:
-    #     return {
-    #         'id': self.id,
-    #         'no': self.no,
-    #         'name': self.name,
-    #     }
-
-    # def to_dict(self):
-    #     data = self.data
-    #     data['types'] = [{'id': row.id, 'name': row.name} for row in self.types]
-    #     data['evolutions'] = {
-    #         'before': [row.before_pokemon.data for row in self.before_evolutions],
-    #         'after': [row.after_pokemon.data for row in self.after_evolutions],
-    #     }
-    #     return data
-
 
 class Type(DeclarativeMeta):
     __tablename__ = 'type'

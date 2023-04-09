@@ -55,16 +55,3 @@ async def update_pokemon(no: str, body: UpdatePokemonModel):
 async def delete_pokemon(no: str):
     async with async_unit_of_work() as auow:
         await auow.pokemon_repo.delete(no)
-
-
-# @transaction()
-# def add_evolution(pokemon_no: str, evolutions_no: List[str]):
-#     origin_pokemon = pokemon_repo.get(pokemon_no)
-
-#     for no in evolutions_no:
-#         evolution_pokemon = pokemon_repo.get(no)
-#         evolution_repo.get_or_create(
-#             before_id=origin_Pokemon.no, after_id=evolution_Pokemon.no
-#         )
-
-#     return origin_pokemon.to_dict()
