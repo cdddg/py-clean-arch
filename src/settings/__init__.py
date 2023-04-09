@@ -1,6 +1,7 @@
 import os
 
-APP_NAME = ''
+APP_NAME = 'Pokédex API'
+APP_VERSION = '2'
 
 IS_TEST = os.getenv('TEST', '').lower() == 'true'
 SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', '').lower() == 'true'

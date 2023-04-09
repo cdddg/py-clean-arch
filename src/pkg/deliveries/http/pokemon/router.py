@@ -5,7 +5,7 @@ from pkg.usecases import pokemon as pokemon_ucase
 
 from .schemas import CreatePokemonRequest, PokemonResponse, UpdatePokemonRequest
 
-router = InferringRouter()
+router = InferringRouter(tags=['Pokemon'])
 
 
 @router.post('/pokemons', status_code=status.HTTP_201_CREATED)

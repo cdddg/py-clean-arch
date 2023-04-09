@@ -12,14 +12,15 @@ packages = [{include = "py_clean_arch"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+aiosqlite = "^0.18.0"
 fastapi = "<=1.0.0"
 fastapi-utils = "^0.2.1"
 pydantic = "<=2.0.0"
 sqlalchemy = "<=2.0.0"
 uvicorn = "^0.21.1"
-aiosqlite = "^0.18.0"
 
 [tool.poetry.group.dev.dependencies]
+autoflake = "^2.0.2"
 black = "^23.3.0"
 isort = "^5.12.0"
 pre-commit = "^3.2.2"
@@ -30,9 +31,9 @@ sqlalchemy-stubs = "^0.4"
 sqlalchemy2-stubs = "^0.0.2a33"
 
 [tool.poetry.group.test.dependencies]
+httpx = "^0.23.3"
 pytest = "^7.2.2"
 pytest-env = "^0.8.1"
-httpx = "^0.23.3"
 
 [tool.black]
 line-length = 100
@@ -78,6 +79,6 @@ addopts = "-s -x -vv"
 env = [
     "TEST=true",
     "SQLALCHEMY_ECHO=false",
-    # "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:"
-    "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///./src/tests/test.db"
+    "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:"
+    # "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///./src/tests/test.db"
 ]
