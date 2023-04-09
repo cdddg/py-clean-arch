@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, root_validator
 
-from models.pokemon import(
+from models.pokemon import (
     CreatePokemonModel,
     PokemonEvolutionModel,
     PokemonModel,
@@ -51,7 +51,6 @@ class UpdatePokemonRequest(BaseModel):
 
     def to_model(self) -> UpdatePokemonModel:
         kwargs = self.dict(exclude_unset=True)
-        print('--kwargs', kwargs)
         return UpdatePokemonModel(**kwargs)
 
 

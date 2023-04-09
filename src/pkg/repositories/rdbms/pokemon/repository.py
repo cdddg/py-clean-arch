@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import delete, func, insert, select, update
 
 from core.exception import PokemonNotFound
-from models.pokemon import(
+from models.pokemon import (
     CreatePokemonModel,
     GetPokemonParamsModel,
     GetTypeParamsModel,

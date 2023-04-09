@@ -1,5 +1,5 @@
 from core.exception import PokemonNotFound
-from models.pokemon importCreatePokemonModel, PokemonModel, UpdatePokemonModel
+from models.pokemon import CreatePokemonModel, PokemonModel, UpdatePokemonModel
 from settings.dependency_injection import async_unit_of_work
 
 

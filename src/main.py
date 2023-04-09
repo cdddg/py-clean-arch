@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from pkg.deliveries.http.pokemon.router import router as pokemon_router
 from pkg.repositories.rdbms.pokemon.orm import DeclarativeMeta
 from settings.db import async_engine, initialize_db
 
-app = FastAPI()
+app = FastAPI(title='Pokédex API', version='2')
 app.add_exception_handler(
     Exception,
     lambda request, exc: JSONResponse({'error': f'{type(exc).__name__}, {exc}'}, status_code=400),
@@ -24,3 +24,8 @@ app.include_router(pokemon_router)
 @app.on_event('startup')
 async def startup():
     await initialize_db(DeclarativeMeta, async_engine)
+
+
+@app.get('', include_in_schema=False)
+async def root():
+    return JSONResponse({})

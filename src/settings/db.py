@@ -1,4 +1,5 @@
 from asyncio import current_task
+from logging import getLogger
 
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -17,8 +18,6 @@ async_engine = create_async_engine(
     echo=SQLALCHEMY_ECHO,
     isolation_level='SERIALIZABLE',
 )
-
-print('--async_engine', async_engine, SQLALCHEMY_DATABASE_URI)
 
 
 AsyncScopedSession = async_scoped_session(
@@ -40,10 +39,11 @@ def get_async_engine() -> AsyncEngine:
 # pylint: disable=no-member,redefined-outer-name
 async def initialize_db(declarative_meta: DeclarativeMeta, async_engine: AsyncEngine):
     async with async_engine.begin() as connection:
-        print('Creating db Tables...')
+        logger = getLogger('uvicorn.error')
+
+        logger.debug('(initialize_db) Creating db Tables...')
         for k in declarative_meta.metadata.tables.keys():
-            print(f'  - {k}')
+            logger.debug(f'(initialize_db)   - {k}')
         await connection.run_sync(declarative_meta.metadata.create_all)
-        print('Create tables successful.')
 
     await async_engine.dispose()

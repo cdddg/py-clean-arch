@@ -22,12 +22,12 @@ async def engine():
 
 @pytest.fixture(scope='session')
 async def client():
-    async with AsyncClient(app=app, base_url=f'http://test') as ac:
+    async with AsyncClient(app=app, base_url='http://test') as ac:
         yield ac
 
 
 @pytest.fixture(scope='function')
-async def session(engine):
+async def session(engine):  # pylint: disable=redefined-outer-name
     # ref:
     #   https://stackoverflow.com/questions/65528675
     #   https://github.com/sqlalchemy/sqlalchemy/issues/5811#issuecomment-756269881

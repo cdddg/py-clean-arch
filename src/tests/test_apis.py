@@ -1,5 +1,7 @@
-import pytest
+import os
+import pprint
 
+import pytest
 
 # def setup_module():
 
@@ -7,7 +9,8 @@ import pytest
 #     from settings.db import async_engine
 #     DeclarativeMeta.metadata.create_all(async_engine)
 
-import os, pprint; pprint.pprint(dict(os.environ))
+
+pprint.pprint(dict(os.environ))
 
 
 @pytest.mark.anyio
