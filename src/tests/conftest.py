@@ -12,10 +12,10 @@ def anyio_backend():
     return 'asyncio'
 
 
-@pytest.fixture(scope='module', autouse=True)
+@pytest.fixture(scope='function', autouse=True)
 async def engine():
     async_engine = get_async_engine()
-    await initialize_db(DeclarativeMeta, async_engine)
+    await initialize_db(DeclarativeMeta, async_engine, drop_existed_tables=True)
 
     return async_engine
 

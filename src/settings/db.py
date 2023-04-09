@@ -37,11 +37,16 @@ def get_async_engine() -> AsyncEngine:
 
 
 # pylint: disable=no-member,redefined-outer-name
-async def initialize_db(declarative_meta: DeclarativeMeta, async_engine: AsyncEngine):
+async def initialize_db(
+    declarative_meta: DeclarativeMeta,
+    async_engine: AsyncEngine,
+    drop_existed_tables: bool = False,
+):
     async with async_engine.begin() as connection:
         logger = getLogger('uvicorn.error')
-
         logger.debug('(initialize_db) Creating db Tables...')
+        if drop_existed_tables:
+            await connection.run_sync(declarative_meta.metadata.drop_all)
         for k in declarative_meta.metadata.tables.keys():
             logger.debug(f'(initialize_db)   - {k}')
         await connection.run_sync(declarative_meta.metadata.create_all)

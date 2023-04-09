@@ -3,26 +3,22 @@ import pprint
 
 import pytest
 
-# def setup_module():
 
-#     from pkg.repositories.rdbms.pokemon.orm import DeclarativeMeta
-#     from settings.db import async_engine
-#     DeclarativeMeta.metadata.create_all(async_engine)
-
-
-pprint.pprint(dict(os.environ))
+@pytest.mark.anyio
+async def test(client, engine, session):
+    pass
 
 
 @pytest.mark.anyio
-async def test_create_pokemon(client, session):
+async def test_create_pokemon(client, engine, session):
+    # test create 0001
     response = await client.post(
         '/pokemons',
         json={'no': '0001', 'name': 'Bulbasaur', 'type_names': ['Grass', 'Poison']},
     )
     data = response.json()
+    data.get('types', []).sort(key=lambda k: k['name'])
     assert response.status_code == 201
-
-    data['types'].sort(key=lambda k: k['name'])
     assert data == {
         'no': '0001',
         'name': 'Bulbasaur',
@@ -33,102 +29,174 @@ async def test_create_pokemon(client, session):
         'before_evolutions': [],
         'after_evolutions': [],
     }
-    # assert get_session().query(Pokemon).filter_by(no='006').count() == 1
+
+    # test create 0002
+    response = await client.post(
+        '/pokemons',
+        json={
+            'no': '0002',
+            'name': 'Ivysaur',
+            'type_names': ['Grass', 'Poison'],
+            'before_evolution_numbers': ['0001'],
+        },
+    )
+    data = response.json()
+    data.get('types', []).sort(key=lambda k: k['name'])
+    assert response.status_code == 201
+    assert data == {
+        'no': '0002',
+        'name': 'Ivysaur',
+        'types': [
+            {'id': data['types'][0]['id'], 'name': 'Grass'},
+            {'id': data['types'][1]['id'], 'name': 'Poison'},
+        ],
+        'before_evolutions': [{'no': '0001', 'name': 'Bulbasaur'}],
+        'after_evolutions': [],
+    }
+
+    # test create 0003
+    response = await client.post(
+        '/pokemons',
+        json={
+            'no': '0003',
+            'name': 'Venusaur',
+            'type_names': ['Grass', 'Poison'],
+            'before_evolution_numbers': ['0001', '0002'],
+        },
+    )
+    data = response.json()
+    data.get('types', []).sort(key=lambda k: k['name'])
+    data.get('before_evolutions', []).sort(key=lambda k: k['no'])
+    assert response.status_code == 201
+    assert data == {
+        'no': '0003',
+        'name': 'Venusaur',
+        'types': [
+            {'id': data['types'][0]['id'], 'name': 'Grass'},
+            {'id': data['types'][1]['id'], 'name': 'Poison'},
+        ],
+        'before_evolutions': [
+            {'no': '0001', 'name': 'Bulbasaur'},
+            {'no': '0002', 'name': 'Ivysaur'},
+        ],
+        'after_evolutions': [],
+    }
 
 
-# def test_get_pokemon():
-#     response = client.get('/pokemons/006')
-#     assert response.status_code == 200
+@pytest.mark.anyio
+async def test_get_pokemon(client):
+    # pre-work
+    response = await client.post(
+        '/pokemons',
+        json={'no': '0001', 'name': 'Bulbasaur', 'type_names': ['Grass', 'Poison']},
+    )
+    assert response.status_code == 201
 
-#     data = response.json()
-#     data['types'].sort(key=lambda k: k['name'])
-#     assert data == {
-#         'id': '006',
-#         'no': '006',
-#         'name': 'CHARIZARD',
-#         'types': [
-#             {'id': data['types'][0]['id'], 'name': 'FIRE'},
-#             {'id': data['types'][1]['id'], 'name': 'FLYING'},
-#         ],
-#         'evolutions': {'before': [], 'after': []},
-#     }
-
-
-# def test_update_pokemon():
-#     response = client.patch(
-#         '/pokemons/006',
-#         json={'name': 'CHARIZARD_2', 'types': ['NONE']},
-#     )
-#     data = response.json()
-#     assert response.status_code == 200
-#     assert data == {
-#         'id': '006',
-#         'no': '006',
-#         'name': 'CHARIZARD_2',
-#         'types': [
-#             {'id': data['types'][0]['id'], 'name': 'NONE'},
-#         ],
-#         'evolutions': {'before': [], 'after': []},
-#     }
+    # test get existed
+    response = await client.get('/pokemons/0001')
+    data = response.json()
+    data.get('types', []).sort(key=lambda k: k['name'])
+    assert response.status_code == 200
+    assert data == {
+        'no': '0001',
+        'name': 'Bulbasaur',
+        'types': [
+            {'id': data['types'][0]['id'], 'name': 'Grass'},
+            {'id': data['types'][1]['id'], 'name': 'Poison'},
+        ],
+        'before_evolutions': [],
+        'after_evolutions': [],
+    }
 
 
-# def test_delete_pokemon():
-#     assert get_session().query(Pokemon).filter_by(no='006').count() == 1
+@pytest.mark.anyio
+async def test_get_pokemons(client):
+    # pre-work
+    response = await client.post(
+        '/pokemons',
+        json={'no': '0001', 'name': 'Bulbasaur', 'type_names': ['Grass', 'Poison']},
+    )
+    assert response.status_code == 201
+    response = await client.post(
+        '/pokemons',
+        json={'no': '0004', 'name': 'Charmander', 'type_names': ['Fire']},
+    )
+    assert response.status_code == 201
 
-#     response = client.delete('/pokemons/006')
-#     data = response.json()
-#     assert response.status_code == 200
-#     assert data == {
-#         'id': '006',
-#         'no': '006',
-#         'name': 'CHARIZARD_2',
-#         'types': [
-#             {'id': data['types'][0]['id'], 'name': 'NONE'},
-#         ],
-#         'evolutions': {'before': [], 'after': []},
-#     }
+    # test get list
+    response = await client.get('/pokemons')
+    data = response.json()
+    data.sort(key=lambda k: k['no'])
+    assert response.status_code == 200
+    assert data == [
+        {
+            'no': '0001',
+            'name': 'Bulbasaur',
+            'types': [
+                {'id': data[0]['types'][0]['id'], 'name': 'Grass'},
+                {'id': data[0]['types'][1]['id'], 'name': 'Poison'},
+            ],
+            'before_evolutions': [],
+            'after_evolutions': [],
+        },
+        {
+            'no': '0004',
+            'name': 'Charmander',
+            'types': [
+                {'id': data[1]['types'][0]['id'], 'name': 'Fire'},
+            ],
+            'before_evolutions': [],
+            'after_evolutions': [],
+        },
+    ]
 
 
-# def test_add_evolution():
-#     # create pokemon
-#     client.post(
-#         '/pokemons/create',
-#         json={'no': '004', 'name': 'CHARMANDER', 'types': ['FIRE']},
-#     )
-#     client.post(
-#         '/pokemons/create',
-#         json={'no': '005', 'name': 'CHARMELEON', 'types': ['FIRE']},
-#     )
-#     client.post(
-#         '/pokemons/create',
-#         json={'no': '006', 'name': 'CHARIZARD', 'types': ['FIRE', 'FLYING']},
-#     )
+@pytest.mark.anyio
+async def test_update_pokemon(client):
+    # pre-work
+    response = await client.post(
+        '/pokemons', json={'no': '9001', 'name': 'AAA', 'type_names': ['A']}
+    )
+    assert response.status_code == 201
+    response = await client.post(
+        '/pokemons', json={'no': '9002', 'name': 'BBB', 'type_names': ['B']}
+    )
+    assert response.status_code == 201
+    response = await client.post(
+        '/pokemons', json={'no': '9003', 'name': 'CCC', 'type_names': ['C']}
+    )
+    assert response.status_code == 201
 
-#     # add evolution
-#     response = client.post('/pokemons/004/evolution', json={'evolutions_no': ['005']})
-#     data = response.json()
-#     assert response.status_code == 200
-#     assert data == {
-#         'id': '004',
-#         'no': '004',
-#         'name': 'CHARMANDER',
-#         'types': [{'id': data['types'][0]['id'], 'name': 'FIRE'}],
-#         'evolutions': {
-#             'before': [],
-#             'after': [{'id': '005', 'no': '005', 'name': 'CHARMELEON'}],
-#         },
-#     }
+    # test update
+    response = await client.patch(
+        '/pokemons/9002',
+        json={
+            'name': 'BBB-2',
+            'type_names': ['B-2'],
+            'before_evolution_numbers': ['9001'],
+            'after_evolution_numbers': ['9003'],
+        },
+    )
+    data = response.json()
+    assert response.status_code == 200
+    assert data == {
+        'no': '9002',
+        'name': 'BBB-2',
+        'types': [
+            {'id': data['types'][0]['id'], 'name': 'B-2'},
+        ],
+        'before_evolutions': [{'no': '9001', 'name': 'AAA'}],
+        'after_evolutions': [{'no': '9003', 'name': 'CCC'}],
+    }
 
-#     response = client.post('/pokemons/005/evolution', json={'evolutions_no': ['006']})
-#     data = response.json()
-#     assert response.status_code == 200
-#     assert data == {
-#         'id': '005',
-#         'no': '005',
-#         'name': 'CHARMELEON',
-#         'types': [{'id': data['types'][0]['id'], 'name': 'FIRE'}],
-#         'evolutions': {
-#             'before': [{'id': '004', 'no': '004', 'name': 'CHARMANDER'}],
-#             'after': [{'id': '006', 'no': '006', 'name': 'CHARIZARD'}],
-#         },
-#     }
+
+@pytest.mark.anyio
+async def test_delete_pokemon(client):
+    # pre-work
+    response = await client.post(
+        '/pokemons', json={'no': '9001', 'name': 'AAA', 'type_names': ['A']}
+    )
+
+    # test delete
+    response = await client.delete('/pokemons/9001')
+    assert response.status_code == 204
