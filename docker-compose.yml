@@ -2,27 +2,8 @@ version: '3'
 services:
   app:
     image: app
-    restart: always
     build: .
     stdin_open: true
     tty: true
-    command:
-      uvicorn src.main:app --host 0.0.0.0
-    environment:
-      SQLALCHEMY_DATABASE_URI: mysql+pymysql://user:password@db:3306/pokedex
     ports:
       - 8000:8000
-    depends_on:
-      - db
-  db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_HOST: "%"
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_DATABASE: pokedex
-    command:
-      mysqld --default-authentication-plugin=mysql_native_password
-    ports:
-      - 3306:3306

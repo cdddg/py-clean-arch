@@ -1,0 +1,3 @@
+from settings.unit_of_work import AsyncSqlAlchemyUnitOfWork
+
+async_unit_of_work = AsyncSqlAlchemyUnitOfWork
