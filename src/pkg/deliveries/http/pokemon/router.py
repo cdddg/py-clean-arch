@@ -3,7 +3,7 @@ from fastapi_utils.inferring_router import InferringRouter
 
 from pkg.usecases import pokemon as pokemon_ucase
 
-from .schemas import CreatePokemonRequest, PokemonResponse, UpdatePokemonRequest
+from .schema import CreatePokemonRequest, PokemonResponse, UpdatePokemonRequest
 
 router = InferringRouter(tags=['Pokemon'])
 

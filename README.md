@@ -50,7 +50,7 @@ $ docker-compose up
 #### Run the Testing
 
 ```sh
-$ make test
+$ pytest
 ```
 
 <br>
