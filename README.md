@@ -1,4 +1,4 @@
-# python-clean-arch
+# py-clean-arch
 
 This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [go-clean-arch](https://github.com/bxcodec/go-clean-arch)
 
@@ -14,12 +14,13 @@ Rule of Clean Architecture by Uncle Bob [^1]
 
 The project, like the original project, has 4 domain layers:
 
-- Models Layer
-- Repository Layer
-- Usecase Layer
-- Delivery Layer
+- [Models Layer](./src/models)
+- [Repository Layer](./src/pkg/repositories)
+- [Usecase Layer](./src/pkg/usecases)
+- [Delivery Layer](./src/pkg/deliveries)
 
-In addition, Unit of Work Pattern [^2] and Dependency Injection Pattern [^3] are added
+In addition, Add [Unit of Work Pattern](./src/settings/unit_of_work.py) [^2], [Dependency Injection Pattern](./src/settings/dependency_injection.py) [^3] <br>
+and use Asynchronous SQLalchemy (>=1.4.3)
 
 #### The diagram:
 
@@ -53,18 +54,14 @@ $ docker-compose up
 $ pytest
 ```
 
-<br>
-
 ## Changelog
 
-- **v1**: checkout to the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1)
-  archived to v1 branch on 2018
+- **v1**: checkout to the [v1 branch ](https://github.com/cdddg/py-clean-arch/tree/v1)<br>
+  archived to v1 branch on 2018 <br>
   Desc: Initial proposal by me
-- **v2**: master branch
-  merged to master on 2023.
+- **v2**: master branch <br>
+  merged to master on 2023. <br>
   Desc: Introducing Domain package, the details can be seen on this PR [#1](https://github.com/cdddg/py-clean-arch/issues/1)
-
-<br>
 
 [^1]: https://github.com/bxcodec/go-clean-arch#description 
 [^2]: https://www.cosmicpython.com/book/chapter_06_uow.html
