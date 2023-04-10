@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.decl_api import DeclarativeMeta
+from sqlalchemy.sql import text
 
 from . import IS_TEST, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_ECHO
 from .test import pytest_scope_func
@@ -44,11 +45,13 @@ async def initialize_db(
 ):
     async with async_engine.begin() as connection:
         logger = getLogger('uvicorn.error')
-        logger.debug('(initialize_db) Creating db Tables...')
+        logger.info('(initialize_db) Creating db Tables...')
+
+        await connection.execute(text('PRAGMA foreign_keys = ON;'))
         if drop_existed_tables:
             await connection.run_sync(declarative_meta.metadata.drop_all)
         for k in declarative_meta.metadata.tables.keys():
-            logger.debug(f'(initialize_db)   - {k}')
+            logger.info(f'(initialize_db)   - {k}')
         await connection.run_sync(declarative_meta.metadata.create_all)
 
     await async_engine.dispose()

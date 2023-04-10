@@ -36,15 +36,15 @@ async def update_pokemon(no: str, body: UpdatePokemonModel):
     async with async_unit_of_work() as auow:
         await auow.pokemon_repo.update(no, body)
 
-        if body.type_names:
+        if body.type_names is not None:
             types = [await auow.type_repo.get_or_create(type_) for type_ in body.type_names]
             await auow.pokemon_repo.put_types(no, types)
 
-        if body.before_evolution_numbers:
+        if body.before_evolution_numbers is not None:
             if not await auow.pokemon_repo.are_duplicated(body.before_evolution_numbers):
                 raise PokemonNotFound(body.before_evolution_numbers)
             await auow.pokemon_repo.put_before_evolutions(no, body.before_evolution_numbers)
-        if body.after_evolution_numbers:
+        if body.after_evolution_numbers is not None:
             if not await auow.pokemon_repo.are_duplicated(body.after_evolution_numbers):
                 raise PokemonNotFound(body.after_evolution_numbers)
             await auow.pokemon_repo.put_after_evolutions(no, body.after_evolution_numbers)
