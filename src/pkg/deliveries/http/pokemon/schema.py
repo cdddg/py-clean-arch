@@ -15,9 +15,9 @@ from models.pokemon import (
 class CreatePokemonRequest(BaseModel):
     no: str
     name: str
-    type_names: list[str] = []
-    before_evolution_numbers: list[str] = Field(default=[], unique_items=True)
-    after_evolution_numbers: list[str] = Field(default=[], unique_items=True)
+    type_names: Optional[list[str]] = None
+    before_evolution_numbers: Optional[list[str]] = Field(default=[], unique_items=True)
+    after_evolution_numbers: Optional[list[str]] = Field(default=[], unique_items=True)
 
     @root_validator()
     def validate_pokemon_numbers(cls, values: dict):
@@ -26,21 +26,21 @@ class CreatePokemonRequest(BaseModel):
 
         return values
 
-    def to_model(self) -> CreatePokemonModel:
+    def to_instance(self) -> CreatePokemonModel:
         return CreatePokemonModel(
             no=self.no,
             name=self.name,
-            type_names=self.type_names,
-            before_evolution_numbers=self.before_evolution_numbers,
-            after_evolution_numbers=self.after_evolution_numbers,
+            type_names=self.type_names or [],
+            before_evolution_numbers=self.before_evolution_numbers or [],
+            after_evolution_numbers=self.after_evolution_numbers or [],
         )
 
 
 class UpdatePokemonRequest(BaseModel):
     name: Optional[str]
     type_names: list[str] = []
-    before_evolution_numbers: Optional[list[str]] = Field(default=None, unique_items=True)
-    after_evolution_numbers: Optional[list[str]] = Field(default=None, unique_items=True)
+    before_evolution_numbers: Optional[list[str]] = Field(default=[], unique_items=True)
+    after_evolution_numbers: Optional[list[str]] = Field(default=[], unique_items=True)
 
     def validate_pokemon_number(self, number: str):
         evolution_numbers = (self.before_evolution_numbers or []) + (
@@ -49,7 +49,7 @@ class UpdatePokemonRequest(BaseModel):
         if number in evolution_numbers:
             raise ValueError('Pokemon number cannot be the same as any of its evolution numbers.')
 
-    def to_model(self) -> UpdatePokemonModel:
+    def to_instance(self) -> UpdatePokemonModel:
         kwargs = self.dict(exclude_unset=True)
         return UpdatePokemonModel(**kwargs)
 
@@ -63,8 +63,8 @@ class TypeResponse(BaseModel):
     name: str
 
     @staticmethod
-    def from_model(model: TypeModel) -> 'TypeResponse':
-        return TypeResponse(id=model.id, name=model.name)
+    def from_instance(instance: TypeModel) -> 'TypeResponse':
+        return TypeResponse(id=instance.id, name=instance.name)
 
 
 class EvolutionResponse(BaseModel):
@@ -72,8 +72,8 @@ class EvolutionResponse(BaseModel):
     name: str
 
     @staticmethod
-    def from_model(model: PokemonEvolutionModel) -> 'EvolutionResponse':
-        return EvolutionResponse(no=model.no, name=model.name)
+    def from_instance(instance: PokemonEvolutionModel) -> 'EvolutionResponse':
+        return EvolutionResponse(no=instance.no, name=instance.name)
 
 
 class PokemonResponse(BaseModel):
@@ -84,11 +84,13 @@ class PokemonResponse(BaseModel):
     after_evolutions: list[EvolutionResponse]
 
     @staticmethod
-    def from_model(model: PokemonModel) -> 'PokemonResponse':
+    def from_instance(instance: PokemonModel) -> 'PokemonResponse':
         return PokemonResponse(
-            no=model.no,
-            name=model.name,
-            types=list(map(TypeResponse.from_model, model.types)),
-            before_evolutions=list(map(EvolutionResponse.from_model, model.before_evolutions)),
-            after_evolutions=list(map(EvolutionResponse.from_model, model.after_evolutions)),
+            no=instance.no,
+            name=instance.name,
+            types=list(map(TypeResponse.from_instance, instance.types)),
+            before_evolutions=list(
+                map(EvolutionResponse.from_instance, instance.before_evolutions)
+            ),
+            after_evolutions=list(map(EvolutionResponse.from_instance, instance.after_evolutions)),
         )
