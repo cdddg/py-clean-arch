@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from pkg.deliveries.http.pokemon.router import router as pokemon_router
+from pkg.deliveries.graphql.pokomon.router import router as pokemon_graphql_router
+from pkg.deliveries.http.pokemon.router import router as pokemon_http_router
 from pkg.repositories.rdbms.pokemon.orm import DeclarativeMeta
 from settings import APP_NAME, APP_VERSION
 from settings.db import async_engine, initialize_db
@@ -19,7 +20,8 @@ app.add_middleware(
     allow_methods=['*'],
     allow_headers=['*'],
 )
-app.include_router(pokemon_router)
+app.include_router(pokemon_http_router, tags=['HTTP'])
+app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
 
 
 @app.on_event('startup')

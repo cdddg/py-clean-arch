@@ -39,14 +39,26 @@ $ poetry install --no-root
 #### Run the Application
 
 ```sh
-$ make up
+$ docker-compose up
 ```
 
 or
 
+pre-work, install python (>=3.10), poetry (>=1.4.0) and setup
+
 ```sh
-$ docker-compose up
+$ poetry env use python
+$ poetry shell
+$ poetry install --no-root
 ```
+
+```sh
+$ make up
+```
+
+application run on http://localhost:8000
+
+<img src="./docs/fastapi-doc.png" alt="fastapi-doc" style="zoom:40%;" />
 
 #### Run the Testing
 
