@@ -28,14 +28,6 @@ and use Asynchronous SQLalchemy (>=1.4.3)
 
 ### How To Run This Project
 
-pre-work, install python (>=3.10) and poetry (>=1.4.0)
-
-```sh
-$ poetry env use python
-$ poetry shell
-$ poetry install --no-root
-```
-
 #### Run the Application
 
 ```sh

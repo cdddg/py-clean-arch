@@ -40,13 +40,13 @@ class PokemonType(DeclarativeMeta):
 
     id = Column('id', Integer, primary_key=True)
     pokemon_no = Column(String(8), ForeignKey('pokemon.no', ondelete='CASCADE'))
-    type_id = Column(String(8), ForeignKey('type.id'))
+    type_id = Column(String(32), ForeignKey('type.id'))
 
 
 class PokemonEvolution(DeclarativeMeta):
     __tablename__ = 'pokemon_evolution'
 
-    id = Column(String(256), primary_key=True, default=build_uui4)
+    id = Column(String(32), primary_key=True, default=build_uui4)
     before_no = Column(String(8), ForeignKey('pokemon.no', ondelete='CASCADE'))
     after_no = Column(String(8), ForeignKey('pokemon.no', ondelete='CASCADE'))
     before_pokemon = relationship(

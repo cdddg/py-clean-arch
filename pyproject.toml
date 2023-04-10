@@ -13,12 +13,14 @@ packages = [{include = "py_clean_arch"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 aiosqlite = "^0.18.0"
+asyncmy = "^0.2.7"
+asyncpg = "^0.27.0"
 fastapi = "<=1.0.0"
 fastapi-utils = "^0.2.1"
 pydantic = "<=2.0.0"
 sqlalchemy = "<=2.0.0"
-uvicorn = "^0.21.1"
 strawberry-graphql = "^0.171.1"
+uvicorn = "^0.21.1"
 
 [tool.poetry.group.dev.dependencies]
 autoflake = "^2.0.2"

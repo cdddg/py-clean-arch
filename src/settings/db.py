@@ -1,6 +1,12 @@
+"""
+FIXME:
+    To be revised to support PostgreSQL schema setting
+"""
+
 from asyncio import current_task
 from logging import getLogger
 
+from sqlalchemy.engine.url import make_url
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -47,8 +53,11 @@ async def initialize_db(
         logger = getLogger('uvicorn.error')
         logger.info('(initialize_db) Creating db Tables...')
 
-        await connection.execute(text('PRAGMA foreign_keys = ON;'))
+        if make_url(async_engine.url).get_backend_name() == 'sqlite':
+            await connection.execute(text('PRAGMA foreign_keys = ON;'))
+
         if drop_existed_tables:
+            logger.info('(initialize_db) Droping existed tables')
             await connection.run_sync(declarative_meta.metadata.drop_all)
         for k in declarative_meta.metadata.tables.keys():
             logger.info(f'(initialize_db)   - {k}')
