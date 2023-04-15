@@ -4,9 +4,8 @@ FIXME:
 """
 
 from asyncio import current_task
-from logging import getLogger
+from logging import Logger, getLogger
 
-from sqlalchemy.engine.url import make_url
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -47,20 +46,32 @@ def get_async_engine() -> AsyncEngine:
 async def initialize_db(
     declarative_meta: DeclarativeMeta,
     async_engine: AsyncEngine,
-    drop_existed_tables: bool = False,
+    logger: Logger = getLogger('uvicorn.error'),
 ):
-    async with async_engine.begin() as connection:
-        logger = getLogger('uvicorn.error')
-        logger.info('(initialize_db) Creating db Tables...')
+    logger.info('(initialize_db) Creating database tables...')
 
-        if make_url(async_engine.url).get_backend_name() == 'sqlite':
+    # enable foreign keys for SQLite
+    if async_engine.url.get_backend_name() == 'sqlite':
+        async with async_engine.begin() as connection:
             await connection.execute(text('PRAGMA foreign_keys = ON;'))
 
-        if drop_existed_tables:
-            logger.info('(initialize_db) Droping existed tables')
-            await connection.run_sync(declarative_meta.metadata.drop_all)
-        for k in declarative_meta.metadata.tables.keys():
-            logger.info(f'(initialize_db)   - {k}')
-        await connection.run_sync(declarative_meta.metadata.create_all)
+    metadata = declarative_meta.metadata
 
-    await async_engine.dispose()
+    # drop tables if "drop_existed" flag is True
+    if async_engine.url.query.get('drop_existed', '').lower() == 'true':
+        logger.info('(initialize_db) Dropping existing tables')
+        async with async_engine.begin() as connection:
+            await connection.run_sync(metadata.drop_all)
+
+    # create tables
+    for table_name in metadata.tables.keys():
+        logger.info(f'(initialize_db)   - {table_name}')
+    async with async_engine.begin() as connection:
+        await connection.run_sync(metadata.create_all)
+
+    # dispose engine if not using in-memory database
+    if (
+        f'{async_engine.url.get_backend_name()}:///{async_engine.url.database}'
+        != 'sqlite:///:memory:'
+    ):
+        await async_engine.dispose()

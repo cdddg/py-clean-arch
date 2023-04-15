@@ -82,6 +82,5 @@ addopts = "-s -x -vv"
 env = [
     "TEST=true",
     "SQLALCHEMY_ECHO=false",
-    "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///./src/tests/test.db"
-    # "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:"
+    "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:?drop_existed=true"
 ]
