@@ -20,3 +20,6 @@ SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', '').lower() == 'true'
 # creating new tables. Example:
 #   sqlite+aiosqlite:///sqlite.db?drop_existed=true
 SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite+aiosqlite:///sqlite.db')
+
+# Set the isolation level for the database connection
+SQLALCHEMY_ISOLATION_LEVEL = 'SERIALIZABLE'

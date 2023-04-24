@@ -6,7 +6,7 @@ from pkg.deliveries.graphql.pokomon.router import router as pokemon_graphql_rout
 from pkg.deliveries.http.pokemon.router import router as pokemon_http_router
 from pkg.repositories.rdbms.pokemon.orm import DeclarativeMeta
 from settings import APP_NAME, APP_VERSION
-from settings.db import async_engine, initialize_db
+from settings.db import AsyncEngine, initialize_db
 
 app = FastAPI(title=APP_NAME, version=APP_VERSION)
 app.add_exception_handler(
@@ -26,7 +26,7 @@ app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
 
 @app.on_event('startup')
 async def startup():
-    await initialize_db(DeclarativeMeta, async_engine)
+    await initialize_db(DeclarativeMeta, AsyncEngine)
 
 
 @app.get('/', include_in_schema=False)

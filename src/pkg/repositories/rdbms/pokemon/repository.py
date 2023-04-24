@@ -1,8 +1,9 @@
 from typing import Optional
 from uuid import UUID
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from sqlalchemy.sql import delete, func, insert, or_, select, update
+from sqlalchemy.sql import delete, func, insert, select, update
 
 from core.exception import PokemonNotFound
 from models.pokemon import (
@@ -14,7 +15,6 @@ from models.pokemon import (
     TypeModel,
     UpdatePokemonModel,
 )
-from settings.db import AsyncSession
 
 from .orm import Pokemon, PokemonEvolution, PokemonType, Type
 
@@ -87,20 +87,6 @@ class PokemonRepository:
                 raise PokemonNotFound(no)
 
     async def delete(self, no: str):
-        """
-        FIXME:
-            Sqlite ondelete cascading doesn't work even if `PRAGMA foreign_keys = ON;` is set
-            ---
-            In the current workaround, actively delete the data in the related table
-        """
-
-        await self.session.execute(delete(PokemonType).where(PokemonType.pokemon_no == no))
-        await self.session.execute(
-            delete(PokemonEvolution).where(
-                or_(PokemonEvolution.before_no == no, PokemonEvolution.after_no == no)
-            )
-        )
-
         stmt = delete(Pokemon).where(Pokemon.no == no)
         result = await self.session.execute(stmt)
         if result.rowcount == 0:
