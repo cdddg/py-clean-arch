@@ -1,9 +1,10 @@
+import os
+
 import pytest
 from httpx import AsyncClient
 from pytest import Config
 from sqlalchemy import event
 from sqlalchemy.sql import text
-import os
 
 from main import app
 from pkg.repositories.rdbms.pokemon.orm import DeclarativeMeta
@@ -11,7 +12,9 @@ from settings.db import AsyncEngine, AsyncScopedSession, initialize_db
 
 
 def pytest_configure(config: Config):
-    print(os.environ['SQLALCHEMY_DATABASE_URI'])
+    echo = print  # ignore: remove-print-statements
+    echo(os.environ['SQLALCHEMY_DATABASE_URI'])
+
 
 @pytest.fixture(scope='session')
 def anyio_backend():
@@ -39,7 +42,7 @@ async def session():
     async with AsyncEngine.connect() as conn:
         await conn.execute(
             text('BEGIN')
-        )  # Not sure why `await conn.begin()` doesn't work when DB is sqlite
+        )  # TODO: Not sure why `await conn.begin()` doesn't work when DB is sqlite
         await conn.begin_nested()
 
         async_session = AsyncScopedSession(bind=conn)
