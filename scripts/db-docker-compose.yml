@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      MYSQL_DATABASE: pokedex
+    command: --bind-address=0.0.0.0 --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: pokedex
+    ports:
+      - 5432:5432
+    expose:
+      - 5432

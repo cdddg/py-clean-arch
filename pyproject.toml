@@ -78,9 +78,9 @@ disable = [
 
 [tool.pytest.ini_options]
 minversion = "7.2"
-addopts = "-s -x -vv"
+addopts = "-s -x -vv -p no:logging --disable-warnings"
 env = [
     "TEST=true",
     "SQLALCHEMY_ECHO=false",
-    "SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:?drop_existed=true"
+    "D:SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:?drop_existed=true"
 ]
