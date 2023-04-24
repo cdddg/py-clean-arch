@@ -19,12 +19,20 @@ class Pokemon(DeclarativeMeta):
     sp_def = Column(Integer, nullable=True)
     speed = Column(Integer, nullable=True)
 
-    types = relationship('Type', secondary='pokemon_type', backref='pokemon', lazy='raise')
+    types = relationship(
+        'Type', secondary='pokemon_type', backref='pokemon', lazy='raise', order_by='Type.name'
+    )
     before_evolutions = relationship(
-        'PokemonEvolution', primaryjoin='PokemonEvolution.after_no==Pokemon.no', lazy='raise'
+        'PokemonEvolution',
+        primaryjoin='PokemonEvolution.after_no==Pokemon.no',
+        lazy='raise',
+        order_by='PokemonEvolution.before_no',
     )
     after_evolutions = relationship(
-        'PokemonEvolution', primaryjoin='PokemonEvolution.before_no==Pokemon.no', lazy='raise'
+        'PokemonEvolution',
+        primaryjoin='PokemonEvolution.before_no==Pokemon.no',
+        lazy='raise',
+        order_by='PokemonEvolution.after_no',
     )
 
 

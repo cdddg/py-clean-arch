@@ -23,13 +23,18 @@ lint:
 		pylint --rcfile=$(SETTINGS_PATH) --load-plugins=pylint_quotes -sn -v $(DIFF_FILES); \
 	fi
 
-
 test:
-	TEST=true pytest --cache-clear --log-level=ERROR -W=error -sxvv $(filter-out $@,$(MAKECMDGOALS));
-
+	pytest $(filter-out $@,$(MAKECMDGOALS));
+	SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///./src/tests/test.db?drop_existed=true pytest $(filter-out $@,$(MAKECMDGOALS));
+	SQLALCHEMY_DATABASE_URI=postgresql+asyncpg://user:pass@localhost:5432/pokedex?drop_existed=true pytest $(filter-out $@,$(MAKECMDGOALS));
+	SQLALCHEMY_DATABASE_URI=mysql+asyncmy://user:pass@localhost:3306/pokedex?drop_existed=true pytest $(filter-out $@,$(MAKECMDGOALS));
 
 up:
 	uvicorn main:app \
 		--port $(PORT) \
 		--app-dir ./src \
 		--reload
+
+db:
+	docker-compose -p py-clean-arch -f ./scripts/db-docker-compose.yml down
+	docker-compose -p py-clean-arch -f ./scripts/db-docker-compose.yml up -d
