@@ -54,8 +54,23 @@ application run on http://localhost:8000
 
 #### Run the Testing
 
+Test single database (in-memory SQLite):
+
 ```sh
 $ pytest
+```
+
+Test a single database of another type:
+
+```sh
+$ SQLALCHEMY_DATABASE_URI=<database-uri> pytest
+```
+
+Test multiple databases (in-memory SQLite, SQLite, MySQL, Postgres):
+
+```sh
+$ make db
+$ make test
 ```
 
 ## Changelog
