@@ -24,10 +24,7 @@ lint:
 	fi
 
 test:
-	pytest $(filter-out $@,$(MAKECMDGOALS));
-	SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///./src/tests/test.db?drop_existed=true pytest $(filter-out $@,$(MAKECMDGOALS));
-	SQLALCHEMY_DATABASE_URI=postgresql+asyncpg://user:pass@localhost:5432/pokedex?drop_existed=true pytest $(filter-out $@,$(MAKECMDGOALS));
-	SQLALCHEMY_DATABASE_URI=mysql+asyncmy://user:pass@localhost:3306/pokedex?drop_existed=true pytest $(filter-out $@,$(MAKECMDGOALS));
+	bats ./tests/api_db_test.bats $(filter-out $@,$(MAKECMDGOALS));
 
 up:
 	uvicorn main:app \
