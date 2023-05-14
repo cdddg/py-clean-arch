@@ -100,7 +100,7 @@ $ make test
   Desc: Initial proposal by me
 - **v2**: master branch <br>
   merged to master on 2023. <br>
-  Desc: IImprovement from v1, the details can be seen on this PR [#1](https://github.com/cdddg/py-clean-arch/issues/1)
+  Desc: Improvement from v1, the details can be seen on this PR [#1](https://github.com/cdddg/py-clean-arch/issues/1)
 
 [^1]: https://github.com/bxcodec/go-clean-arch#description 
 [^2]: https://www.cosmicpython.com/book/chapter_06_uow.html
