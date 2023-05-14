@@ -1,6 +1,6 @@
 # py-clean-arch
 
-This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [go-clean-arch](https://github.com/bxcodec/go-clean-arch)
+This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch)
 
 ## Description
 
@@ -14,13 +14,13 @@ Rule of Clean Architecture by Uncle Bob [^1]
 
 The project, like the original project, has 4 domain layers:
 
-- [Models Layer](./src/models)
-- [Repository Layer](./src/pkg/repositories)
-- [Usecase Layer](./src/pkg/usecases)
-- [Delivery Layer](./src/pkg/deliveries)
+- Models Layer
+- Repository Layer
+- Usecase Layer
+- Delivery Layer
 
 In addition, Add [Unit of Work Pattern](./src/settings/unit_of_work.py) [^2], [Dependency Injection Pattern](./src/settings/dependency_injection.py) [^3] <br>
-and use Asynchronous SQLalchemy (>=1.4.3)
+and use Asynchronous SQLalchemy[^4]
 
 #### The diagram:
 
@@ -54,24 +54,44 @@ application run on http://localhost:8000
 
 #### Run the Testing
 
-Test single database (in-memory SQLite):
-
-```sh
-$ pytest
-```
-
-Test a single database of another type:
+To test a single database, set the `SQLALCHEMY_DATABASE_URI` environment variable to the database URI and run:
 
 ```sh
 $ SQLALCHEMY_DATABASE_URI=<database-uri> pytest
 ```
 
+If no URI is provided, an in-memory SQLite database is used by default.
+
+\---
+
 Test multiple databases (in-memory SQLite, SQLite, MySQL, Postgres):
+
+###### Install bats
+
+To test multiple databases, you need to install the `bats` testing framework. On macOS, you can use [Homebrew](https://brew.sh/) to install `bats`:
+
+```sh
+$ brew install bats
+```
+
+On Linux, you can download `bats` from the official [GitHub repository](https://github.com/bats-core/bats-core) and compile it:
+
+```sh
+$ git clone https://github.com/bats-core/bats-core.git
+$ cd bats-core
+$ ./install.sh /usr/local
+```
+
+###### Run the tests
+
+Once you have installed `bats`, run the following commands to test multiple databases:
 
 ```sh
 $ make db
 $ make test
 ```
+
+<br>
 
 ## Changelog
 
@@ -80,8 +100,9 @@ $ make test
   Desc: Initial proposal by me
 - **v2**: master branch <br>
   merged to master on 2023. <br>
-  Desc: Introducing Domain package, the details can be seen on this PR [#1](https://github.com/cdddg/py-clean-arch/issues/1)
+  Desc: IImprovement from v1, the details can be seen on this PR [#1](https://github.com/cdddg/py-clean-arch/issues/1)
 
 [^1]: https://github.com/bxcodec/go-clean-arch#description 
 [^2]: https://www.cosmicpython.com/book/chapter_06_uow.html
 [^3]: https://en.wikipedia.org/wiki/Dependency_injection
+[^4]:  The asyncio extension as of SQLAlchemy 1.4.3 can now be considered to be **beta level** software. API details are subject to change however at this point it is unlikely for there to be significant backwards-incompatible changes. https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
