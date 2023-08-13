@@ -2,6 +2,7 @@ import pytest
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency
 async def test_create_pokemon(client, engine, session):
     # test create 0001
     response = await client.post(
@@ -76,6 +77,7 @@ async def test_create_pokemon(client, engine, session):
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_get_pokemon(client):
     # pre-work
     response = await client.post(
@@ -102,6 +104,7 @@ async def test_get_pokemon(client):
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_get_pokemons(client):
     # pre-work
     response = await client.post(
@@ -144,6 +147,7 @@ async def test_get_pokemons(client):
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_update_pokemon(client):
     # pre-work
     response = await client.post(
@@ -183,6 +187,7 @@ async def test_update_pokemon(client):
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_delete_pokemon(client):
     # pre-work
     response = await client.post(

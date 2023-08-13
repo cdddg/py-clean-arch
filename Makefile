@@ -24,7 +24,7 @@ lint:
 	fi
 
 test:
-	bats ./tests/api_db_test.bats $(filter-out $@,$(MAKECMDGOALS));
+	bats --timing ./tests/api_db_test.bats $(filter-out $@,$(MAKECMDGOALS));
 
 up:
 	uvicorn main:app \
