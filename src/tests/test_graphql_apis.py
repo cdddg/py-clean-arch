@@ -2,6 +2,7 @@ import pytest
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency
 async def test_create_pokemon(client):
     # test create 0004, 0005, 0006
     mutation = '''
@@ -70,6 +71,7 @@ async def test_create_pokemon(client):
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_get_pokemon(client):
     # pre-work
     mutation = '''
@@ -129,6 +131,7 @@ async def test_get_pokemon(client):
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_get_pokemons(client):
     # pre-work
     mutation = '''
@@ -221,6 +224,7 @@ async def test_get_pokemons(client):
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_update_pokemon(client):
     # pre-work
     mutation = '''
@@ -297,6 +301,7 @@ async def test_update_pokemon(client):
 
 
 @pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_delete_pokemon(client):
     # pre-work
     mutation = '''

@@ -91,7 +91,15 @@ $ make db
 $ make test
 ```
 
-<br>
+### Code Coverage
+
+As part of our commitment to maintain high standards, we use `pytest-cov` to ensure extensive test coverage. Currently, our code coverage stands at 95%. [^5]
+
+To generate a coverage report:
+
+```sh
+$ pytest --cov
+```
 
 ## Changelog
 
@@ -102,7 +110,8 @@ $ make test
   merged to master on 2023. <br>
   Desc: Improvement from v1, the details can be seen on this PR [#1](https://github.com/cdddg/py-clean-arch/issues/1)
 
-[^1]: https://github.com/bxcodec/go-clean-arch#description 
+[^1]: https://github.com/bxcodec/go-clean-arch#description
 [^2]: https://www.cosmicpython.com/book/chapter_06_uow.html
 [^3]: https://en.wikipedia.org/wiki/Dependency_injection
 [^4]:  The asyncio extension as of SQLAlchemy 1.4.3 can now be considered to be **beta level** software. API details are subject to change however at this point it is unlikely for there to be significant backwards-incompatible changes. https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
+[^5]: Test results as of [today's date, e.g., August 12, 2023].
