@@ -1,3 +1,5 @@
+from typing import Type
+
 from pkg.repositories.rdbms.pokemon.repository import (
     EvolutionRepository,
     PokemonRepository,
@@ -7,28 +9,48 @@ from settings import IS_TEST
 from settings.db import AsyncScopedSession
 
 
+# pylint: disable=attribute-defined-outside-init
 class AsyncSqlAlchemyUnitOfWork:
-    _pokemon_repo = PokemonRepository
-    _type_repo = TypeRepository
-    _evolution_repo = EvolutionRepository
+    def __init__(
+        self,
+        pokemon_repo_cls: Type[PokemonRepository],
+        type_repo_cls: Type[TypeRepository],
+        evolution_repo_cls: Type[EvolutionRepository],
+    ):
+        self._pokemon_repo_cls = pokemon_repo_cls
+        self._type_repo_cls = type_repo_cls
+        self._evolution_repo_cls = evolution_repo_cls
+        self._session = AsyncScopedSession()
 
-    def __init__(self):
-        session = AsyncScopedSession()
-        self._session = session
+    @property
+    def pokemon_repo(self):
+        if not hasattr(self, '_pokemon_repo'):
+            self._pokemon_repo = self._pokemon_repo_cls(self._session)
+        return self._pokemon_repo
 
-        self.pokemon_repo = self._pokemon_repo(session)
-        self.type_repo = self._type_repo(session)
-        self.evolution_repo = self._evolution_repo(session)
+    @property
+    def type_repo(self):
+        if not hasattr(self, '_type_repo'):
+            self._type_repo = self._type_repo_cls(self._session)
+        return self._type_repo
+
+    @property
+    def evolution_repo(self):
+        if not hasattr(self, '_evolution_repo'):
+            self._evolution_repo = self._evolution_repo_cls(self._session)
+        return self._evolution_repo
 
     async def __aenter__(self):
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
-        if exc_type is None:
-            await self._session.commit()
-        else:
-            await self._session.rollback()
-        await self._session.close()
+        try:
+            if exc_type is None:
+                await self._session.commit()
+            else:
+                await self._session.rollback()
+        finally:
+            await self._session.close()
 
         # https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.async_scoped_session.remove
         if not IS_TEST:
