@@ -36,7 +36,7 @@ $ docker-compose up
 
 or
 
-pre-work, install python (>=3.10), poetry (>=1.4.0) and setup
+pre-work, install python (>=3.10), poetry (>=1.5.1,<1.6) and setup
 
 ```sh
 $ poetry env use python
