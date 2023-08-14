@@ -1,5 +1,4 @@
 from typing import Optional
-from uuid import UUID
 
 import strawberry
 
@@ -10,6 +9,8 @@ from models.pokemon import (
     TypeModel,
     UpdatePokemonModel,
 )
+
+from .scalar import UUIDStrScalar
 
 
 @strawberry.input
@@ -48,12 +49,12 @@ class UpdatePokemonInput:
 
 @strawberry.type
 class TypeNode:
-    id: UUID
+    id: UUIDStrScalar
     name: str
 
     @classmethod
     def from_instance(cls, instance: TypeModel) -> 'TypeNode':
-        return cls(id=instance.id, name=instance.name)
+        return cls(id=instance.id, name=instance.name)  # pyright: ignore[reportGeneralTypeIssues]
 
 
 @strawberry.type

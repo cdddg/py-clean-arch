@@ -3,8 +3,12 @@ from logging import Logger, getLogger
 
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncEngine as SQLAlchemyAsyncEngine
-from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_scoped_session,
+    async_sessionmaker,
+    create_async_engine,
+)
 from sqlalchemy.orm.decl_api import DeclarativeMeta
 from sqlalchemy.sql import text
 
@@ -55,7 +59,7 @@ def connect(dbapi_conn, connection_record):
 
 
 AsyncSQLiteScopedSession = async_scoped_session(
-    sessionmaker(
+    async_sessionmaker(
         AsyncSQLiteEngine,
         expire_on_commit=False,
         autoflush=False,

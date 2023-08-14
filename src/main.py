@@ -4,7 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from pkg.deliveries.graphql.pokomon.router import router as pokemon_graphql_router
 from pkg.deliveries.http.pokemon.router import router as pokemon_http_router
-from pkg.repositories.rdbms.pokemon.orm import DeclarativeMeta
+from pkg.repositories.rdbms.pokemon.orm import Base
 from settings import APP_NAME, APP_VERSION
 from settings.db import AsyncEngine, initialize_db
 
@@ -26,7 +26,7 @@ app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
 
 @app.on_event('startup')
 async def startup():
-    await initialize_db(DeclarativeMeta, AsyncEngine)
+    await initialize_db(Base, AsyncEngine)
 
 
 @app.get('/', include_in_schema=False)

@@ -1,11 +1,11 @@
-from typing import Optional
-from uuid import UUID
+from typing import Callable, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import delete, func, insert, select, update
 
 from core.exception import PokemonNotFound
+from core.type import UUIDStr
 from models.pokemon import (
     CreatePokemonModel,
     GetPokemonParamsModel,
@@ -17,6 +17,8 @@ from models.pokemon import (
 )
 
 from .orm import Pokemon, PokemonEvolution, PokemonType, Type
+
+func: Callable
 
 
 class PokemonRepository:
@@ -35,6 +37,7 @@ class PokemonRepository:
                     name=evo.before_pokemon.name,
                 )
                 for evo in pokemon.before_evolutions
+                if evo.before_pokemon
             ],
             after_evolutions=[
                 PokemonEvolutionModel(
@@ -42,6 +45,7 @@ class PokemonRepository:
                     name=evo.after_pokemon.name,
                 )
                 for evo in pokemon.after_evolutions
+                if evo.after_pokemon
             ],
         )
 
@@ -49,7 +53,7 @@ class PokemonRepository:
         stmt = (
             select(Pokemon)
             .where(Pokemon.no == no)
-            .options(  # type: ignore
+            .options(
                 selectinload(Pokemon.types),
                 selectinload(Pokemon.before_evolutions).joinedload(PokemonEvolution.before_pokemon),
                 selectinload(Pokemon.after_evolutions).joinedload(PokemonEvolution.after_pokemon),
@@ -62,7 +66,7 @@ class PokemonRepository:
         return self._convert_pokemon_to_model(pokemon)
 
     async def list_(self, params: Optional[GetPokemonParamsModel] = None) -> list[PokemonModel]:
-        stmt = select(Pokemon).options(  # type: ignore
+        stmt = select(Pokemon).options(
             selectinload(Pokemon.types),
             selectinload(Pokemon.before_evolutions).joinedload(PokemonEvolution.before_pokemon),
             selectinload(Pokemon.after_evolutions).joinedload(PokemonEvolution.after_pokemon),
@@ -98,7 +102,7 @@ class PokemonRepository:
 
         return count == len(numbers)
 
-    async def put_types(self, pokemon_no: str, types: list[TypeModel]):  # type: ignore
+    async def put_types(self, pokemon_no: str, types: list[TypeModel]):
         stmt = delete(PokemonType).where(PokemonType.pokemon_no == pokemon_no)
         await self.session.execute(stmt)
 
@@ -132,9 +136,9 @@ class TypeRepository:
 
     @staticmethod
     def _convert_type_to_model(type_: Type) -> TypeModel:
-        return TypeModel(id=type_.id, name=type_.name)  # type: ignore
+        return TypeModel(id=type_.id, name=type_.name)
 
-    async def get(self, type_id: UUID) -> TypeModel:
+    async def get(self, type_id: UUIDStr) -> TypeModel:
         raise NotImplementedError
 
     async def list_(self, params: Optional[GetTypeParamsModel] = None) -> list[TypeModel]:
@@ -144,7 +148,7 @@ class TypeRepository:
         return list(map(self._convert_type_to_model, types))
 
     async def get_or_create(self, name: str) -> TypeModel:
-        stmt = select(Type).filter(Type.name == name)  # type: ignore
+        stmt = select(Type).filter(Type.name == name)
         type_ = (await self.session.execute(stmt)).scalars().one_or_none()
         if not type_:
             type_ = Type(name=name)

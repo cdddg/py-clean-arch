@@ -1,8 +1,8 @@
 from typing import Optional
-from uuid import UUID
 
 from pydantic import BaseModel, Field, root_validator
 
+from core.type import UUIDStr
 from models.pokemon import (
     CreatePokemonModel,
     PokemonEvolutionModel,
@@ -59,7 +59,7 @@ class AddEvolutionRequest(BaseModel):
 
 
 class TypeResponse(BaseModel):
-    id: UUID
+    id: UUIDStr
     name: str
 
     @staticmethod
