@@ -1,11 +1,10 @@
-from fastapi import status
-from fastapi_utils.inferring_router import InferringRouter
+from fastapi import APIRouter, status
 
 from pkg.usecases import pokemon as pokemon_ucase
 
 from .schema import CreatePokemonRequest, PokemonResponse, UpdatePokemonRequest
 
-router = InferringRouter()
+router = APIRouter()
 
 
 @router.post('/pokemons', status_code=status.HTTP_201_CREATED)

@@ -7,7 +7,7 @@ from sqlalchemy import event
 from sqlalchemy.sql import text
 
 from main import app
-from pkg.repositories.rdbms.pokemon.orm import DeclarativeMeta
+from pkg.repositories.rdbms.pokemon.orm import Base
 from settings.db import AsyncEngine, AsyncScopedSession, initialize_db
 
 
@@ -23,7 +23,7 @@ def anyio_backend():
 
 @pytest.fixture(scope='session', autouse=True)
 async def engine():
-    await initialize_db(DeclarativeMeta, AsyncEngine)
+    await initialize_db(Base, AsyncEngine)
 
     return AsyncEngine
 
@@ -52,6 +52,6 @@ async def session():
             if conn.closed:
                 return
             if not conn.in_nested_transaction():
-                conn.sync_connection.begin_nested()  # type: ignore[reportOptionalMemberAccess]
+                conn.sync_connection.begin_nested()  # pyright: ignore[reportOptionalMemberAccess]
 
         yield async_session

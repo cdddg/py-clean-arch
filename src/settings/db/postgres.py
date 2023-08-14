@@ -1,7 +1,11 @@
 from asyncio import current_task
 
-from sqlalchemy.ext.asyncio import AsyncSession, async_scoped_session, create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_scoped_session,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from .. import IS_TEST, SQLALCHEMY_DATABASE_URI, SQLALCHEMY_ECHO, SQLALCHEMY_ISOLATION_LEVEL
 from ..test import pytest_scope_func
@@ -14,7 +18,7 @@ AsyncPostgreSQLEngine = create_async_engine(
 )
 
 AsyncPostgreSQLScopedSession = async_scoped_session(
-    sessionmaker(
+    async_sessionmaker(
         AsyncPostgreSQLEngine,
         expire_on_commit=False,
         autoflush=False,
