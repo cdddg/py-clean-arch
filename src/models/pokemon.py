@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
-from uuid import UUID
+
+from core.type import UUIDStr
 
 
 @dataclass
@@ -17,7 +18,7 @@ class CreateTypeModel:
 
 @dataclass
 class TypeModel:
-    id: UUID
+    id: UUIDStr
     name: str
 
 

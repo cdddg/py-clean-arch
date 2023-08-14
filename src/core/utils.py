@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 
-def build_uui4():
+def build_uui4_str():
     return str(uuid4().hex)
 
 

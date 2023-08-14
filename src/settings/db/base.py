@@ -1,8 +1,9 @@
 from logging import Logger, getLogger
+from typing import Type
 
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import AsyncEngine as SQLAlchemyAsyncEngine
-from sqlalchemy.orm.decl_api import DeclarativeMeta
+from sqlalchemy.orm import DeclarativeBase
 
 from .. import SQLALCHEMY_DATABASE_URI
 
@@ -23,11 +24,11 @@ def is_drop_existed(uri) -> bool:
 
 
 async def initialize_db(
-    declarative_meta: DeclarativeMeta,
+    declarative_base: Type[DeclarativeBase],
     async_engine: SQLAlchemyAsyncEngine,
     logger: Logger = getLogger('uvicorn.error'),
 ):
-    metadata = declarative_meta.metadata
+    metadata = declarative_base.metadata
 
     logger.info('(initialize_db) Creating database tables...')
     async with async_engine.begin() as connection:

@@ -11,14 +11,13 @@ readme = "README.md"
 packages = [{include = "py_clean_arch"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
 aiosqlite = "^0.18.0"
 asyncmy = "^0.2.7"
 asyncpg = "^0.27.0"
 fastapi = "<=1.0.0"
-fastapi-utils = "^0.2.1"
-pydantic = "<=2.0.0"
-sqlalchemy = "<=2.0.0"
+pydantic = "<2.0.0"
+python = "^3.10"
+sqlalchemy = ">=2.0.0"
 strawberry-graphql = "^0.171.1"
 uvicorn = "^0.21.1"
 
@@ -30,8 +29,6 @@ pre-commit = "^3.2.2"
 pylint = "^2.17.2"
 pylint-quotes = "^0.2.3"
 remove-print-statements = "^0.5.0"
-sqlalchemy-stubs = "^0.4"
-sqlalchemy2-stubs = "^0.0.2a33"
 
 [tool.poetry.group.test.dependencies]
 gevent = "^23.7.0"
