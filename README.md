@@ -8,7 +8,7 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
   archived to v1 branch on 2021/04 <br>desc: Initial proposal by me
 - **v2**: checkout to the [v2 branch ](https://github.com/cdddg/py-clean-arch/tree/v2)<br>archived to v1 branch on 2023/07 <br>
   desc: Improvement from v1, the details can be seen on this PR [#1](https://github.com/cdddg/py-clean-arch/pull/1)
-- **v3**: [master branch](https://github.com/cdddg/py-clean-arch/tree/master) <br>merged to master on 2023/08. <br>desc: Transitioned from Go-centric design to conventional Python practices. Details available in this PR [#11](https://github.com/cdddg/py-clean-arch/pull/11).https://github.com/cdddg/py-clean-arch/pull/11)
+- **v3**: master branch <br>merged to master on 2023/08. <br>desc: Transitioned from Go-centric design to conventional Python practices. Details available in this PR [#11](https://github.com/cdddg/py-clean-arch/pull/11)
 
 ## Description
 
@@ -20,15 +20,17 @@ Rule of Clean Architecture by Uncle Bob [^1]
 - Independent of Database. You can swap out Oracle or SQL Server, for Mongo, BigTable, CouchDB, or something else. Your business rules are not bound to the database.
 - Independent of any external agency. In fact your business rules simply don’t know anything at all about the outside world.
 
-The project, like the original project, has 4 domain layers:
+![clean-arch-01](./docs/clean-arch-01.png)
 
-- Models Layer
-- Repository Layer
-- Usecase Layer
-- Delivery Layer
+![clean-arch-02](./docs/clean-arch-02.png)
 
-In addition, Add [Unit of Work Pattern](./src/settings/unit_of_work.py) [^2], [Dependency Injection Pattern](./src/settings/dependency_injection.py) [^3] <br>
-and use Asynchronous SQLalchemy[^4]
+### Additional Features and Patterns in This Project
+
+Apart from being based on Uncle Bob's Clean Architecture, this project also incorporates the following features and patterns:
+
+- **Unit of Work Pattern**: Ensures that all work is completed as a single unit for every transactional operation. [^2]
+- **Dependency Injection Pattern**: Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^3]
+- **Asynchronous SQLalchemy**: By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^4]
 
 ### Project Structure Overview & Clean Architecture Mapping
 
@@ -47,6 +49,8 @@ src
 │   │                                   ("Interface" Adapters Layer in Clean Architecture)
 │   │
 │   └── di/                             - Dependency injection module.
+│       ├── dependency_injection.py
+│       └── unit_of_work.py
 │
 ├── models/                             - Domain models representing core business logic.
 │                                       ("Entities" Layer in Clean Architecture)
@@ -57,13 +61,9 @@ src
 └── main.py                             - Main file to launch the application.
 ```
 
-![clean-arch-01](./docs/clean-arch-01.png)
+## How To Run This Project
 
-<img src="./docs/clean-arch-02.png" alt="clean-arch-02" style="zoom:75%;" />
-
-### How To Run This Project
-
-#### Run the Application
+### Run the Application
 
 ```sh
 $ docker-compose up
@@ -87,7 +87,7 @@ application run on http://localhost:8000
 
 <img src="./docs/fastapi-doc.png" alt="fastapi-doc" style="zoom:40%;" />
 
-#### Run the Testing
+### Run the Testing
 
 To test a single database, set the `SQLALCHEMY_DATABASE_URI` environment variable to the database URI and run:
 
@@ -128,7 +128,7 @@ $ make test
 
 ### Code Coverage
 
-As part of our commitment to maintain high standards, we use `pytest-cov` to ensure extensive test coverage. Currently, our code coverage stands at 95%. [^5]
+As part of our commitment to maintain high standards, we use `pytest-cov` to ensure extensive test coverage. Currently, our code coverage stands at 93%. [^5]
 
 To generate a coverage report:
 
@@ -141,3 +141,4 @@ $ pytest --cov
 [^3]: https://en.wikipedia.org/wiki/Dependency_injection
 [^4]:  The asyncio extension as of SQLAlchemy 1.4.3 can now be considered to be **beta level** software. API details are subject to change however at this point it is unlikely for there to be significant backwards-incompatible changes. https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
 
+[^5]: Test results as of [today's date, e.g., August 16, 2023].
