@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from core.type import UUIDStr
+from common.type import UUIDStr
 
 
 @dataclass

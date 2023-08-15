@@ -11,12 +11,13 @@ Usage:
 """
 
 
-from pkg.repositories.rdbms.pokemon.repository import (
+from app.repositories.rdbms.pokemon.repository import (
     EvolutionRepository,
     PokemonRepository,
     TypeRepository,
 )
-from settings.unit_of_work import AsyncSqlAlchemyUnitOfWork
+
+from .unit_of_work import AsyncSqlAlchemyUnitOfWork
 
 
 def create_async_sqlalchemy_uow() -> AsyncSqlAlchemyUnitOfWork:

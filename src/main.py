@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from pkg.deliveries.graphql.pokomon.router import router as pokemon_graphql_router
-from pkg.deliveries.http.pokemon.router import router as pokemon_http_router
-from pkg.repositories.rdbms.pokemon.orm import Base
+from app.deliveries.graphql.pokomon.router import router as pokemon_graphql_router
+from app.deliveries.http.pokemon.router import router as pokemon_http_router
+from app.repositories.rdbms.pokemon.orm import Base
 from settings import APP_NAME, APP_VERSION
 from settings.db import AsyncEngine, initialize_db
 

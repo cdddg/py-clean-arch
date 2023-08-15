@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import delete, func, insert, select, update
 
-from core.exception import PokemonNotFound
-from core.type import UUIDStr
+from models.exception import PokemonNotFound
+from common.type import UUIDStr
 from models.pokemon import (
     CreatePokemonModel,
     GetPokemonParamsModel,

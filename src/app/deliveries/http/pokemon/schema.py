@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, root_validator
 
-from core.type import UUIDStr
+from common.type import UUIDStr
 from models.pokemon import (
     CreatePokemonModel,
     PokemonEvolutionModel,

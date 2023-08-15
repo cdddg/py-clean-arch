@@ -3,8 +3,8 @@ from typing import Optional
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from core.type import UUIDStr
-from core.utils import build_uui4_str
+from common.type import UUIDStr
+from common.utils import build_uui4_str
 
 from .type import UUIDStrType
 

@@ -3,7 +3,7 @@ from typing import Annotated
 import strawberry
 from strawberry.types import Info
 
-import pkg.usecases.pokemon as pokemon_ucase
+import app.usecases.pokemon as pokemon_ucase
 
 from .schema import CreatePokemonInput, PokemonNode, UpdatePokemonInput
 
