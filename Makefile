@@ -4,7 +4,7 @@ GIT_ARGS := --name-only --diff-filter=d --cached
 ifneq ($(DIFF_SRC),)
 	GIT_ARGS := --name-only --diff-filter=d $(DIFF_SRC)...HEAD
 endif
-DIFF_FILES = `git diff $(GIT_ARGS) | grep .py$$ | grep -v migrations`
+DIFF_FILES = `git diff $(GIT_ARGS) | grep .py$$`
 
 
 format:

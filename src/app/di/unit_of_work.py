@@ -1,6 +1,6 @@
 from typing import Type
 
-from pkg.repositories.rdbms.pokemon.repository import (
+from app.repositories.rdbms.pokemon.repository import (
     EvolutionRepository,
     PokemonRepository,
     TypeRepository,

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
 
-from pkg.usecases import pokemon as pokemon_ucase
+from app.usecases import pokemon as pokemon_ucase
 
 from .schema import CreatePokemonRequest, PokemonResponse, UpdatePokemonRequest
 

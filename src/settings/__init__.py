@@ -2,7 +2,7 @@ import os
 
 # Application name and version
 APP_NAME = 'Pokédex API'
-APP_VERSION = '2'
+APP_VERSION = '3'
 
 # Check if running in a test environment
 IS_TEST = os.getenv('TEST', '').lower() == 'true'

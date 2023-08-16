@@ -1,6 +1,6 @@
 import strawberry
 
-from core.type import UUIDStr
+from common.type import UUIDStr
 
 
 @strawberry.scalar(description=UUIDStr.__doc__)
