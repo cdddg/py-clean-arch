@@ -1,6 +1,6 @@
 from sqlalchemy import String, TypeDecorator
 
-from core.type import UUIDStr
+from common.type import UUIDStr
 
 
 class UUIDStrType(TypeDecorator):  # pylint: disable=abstract-method

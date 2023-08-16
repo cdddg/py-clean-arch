@@ -6,8 +6,8 @@ from pytest import Config
 from sqlalchemy import event
 from sqlalchemy.sql import text
 
-from main import app
-from pkg.repositories.rdbms.pokemon.orm import Base
+from app.repositories.rdbms.pokemon.orm import Base
+from main import app as fastapi_app
 from settings.db import AsyncEngine, AsyncScopedSession, initialize_db
 
 
@@ -30,7 +30,7 @@ async def engine():
 
 @pytest.fixture(scope='session')
 async def client():
-    async with AsyncClient(app=app, base_url='http://test') as ac:
+    async with AsyncClient(app=fastapi_app, base_url='http://test') as ac:
         yield ac
 
 

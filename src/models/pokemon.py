@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
-from core.type import UUIDStr
+from common.type import UUIDStr
 
 
 @dataclass
@@ -9,11 +9,6 @@ class GetTypeParamsModel:
     offset: int = 0
     limit: Optional[int] = None
     pokemon_numbers: Optional[list[str]] = None
-
-
-@dataclass
-class CreateTypeModel:
-    name: str
 
 
 @dataclass

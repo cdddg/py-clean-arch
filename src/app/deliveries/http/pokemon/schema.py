@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, root_validator
 
-from core.type import UUIDStr
+from common.type import UUIDStr
 from models.pokemon import (
     CreatePokemonModel,
     PokemonEvolutionModel,
@@ -52,10 +52,6 @@ class UpdatePokemonRequest(BaseModel):
     def to_instance(self) -> UpdatePokemonModel:
         kwargs = self.dict(exclude_unset=True)
         return UpdatePokemonModel(**kwargs)
-
-
-class AddEvolutionRequest(BaseModel):
-    evolutions_no: list[str]
 
 
 class TypeResponse(BaseModel):
