@@ -12,31 +12,31 @@ packages = [{include = "py_clean_arch"}]
 
 [tool.poetry.dependencies]
 aiosqlite = "^0.18.0"
-asyncmy = "^0.2.7"
-asyncpg = "^0.27.0"
+asyncmy = "^0.2.8"
+asyncpg = "^0.28.0"
 fastapi = "<=1.0.0"
 pydantic = "<2.0.0"
 python = "^3.10"
 sqlalchemy = ">=2.0.0"
-strawberry-graphql = "^0.171.1"
-uvicorn = "^0.21.1"
+strawberry-graphql = "^0.204.0"
+uvicorn = "^0.23.2"
 
 [tool.poetry.group.dev.dependencies]
-autoflake = "^2.0.2"
-black = "^23.3.0"
+autoflake = "^2.2.0"
+black = "^23.7.0"
 isort = "^5.12.0"
-pre-commit = "^3.2.2"
-pylint = "^2.17.2"
+pre-commit = "^3.3.3"
+pylint = "^2.17.5"
 pylint-quotes = "^0.2.3"
-remove-print-statements = "^0.5.0"
+remove-print-statements = "^0.5.2"
 
 [tool.poetry.group.test.dependencies]
 gevent = "^23.7.0"
-httpx = "^0.23.3"
-pytest = "^7.2.2"
+httpx = "^0.24.1"
+pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
 pytest-dependency = "^0.5.1"
-pytest-env = "^0.8.1"
+pytest-env = "^0.8.2"
 
 [tool.black]
 line-length = 100
