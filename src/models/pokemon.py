@@ -12,11 +12,6 @@ class GetTypeParamsModel:
 
 
 @dataclass
-class CreateTypeModel:
-    name: str
-
-
-@dataclass
 class TypeModel:
     id: UUIDStr
     name: str

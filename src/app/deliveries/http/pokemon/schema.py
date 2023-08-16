@@ -54,10 +54,6 @@ class UpdatePokemonRequest(BaseModel):
         return UpdatePokemonModel(**kwargs)
 
 
-class AddEvolutionRequest(BaseModel):
-    evolutions_no: list[str]
-
-
 class TypeResponse(BaseModel):
     id: UUIDStr
     name: str
