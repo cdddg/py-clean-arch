@@ -39,13 +39,13 @@ The directory structure below provides a high-level view of the project. Each di
 ```
 src
 ├── app/                                - Directory for business logic.
-│   ├── deliveries/                     - Interface layer for external interactions. 
+│   ├── deliveries/                     - Interface layer for external interactions.
 │   │                                   ("Frameworks and Drivers" Layer in Clean Architecture)
 │   │
 │   ├── usecases/                       - Application services layer representing business use cases.
 │   │                                   ("Use Cases" Layer in Clean Architecture)
 │   │
-│   ├── repositories/                   - Data storage and interaction module. 
+│   ├── repositories/                   - Data storage and interaction module.
 │   │                                   ("Interface" Adapters Layer in Clean Architecture)
 │   │
 │   └── di/                             - Dependency injection module.
@@ -55,9 +55,14 @@ src
 ├── models/                             - Domain models representing core business logic.
 │                                       ("Entities" Layer in Clean Architecture)
 │
-├── common/                             - Module containing shared code and utilities. 
-├── settings/                           - Application configurations. 
-├── tests/                              - Testing module for the application. 
+├── common/                             - Module containing shared code and utilities.
+│
+├── settings/                           - Application configurations.
+│
+├── tests/                              - Testing module for the application.
+│   ├── unit/                           - Tests for individual components in isolation.
+│   └── integration/                    - Tests for interactions between components.
+│
 └── main.py                             - Main file to launch the application.
 ```
 
@@ -128,7 +133,7 @@ $ make test
 
 ### Code Coverage
 
-As part of our commitment to maintain high standards, we use `pytest-cov` to ensure extensive test coverage. Currently, our code coverage stands at 93%. [^5]
+As part of our commitment to maintain high standards, we use `pytest-cov` to ensure extensive test coverage. Currently, our code coverage stands at 91.33%. [^5]
 
 To generate a coverage report:
 
@@ -141,4 +146,4 @@ $ pytest --cov
 [^3]: https://en.wikipedia.org/wiki/Dependency_injection
 [^4]:  The asyncio extension as of SQLAlchemy 1.4.3 can now be considered to be **beta level** software. API details are subject to change however at this point it is unlikely for there to be significant backwards-incompatible changes. https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
 
-[^5]: Test results as of [today's date, e.g., August 16, 2023].
+[^5]: Test results as of [today's date, e.g., August 20, 2023].
