@@ -5,7 +5,7 @@ This module provides the base schema configuration for the GraphQL API using the
 from typing import Optional, Union
 
 import strawberry
-from strawberry.exceptions import GraphQLError
+from strawberry.exceptions import GraphQLError  # pyright: ignore[reportPrivateImportUsage]
 from strawberry.types import ExecutionContext
 from strawberry.utils.logging import StrawberryLogger
 

@@ -98,6 +98,9 @@ filterwarnings = [
     "ignore:pkg_resources is deprecated as an API*:DeprecationWarning",
     "ignore::sqlalchemy.exc.MovedIn20Warning"
 ]
+python_files = [
+    "test*.py"
+]
 
 [tool.coverage.run]
 concurrency = ["gevent"]  # https://stackoverflow.com/a/76033894
