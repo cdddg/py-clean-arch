@@ -3,7 +3,7 @@ import pytest
 
 @pytest.mark.anyio
 @pytest.mark.dependency
-async def test_create_pokemon(client, engine, session):
+async def test_create_pokemon(client):
     # test create 0001
     response = await client.post(
         '/pokemons',

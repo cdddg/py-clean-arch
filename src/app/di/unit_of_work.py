@@ -11,6 +11,7 @@ from settings.db import AsyncScopedSession
 
 # pylint: disable=attribute-defined-outside-init
 class AsyncSqlAlchemyUnitOfWork:
+
     def __init__(
         self,
         pokemon_repo_cls: Type[PokemonRepository],
