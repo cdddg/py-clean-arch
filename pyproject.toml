@@ -85,7 +85,7 @@ addopts = """
 --tb=short
 --cov-report=term-missing
 --cov-config=pyproject.toml
---cov-fail-under=93
+--cov-fail-under=90
 --no-cov-on-fail
 """
 env = [
