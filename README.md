@@ -4,21 +4,19 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
 
 ## Changelog
 
-- **v1**: checkout to the [v1 branch ](https://github.com/cdddg/py-clean-arch/tree/v1)<br>
-  archived to v1 branch on 2021/04 <br>desc: Initial proposal by me
-- **v2**: checkout to the [v2 branch ](https://github.com/cdddg/py-clean-arch/tree/v2)<br>archived to v1 branch on 2023/07 <br>
-  desc: Improvement from v1, the details can be seen on this PR [#1](https://github.com/cdddg/py-clean-arch/pull/1)
-- **v3**: master branch <br>merged to master on 2023/08. <br>desc: Transitioned from Go-centric design to conventional Python practices. Details available in this PR [#11](https://github.com/cdddg/py-clean-arch/pull/11)
+- **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived to the v1 branch in April 2021. <br>Description: Initial proposal by me.
+- **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived to the v2 branch in July 2023. <br>Description: Improvements from v1 can be seen in PR [#1](https://github.com/cdddg/py-clean-arch/pull/1).
+- **v3**: Current version on the master branch.<br> Merged to master in August 2023. <br>Description: Transition from Go-centric design to conventional Python practices. Details can be found in PR [#11](https://github.com/cdddg/py-clean-arch/pull/11).
 
 ## Description
 
-Rule of Clean Architecture by Uncle Bob [^1]
+Core Principles of Clean Architecture by Uncle Bob: [^1]
 
-- Independent of Frameworks. The architecture does not depend on the existence of some library of feature laden software. This allows you to use such frameworks as tools, rather than having to cram your system into their limited constraints.
-- Testable. The business rules can be tested without the UI, Database, Web Server, or any other external element.
-- Independent of UI. The UI can change easily, without changing the rest of the system. A Web UI could be replaced with a console UI, for example, without changing the business rules.
-- Independent of Database. You can swap out Oracle or SQL Server, for Mongo, BigTable, CouchDB, or something else. Your business rules are not bound to the database.
-- Independent of any external agency. In fact your business rules simply don’t know anything at all about the outside world.
+1. **Independent of Frameworks:** The architecture does not depend on the existence of some library of feature laden software. This allows you to use such frameworks as tools, rather than having to cram your system into their limited constraints.
+2. **Testable:** The business rules can be tested without the UI, Database, Web Server, or any other external element.
+3. **Independent of UI:** The UI can change easily, without changing the rest of the system. A Web UI could be replaced with a console UI, for example, without changing the business rules.
+4. **Independent of Database:** You can swap out Oracle or SQL Server, for Mongo, BigTable, CouchDB, or something else. Your business rules are not bound to the database.
+5. **Independent of any External Agency:** In fact your business rules simply don’t know anything at all about the outside world.
 
 ![clean-arch-01](./docs/clean-arch-01.png)
 
@@ -26,7 +24,7 @@ Rule of Clean Architecture by Uncle Bob [^1]
 
 ### Additional Features and Patterns in This Project
 
-Apart from being based on Uncle Bob's Clean Architecture, this project also incorporates the following features and patterns:
+Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
 
 - **Unit of Work Pattern**: Ensures that all work is completed as a single unit for every transactional operation. [^2]
 - **Dependency Injection Pattern**: Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^3]
@@ -38,32 +36,33 @@ The directory structure below provides a high-level view of the project. Each di
 
 ```
 src
-├── app/                                - Directory for business logic.
-│   ├── deliveries/                     - Interface layer for external interactions.
-│   │                                   ("Frameworks and Drivers" Layer in Clean Architecture)
+├── app/
+│   ├── deliveries/         - External interfaces like HTTP & GraphQL endpoints.
+│   │                       ("Frameworks and Drivers" in Clean Architecture)
 │   │
-│   ├── usecases/                       - Application services layer representing business use cases.
-│   │                                   ("Use Cases" Layer in Clean Architecture)
+│   ├── usecases/           - Contains application-specific business rules.
+│   │                       ("Use Cases" in Clean Architecture)
 │   │
-│   ├── repositories/                   - Data storage and interaction module.
-│   │                                   ("Interface" Adapters Layer in Clean Architecture)
+│   ├── repositories/       - Data interaction layer, converting domain data to/from database format.
+│   │                       ("Interface Adapters" in Clean Architecture)
 │   │
-│   └── di/                             - Dependency injection module.
+│   └── di/                 - Dependency injection module.
 │       ├── dependency_injection.py
 │       └── unit_of_work.py
 │
-├── models/                             - Domain models representing core business logic.
-│                                       ("Entities" Layer in Clean Architecture)
+├── models/                 - Entity representations & core business logic.
+│                           ("Entities" in Clean Architecture)
 │
-├── common/                             - Module containing shared code and utilities.
+├── common/                 - Shared code and utilities.
 │
-├── settings/                           - Application configurations.
+├── settings/               - Application configurations.
 │
-├── tests/                              - Testing module for the application.
-│   ├── unit/                           - Tests for individual components in isolation.
-│   └── integration/                    - Tests for interactions between components.
+├── tests/                  - Testing module for the application.
+│   ├── unit/               - Tests for individual components in isolation.
+│   └── integration/        - Tests for interactions between components.
 │
-└── main.py                             - Main file to launch the application.
+└── main.py                 - Main file to launch the application.
+
 ```
 
 ## How To Run This Project
@@ -145,5 +144,4 @@ $ pytest --cov
 [^2]: https://www.cosmicpython.com/book/chapter_06_uow.html
 [^3]: https://en.wikipedia.org/wiki/Dependency_injection
 [^4]:  The asyncio extension as of SQLAlchemy 1.4.3 can now be considered to be **beta level** software. API details are subject to change however at this point it is unlikely for there to be significant backwards-incompatible changes. https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
-
 [^5]: Test results as of [today's date, e.g., August 20, 2023].
