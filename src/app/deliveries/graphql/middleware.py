@@ -1,5 +1,12 @@
 """
+Middleware Utilities for Deliveries Layer
+
 This module provides the base schema configuration for the GraphQL API using the strawberry framework.
+
+Note:
+If you foresee the need for additional middlewares in the future, or different configurations
+per delivery mechanism (e.g., http vs. graphql), consider structuring the middlewares into
+separate modules under respective delivery directories for clarity and maintainability.
 """
 
 from typing import Optional, Union

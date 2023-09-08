@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
 from app.deliveries.graphql.pokemon.router import router as pokemon_graphql_router
-from app.deliveries.http.fastapi import add_exception_handlers as http_add_exception_handlers
+from app.deliveries.http.middleware import add_exception_handlers as http_add_exception_handlers
 from app.deliveries.http.pokemon.router import router as pokemon_http_router
 from app.repositories.rdbms.pokemon.orm import Base
 from settings import APP_NAME, APP_VERSION
