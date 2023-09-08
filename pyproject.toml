@@ -11,12 +11,12 @@ readme = "README.md"
 packages = [{include = "py_clean_arch"}]
 
 [tool.poetry.dependencies]
+python = "^3.10"
 aiosqlite = "^0.18.0"
 asyncmy = "^0.2.8"
 asyncpg = "^0.28.0"
 fastapi = "<=1.0.0"
 pydantic = "<2.0.0"
-python = "^3.10"
 sqlalchemy = ">=2.0.0"
 strawberry-graphql = "^0.204.0"
 uvicorn = "^0.23.2"
