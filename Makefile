@@ -33,5 +33,5 @@ up:
 		--reload
 
 db:
-	docker-compose -p py-clean-arch -f ./scripts/db-docker-compose.yml down
+	docker-compose -p py-clean-arch -f ./scripts/db-docker-compose.yml down -v
 	docker-compose -p py-clean-arch -f ./scripts/db-docker-compose.yml up -d
