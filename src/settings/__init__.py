@@ -12,7 +12,7 @@ SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', '').lower() == 'true'
 
 # Database connection string, e.g.:
 # - sqlite+aiosqlite:///sqlite.db (SQLite3)
-# - sqlite+aiosqlite://:memory: (SQLite3 in-memory)
+# - sqlite+aiosqlite:///:memory: (SQLite3 in-memory)
 # - mysql+asyncmy://<username>:<password>@<host>:<port>/<dbname> (MySQL)
 # - postgresql+asyncpg://<username>:<password>@<host>:<port>/<dbname> (PostgreSQL)
 #

@@ -1,25 +1,25 @@
 #!/usr/bin/env bats
 
-@test "Test using in-memory SQLite database" {
-  export DATABASE_URL=sqlite:///:memory:
+@test "Test using SQLite database" {
+  export SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///test.db?drop_existed=true;
   run pytest $2
   [ $status -eq 0 ]
 }
 
-@test "Test using SQLite database" {
-  export DATABASE_URL=sqlite:////tmp/test.db
+@test "Test using in-memory SQLite database" {
+  export SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:
   run pytest $2
   [ $status -eq 0 ]
 }
 
 @test "Test using MySQL database" {
-  export DATABASE_URL=mysql://user:pass@localhost/test
+  export SQLALCHEMY_DATABASE_URI=mysql+asyncmy://user:pass@localhost:3306/test?drop_existed=true
   run pytest $2
   [ $status -eq 0 ]
 }
 
 @test "Test using Postgres database" {
-  export DATABASE_URL=postgresql://user:pass@localhost/test
+  export SQLALCHEMY_DATABASE_URI=postgresql+asyncpg://user:pass@localhost:5432/test?drop_existed=true
   run pytest $2
   [ $status -eq 0 ]
 }
