@@ -6,8 +6,11 @@ services:
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: pass
       MYSQL_USER: user
+      MYSQL_USER_HOST: "%"
       MYSQL_PASSWORD: pass
       MYSQL_DATABASE: pokedex
+    volumes:
+      - ./mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
     command: --bind-address=0.0.0.0 --default-authentication-plugin=mysql_native_password
     ports:
       - 3306:3306
@@ -19,7 +22,19 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
       POSTGRES_DB: pokedex
+    volumes:
+      - ./postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - 5432:5432
     expose:
       - 5432
+  dockerize:
+    image: jwilder/dockerize:latest
+    depends_on:
+      - mysql
+      - postgres
+    command: |
+      dockerize
+      -wait tcp://mysql:3306
+      -wait tcp://postgres:5432
+      -timeout 30s
