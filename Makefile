@@ -33,5 +33,6 @@ up:
 		--reload
 
 db:
-	docker-compose -p py-clean-arch -f ./scripts/db-docker-compose.yml down -v
-	docker-compose -p py-clean-arch -f ./scripts/db-docker-compose.yml up -d
+	docker compose -p py-clean-arch -f ./scripts/db-docker-compose.yml down --remove-orphans -v
+	docker compose -p py-clean-arch -f ./scripts/db-docker-compose.yml up mysql postgres -d
+	docker compose -p py-clean-arch -f ./scripts/db-docker-compose.yml run dockerize
