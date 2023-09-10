@@ -39,7 +39,7 @@ async def update_pokemon(
 ) -> PokemonResponse:
     no = PokemonNumberStr(no)
     update_pokemon_data = PokemonRequestMapper.update_request_to_entity(body)
-    update_pokemon_data.validate_pokemon_number(no)
+    update_pokemon_data.validate_no_not_in_evolutions(no)
     updated_pokemon = await pokemon_ucase.update_pokemon(no, update_pokemon_data)
 
     return PokemonResponseMapper.entity_to_response(updated_pokemon)

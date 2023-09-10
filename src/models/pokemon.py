@@ -38,9 +38,9 @@ class CreatePokemonModel:
     after_evolution_numbers: list[PokemonNumberStr]
 
     def __post_init__(self):
-        self.validate_no_is_not_in_evolutions()
+        self._validate_no_not_in_evolutions()
 
-    def validate_no_is_not_in_evolutions(self):
+    def _validate_no_not_in_evolutions(self):
         if self.no in (self.before_evolution_numbers + self.after_evolution_numbers):
             raise ValueError('Pokemon number cannot be the same as any of its evolution numbers')
 
@@ -52,15 +52,8 @@ class UpdatePokemonModel:
     before_evolution_numbers: Optional[list[PokemonNumberStr]] = None
     after_evolution_numbers: Optional[list[PokemonNumberStr]] = None
 
-    def validate_no_is_not_in_evolutions(self, no: PokemonNumberStr):
+    def validate_no_not_in_evolutions(self, no: PokemonNumberStr):
         if no in ((self.before_evolution_numbers or []) + (self.after_evolution_numbers or [])):
-            raise ValueError('Pokemon number cannot be the same as any of its evolution numbers')
-
-    def validate_pokemon_number(self, number: str):
-        evolution_numbers = (self.before_evolution_numbers or []) + (
-            self.after_evolution_numbers or []
-        )
-        if number in evolution_numbers:
             raise ValueError('Pokemon number cannot be the same as any of its evolution numbers')
 
 
