@@ -1,6 +1,9 @@
+from common.docstring import MAPPER_DOCSTRING
 from models.pokemon import PokemonEvolutionModel, PokemonModel, TypeModel
 
 from .orm import Pokemon, Type
+
+__doc__ = MAPPER_DOCSTRING
 
 
 class PokemonOrmMapper:

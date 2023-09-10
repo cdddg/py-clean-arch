@@ -1,3 +1,4 @@
+from common.docstring import MAPPER_DOCSTRING
 from common.type import PokemonNumberStr
 from models.pokemon import (
     CreatePokemonModel,
@@ -14,6 +15,8 @@ from .schema import (
     TypeResponse,
     UpdatePokemonRequest,
 )
+
+__doc__ = MAPPER_DOCSTRING
 
 
 class PokemonRequestMapper:
