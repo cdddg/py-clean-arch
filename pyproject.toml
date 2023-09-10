@@ -22,7 +22,7 @@ strawberry-graphql = "^0.204.0"
 uvicorn = "^0.23.2"
 
 [tool.poetry.group.dev.dependencies]
-autoflake = "^2.2.0"
+autoflake = "^2.2.1"
 black = "^23.7.0"
 isort = "^5.12.0"
 pre-commit = "^3.3.3"
