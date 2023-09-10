@@ -1,14 +1,3 @@
-"""
-Extensions for Deliveries Layer
-
-This module provides the base schema configuration for the GraphQL API using the strawberry framework.
-
-Note:
-For the moment, this module covers the necessary extensions for the given application requirements. If future needs
-demand more specialized configurations for different packages, consider structuring extensions as
-`extension/$package.py` for clarity and scalability.
-"""
-
 from typing import Optional, Union
 
 import strawberry
