@@ -6,9 +6,7 @@ domain-specific exceptions. It ensures that custom errors in the domain layer ar
 HTTP responses when they propagate to the HTTP layer.
 
 Note:
-For the moment, this module covers the necessary extensions for the given application requirements. If future needs
-demand more specialized configurations for different packages, consider structuring extensions as
-`extension/$package.py` for clarity and scalability.
+For simpler requirements, use extension.py. For more complex needs, consider extensions/$package.py for better clarity and scalability.
 """
 
 from typing import Union

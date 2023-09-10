@@ -90,7 +90,7 @@ $ make up
 
 application run on http://localhost:8000
 
-<img src="./docs/fastapi-doc.png" alt="fastapi-doc" style="zoom:40%;" />
+![fastapi-doc](./docs/fastapi-doc.png)
 
 ### Run the Testing
 
