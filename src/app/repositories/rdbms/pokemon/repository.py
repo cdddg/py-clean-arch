@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import delete, func, insert, select, update
 
-from common.type import UUIDStr
+from common.type import PokemonNumberStr, UUIDStr
 from models.exception import PokemonNotFound
 from models.pokemon import (
     CreatePokemonModel,
@@ -16,6 +16,7 @@ from models.pokemon import (
     UpdatePokemonModel,
 )
 
+from .mapper import PokemonOrmMapper, TypeOrmMapper
 from .orm import Pokemon, PokemonEvolution, PokemonType, Type
 
 func: Callable
@@ -25,31 +26,7 @@ class PokemonRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    @staticmethod
-    def _convert_pokemon_to_model(pokemon: Pokemon) -> PokemonModel:
-        return PokemonModel(
-            no=pokemon.no,
-            name=pokemon.name,
-            types=[TypeModel(id=type_.id, name=type_.name) for type_ in pokemon.types],
-            before_evolutions=[
-                PokemonEvolutionModel(
-                    no=evo.before_pokemon.no,
-                    name=evo.before_pokemon.name,
-                )
-                for evo in pokemon.before_evolutions
-                if evo.before_pokemon
-            ],
-            after_evolutions=[
-                PokemonEvolutionModel(
-                    no=evo.after_pokemon.no,
-                    name=evo.after_pokemon.name,
-                )
-                for evo in pokemon.after_evolutions
-                if evo.after_pokemon
-            ],
-        )
-
-    async def get(self, no: str) -> PokemonModel:
+    async def get(self, no: PokemonNumberStr) -> PokemonModel:
         stmt = (
             select(Pokemon)
             .where(Pokemon.no == no)
@@ -63,7 +40,7 @@ class PokemonRepository:
         if not pokemon:
             raise PokemonNotFound(no)
 
-        return self._convert_pokemon_to_model(pokemon)
+        return PokemonOrmMapper.orm_to_entity(pokemon)
 
     async def list_(self, params: Optional[GetPokemonParamsModel] = None) -> list[PokemonModel]:
         stmt = select(Pokemon).options(
@@ -75,34 +52,34 @@ class PokemonRepository:
             stmt = stmt.offset(params.offset).limit(params.limit)
         pokemons = (await self.session.execute(stmt)).scalars().all()
 
-        return list(map(self._convert_pokemon_to_model, pokemons))
+        return list(map(PokemonOrmMapper.orm_to_entity, pokemons))
 
-    async def create(self, body: CreatePokemonModel) -> str:
-        stmt = insert(Pokemon).values(no=body.no, name=body.name)
+    async def create(self, data: CreatePokemonModel) -> PokemonNumberStr:
+        stmt = insert(Pokemon).values(no=data.no, name=data.name)
         await self.session.execute(stmt)
 
-        return body.no
+        return data.no
 
-    async def update(self, no: str, body: UpdatePokemonModel):
-        if body.name:
-            stmt = update(Pokemon).where(Pokemon.no == no).values(name=body.name)
+    async def update(self, no: PokemonNumberStr, data: UpdatePokemonModel):
+        if data.name:
+            stmt = update(Pokemon).where(Pokemon.no == no).values(name=data.name)
             result = await self.session.execute(stmt)
             if result.rowcount == 0:
                 raise PokemonNotFound(no)
 
-    async def delete(self, no: str):
+    async def delete(self, no: PokemonNumberStr):
         stmt = delete(Pokemon).where(Pokemon.no == no)
         result = await self.session.execute(stmt)
         if result.rowcount == 0:
             raise PokemonNotFound(no)
 
-    async def are_duplicated(self, numbers: list[str]) -> bool:
+    async def are_duplicated(self, numbers: list[PokemonNumberStr]) -> bool:
         stmt = select(func.count(Pokemon.no)).where(Pokemon.no.in_(numbers))
         count = (await self.session.execute(stmt)).scalars().first()
 
         return count == len(numbers)
 
-    async def put_types(self, pokemon_no: str, types: list[TypeModel]):
+    async def put_types(self, pokemon_no: PokemonNumberStr, types: list[TypeModel]):
         stmt = delete(PokemonType).where(PokemonType.pokemon_no == pokemon_no)
         await self.session.execute(stmt)
 
@@ -111,7 +88,9 @@ class PokemonRepository:
             stmt = stmt.values(pokemon_no=pokemon_no, type_id=type_.id)
             await self.session.execute(stmt)
 
-    async def put_before_evolutions(self, pokemon_no: str, before_evolution_numbers: list[str]):
+    async def put_before_evolutions(
+        self, pokemon_no: PokemonNumberStr, before_evolution_numbers: list[PokemonNumberStr]
+    ):
         stmt = delete(PokemonEvolution).where(PokemonEvolution.after_no == pokemon_no)
         await self.session.execute(stmt)
 
@@ -120,7 +99,9 @@ class PokemonRepository:
             stmt = stmt.values(before_no=no, after_no=pokemon_no)
             await self.session.execute(stmt)
 
-    async def put_after_evolutions(self, pokemon_no: str, after_evolution_numbers: list[str]):
+    async def put_after_evolutions(
+        self, pokemon_no: PokemonNumberStr, after_evolution_numbers: list[PokemonNumberStr]
+    ):
         stmt = delete(PokemonEvolution).where(PokemonEvolution.before_no == pokemon_no)
         await self.session.execute(stmt)
 
@@ -134,10 +115,6 @@ class TypeRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    @staticmethod
-    def _convert_type_to_model(type_: Type) -> TypeModel:
-        return TypeModel(id=type_.id, name=type_.name)
-
     async def get(self, type_id: UUIDStr) -> TypeModel:
         raise NotImplementedError
 
@@ -145,7 +122,7 @@ class TypeRepository:
         stmt = select(Type)
         types = (await self.session.execute(stmt)).scalars().all()
 
-        return list(map(self._convert_type_to_model, types))
+        return list(map(TypeOrmMapper.orm_to_entity, types))
 
     async def get_or_create(self, name: str) -> TypeModel:
         stmt = select(Type).filter(Type.name == name)
@@ -155,7 +132,7 @@ class TypeRepository:
             self.session.add(type_)
             await self.session.flush()
 
-        return self._convert_type_to_model(type_)
+        return TypeOrmMapper.orm_to_entity(type_)
 
 
 class EvolutionRepository:
