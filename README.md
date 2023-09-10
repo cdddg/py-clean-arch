@@ -4,9 +4,10 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
 
 ## Changelog
 
-- **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived to the v1 branch in April 2021. <br>Description: Initial proposal by me.
-- **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived to the v2 branch in July 2023. <br>Description: Improvements from v1 can be seen in PR [#1](https://github.com/cdddg/py-clean-arch/pull/1).
-- **v3**: Current version on the master branch.<br> Merged to master in August 2023. <br>Description: Transition from Go-centric design to conventional Python practices. Details can be found in PR [#11](https://github.com/cdddg/py-clean-arch/pull/11).
+- **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived to the v1 branch in April 2021. <br>**Description**: Initial proposal by me.
+- **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived to the v2 branch in July 2023. <br>**Description**: Improvements from v1 spanning from [PR #1 .. PR #10](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-04-09..2023-08-15+).
+- **v3**: Current version on the master branch.<br> Merged to master in August 2023. <br>
+  **Description**:Transition from Go-centric design to conventional Python practices, starting with PR [#11](https://github.com/cdddg/py-clean-arch/pull/11). See the full list of [PRs](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-16..2099-12-31+) up to the present.
 
 ## Description
 
