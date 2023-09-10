@@ -3,10 +3,8 @@ from typing import Optional
 from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from common.type import UUIDStr
+from common.type import PokemonNumberStr, UUIDStr
 from common.utils import build_uui4_str
-
-from .type import UUIDStrType
 
 
 class Base(DeclarativeBase):
@@ -16,7 +14,9 @@ class Base(DeclarativeBase):
 class Pokemon(Base):
     __tablename__ = 'pokemon'
 
-    no: Mapped[str] = mapped_column('no', String(8), primary_key=True, comment='number')
+    no: Mapped[PokemonNumberStr] = mapped_column(
+        String(8), primary_key=True, comment='pokemon number'
+    )
     name: Mapped[str] = mapped_column(String(256))
     hp: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     attack: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
@@ -45,7 +45,7 @@ class Pokemon(Base):
 class Type(Base):
     __tablename__ = 'type'
 
-    id: Mapped[UUIDStr] = mapped_column(UUIDStrType, primary_key=True, default=build_uui4_str)
+    id: Mapped[UUIDStr] = mapped_column(String(32), primary_key=True, default=build_uui4_str)
     name: Mapped[str] = mapped_column(String(256))
 
 
@@ -53,16 +53,22 @@ class PokemonType(Base):
     __tablename__ = 'pokemon_type'
 
     id: Mapped[int] = mapped_column('id', Integer, primary_key=True)
-    pokemon_no: Mapped[str] = mapped_column(String(8), ForeignKey('pokemon.no', ondelete='CASCADE'))
+    pokemon_no: Mapped[PokemonNumberStr] = mapped_column(
+        String(8), ForeignKey('pokemon.no', ondelete='CASCADE')
+    )
     type_id: Mapped[str] = mapped_column(String(32), ForeignKey('type.id'))
 
 
 class PokemonEvolution(Base):
     __tablename__ = 'pokemon_evolution'
 
-    id: Mapped[UUIDStr] = mapped_column(UUIDStrType, primary_key=True, default=build_uui4_str)
-    before_no: Mapped[str] = mapped_column(String(8), ForeignKey('pokemon.no', ondelete='CASCADE'))
-    after_no: Mapped[str] = mapped_column(String(8), ForeignKey('pokemon.no', ondelete='CASCADE'))
+    id: Mapped[UUIDStr] = mapped_column(String(32), primary_key=True, default=build_uui4_str)
+    before_no: Mapped[PokemonNumberStr] = mapped_column(
+        String(8), ForeignKey('pokemon.no', ondelete='CASCADE')
+    )
+    after_no: Mapped[PokemonNumberStr] = mapped_column(
+        String(8), ForeignKey('pokemon.no', ondelete='CASCADE')
+    )
     before_pokemon: Mapped[Optional['Pokemon']] = relationship(
         'Pokemon', foreign_keys=[before_no], back_populates='after_evolutions', lazy='raise'
     )
