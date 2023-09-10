@@ -11,10 +11,10 @@ class CreatePokemonInput:
     name: str
     type_names: list[str]
     before_evolution_numbers: Optional[list[str]] = strawberry.field(
-        default=None, description=PokemonNumberStr.__doc__
+        default_factory=list, description=PokemonNumberStr.__doc__
     )
     after_evolution_numbers: Optional[list[str]] = strawberry.field(
-        default=None, description=PokemonNumberStr.__doc__
+        default_factory=list, description=PokemonNumberStr.__doc__
     )
 
 

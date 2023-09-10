@@ -15,31 +15,29 @@ __doc__ = MAPPER_DOCSTRING
 
 class PokemonInputMapper:
     @staticmethod
-    def create_input_to_entity(input_data: CreatePokemonInput) -> CreatePokemonModel:
+    def create_input_to_entity(instance: CreatePokemonInput) -> CreatePokemonModel:
         return CreatePokemonModel(
-            no=PokemonNumberStr(input_data.no),
-            name=input_data.name,
-            type_names=input_data.type_names,
+            no=PokemonNumberStr(instance.no),
+            name=instance.name,
+            type_names=instance.type_names,
             before_evolution_numbers=list(
-                map(PokemonNumberStr, input_data.before_evolution_numbers or [])
+                map(PokemonNumberStr, instance.before_evolution_numbers or [])
             ),
             after_evolution_numbers=list(
-                map(PokemonNumberStr, input_data.after_evolution_numbers or [])
+                map(PokemonNumberStr, instance.after_evolution_numbers or [])
             ),
         )
 
     @staticmethod
-    def update_input_to_entity(input_data: UpdatePokemonInput) -> UpdatePokemonModel:
+    def update_input_to_entity(instance: UpdatePokemonInput) -> UpdatePokemonModel:
         return UpdatePokemonModel(
-            name=input_data.name,
-            type_names=input_data.type_names,
-            before_evolution_numbers=list(
-                map(PokemonNumberStr, input_data.before_evolution_numbers)
-            )
-            if input_data.before_evolution_numbers is not None
+            name=instance.name,
+            type_names=instance.type_names,
+            before_evolution_numbers=list(map(PokemonNumberStr, instance.before_evolution_numbers))
+            if instance.before_evolution_numbers is not None
             else None,
-            after_evolution_numbers=list(map(PokemonNumberStr, input_data.after_evolution_numbers))
-            if input_data.after_evolution_numbers is not None
+            after_evolution_numbers=list(map(PokemonNumberStr, instance.after_evolution_numbers))
+            if instance.after_evolution_numbers is not None
             else None,
         )
 

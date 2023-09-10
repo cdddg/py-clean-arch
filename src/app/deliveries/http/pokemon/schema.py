@@ -21,10 +21,10 @@ class UpdatePokemonRequest(BaseModel):
     name: Optional[str]
     type_names: list[str] = []
     before_evolution_numbers: Optional[list[str]] = Field(
-        default=[], unique_items=True, description=PokemonNumberStr.__doc__
+        default=None, unique_items=True, description=PokemonNumberStr.__doc__
     )
     after_evolution_numbers: Optional[list[str]] = Field(
-        default=[], unique_items=True, description=PokemonNumberStr.__doc__
+        default=None, unique_items=True, description=PokemonNumberStr.__doc__
     )
 
 

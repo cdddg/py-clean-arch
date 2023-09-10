@@ -21,22 +21,31 @@ __doc__ = MAPPER_DOCSTRING
 
 class PokemonRequestMapper:
     @staticmethod
-    def create_request_to_entity(request: CreatePokemonRequest) -> CreatePokemonModel:
+    def create_request_to_entity(instance: CreatePokemonRequest) -> CreatePokemonModel:
         return CreatePokemonModel(
-            no=PokemonNumberStr(request.no),
-            name=request.name,
-            type_names=request.type_names or [],
+            no=PokemonNumberStr(instance.no),
+            name=instance.name,
+            type_names=instance.type_names or [],
             before_evolution_numbers=list(
-                map(PokemonNumberStr, request.before_evolution_numbers or [])
+                map(PokemonNumberStr, instance.before_evolution_numbers or [])
             ),
             after_evolution_numbers=list(
-                map(PokemonNumberStr, request.after_evolution_numbers or [])
+                map(PokemonNumberStr, instance.after_evolution_numbers or [])
             ),
         )
 
     @staticmethod
-    def update_request_to_entity(request: UpdatePokemonRequest) -> UpdatePokemonModel:
-        kwargs = request.dict(exclude_unset=True)
+    def update_request_to_entity(instance: UpdatePokemonRequest) -> UpdatePokemonModel:
+        if instance.before_evolution_numbers:
+            instance.before_evolution_numbers = list(
+                map(PokemonNumberStr, instance.before_evolution_numbers)
+            )
+        if instance.after_evolution_numbers:
+            instance.after_evolution_numbers = list(
+                map(PokemonNumberStr, instance.after_evolution_numbers)
+            )
+        kwargs = instance.dict(exclude_unset=True)
+
         return UpdatePokemonModel(**kwargs)
 
 
