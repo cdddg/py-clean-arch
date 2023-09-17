@@ -20,11 +20,11 @@ class PokemonInputMapper:
             no=PokemonNumberStr(instance.no),
             name=instance.name,
             type_names=instance.type_names,
-            before_evolution_numbers=list(
-                map(PokemonNumberStr, instance.before_evolution_numbers or [])
+            previous_evolution_numbers=list(
+                map(PokemonNumberStr, instance.previous_evolution_numbers or [])
             ),
-            after_evolution_numbers=list(
-                map(PokemonNumberStr, instance.after_evolution_numbers or [])
+            next_evolution_numbers=list(
+                map(PokemonNumberStr, instance.next_evolution_numbers or [])
             ),
         )
 
@@ -33,11 +33,13 @@ class PokemonInputMapper:
         return UpdatePokemonModel(
             name=instance.name,
             type_names=instance.type_names,
-            before_evolution_numbers=list(map(PokemonNumberStr, instance.before_evolution_numbers))
-            if instance.before_evolution_numbers is not None
+            previous_evolution_numbers=list(
+                map(PokemonNumberStr, instance.previous_evolution_numbers)
+            )
+            if instance.previous_evolution_numbers is not None
             else None,
-            after_evolution_numbers=list(map(PokemonNumberStr, instance.after_evolution_numbers))
-            if instance.after_evolution_numbers is not None
+            next_evolution_numbers=list(map(PokemonNumberStr, instance.next_evolution_numbers))
+            if instance.next_evolution_numbers is not None
             else None,
         )
 
@@ -49,12 +51,10 @@ class PokemonNodeMapper:
             no=instance.no,
             name=instance.name,
             types=list(map(TypeNodeMapper.entity_to_node, instance.types)),
-            before_evolutions=list(
-                map(EvolutionNodeMapper.entity_to_node, instance.before_evolutions)
+            previous_evolutions=list(
+                map(EvolutionNodeMapper.entity_to_node, instance.previous_evolutions)
             ),
-            after_evolutions=list(
-                map(EvolutionNodeMapper.entity_to_node, instance.after_evolutions)
-            ),
+            next_evolutions=list(map(EvolutionNodeMapper.entity_to_node, instance.next_evolutions)),
         )
 
 

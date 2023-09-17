@@ -1,45 +1,21 @@
-from logging import Logger, getLogger
-from typing import Type
-
-from sqlalchemy.engine import make_url
-from sqlalchemy.ext.asyncio import AsyncEngine as SQLAlchemyAsyncEngine
-from sqlalchemy.orm import DeclarativeBase
-
-from .. import SQLALCHEMY_DATABASE_URI
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 
-def get_parsed_database_uri(uri) -> str:
-    uri = make_url(uri)
-    query_dict = dict(uri.query)
-    query_dict.pop('drop_existed', None)
-    new_query_str = '&'.join(f'{k}={v}' for k, v in query_dict.items())
+def normalize_uri(database_uri: str) -> str:
+    parsed_uri = urlparse(database_uri)
+    query_params = parse_qs(parsed_uri.query)
+    if 'reinitialize' in query_params:
+        del query_params['reinitialize']
 
-    return f'{uri.drivername}://{uri.username}:{uri.password}@{uri.host}/{uri.database}?{new_query_str}'
+    normalized_uri = parsed_uri._replace(query=urlencode(query_params, doseq=True))
+    normalized_url = urlunparse(normalized_uri)
 
-
-def is_drop_existed(uri) -> bool:
-    uri = make_url(uri)
-
-    return str(uri.query.get('drop_existed')).lower() == 'true'
+    return normalized_url
 
 
-async def initialize_db(
-    declarative_base: Type[DeclarativeBase],
-    async_engine: SQLAlchemyAsyncEngine,
-    logger: Logger = getLogger('uvicorn.error'),
-):
-    metadata = declarative_base.metadata
+def should_reinitialize(database_uri: str) -> bool:
+    parsed_uri = urlparse(database_uri)
+    query_params = parse_qs(parsed_uri.query)
+    reinitialize_values = query_params.get('reinitialize', [])
 
-    logger.info('(initialize_db) Creating database tables...')
-    async with async_engine.begin() as connection:
-        # drop tables if "drop_existed" flag is True
-        if is_drop_existed(SQLALCHEMY_DATABASE_URI):
-            logger.info('(initialize_db) Dropping existing tables')
-            await connection.run_sync(metadata.drop_all)
-
-        # create tables
-        for table_name in metadata.tables.keys():
-            logger.info(f'(initialize_db)   - {table_name}')
-        await connection.run_sync(metadata.create_all)
-
-    await async_engine.dispose()
+    return False if not reinitialize_values else reinitialize_values[0].lower() == 'true'

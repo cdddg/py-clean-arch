@@ -19,8 +19,8 @@ format:
 lint:
 	echo $(DIFF_FILES) | sed -e 's/ /\n/g' ;
 	@if [[ ! -z $(DIFF_FILES) ]]; then \
-		echo pylint... ; \
 		pylint --rcfile=$(SETTINGS_PATH) --load-plugins=pylint_quotes -sn -v $(DIFF_FILES); \
+		pyright $(DIFF_FILES); \
 	fi
 
 test:
@@ -34,5 +34,5 @@ up:
 
 db:
 	docker compose -p py-clean-arch -f ./scripts/db-docker-compose.yml down --remove-orphans -v
-	docker compose -p py-clean-arch -f ./scripts/db-docker-compose.yml up mysql postgres -d
+	docker compose -p py-clean-arch -f ./scripts/db-docker-compose.yml up mysql postgres mongodb -d
 	docker compose -p py-clean-arch -f ./scripts/db-docker-compose.yml run dockerize

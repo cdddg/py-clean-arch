@@ -13,21 +13,21 @@ class PokemonOrmMapper:
             no=pokemon.no,
             name=pokemon.name,
             types=list(map(TypeOrmMapper.orm_to_entity, pokemon.types)),
-            before_evolutions=[
+            previous_evolutions=[
                 PokemonEvolutionModel(
-                    no=evo.before_pokemon.no,
-                    name=evo.before_pokemon.name,
+                    no=evo.previous_pokemon.no,
+                    name=evo.previous_pokemon.name,
                 )
-                for evo in pokemon.before_evolutions
-                if evo.before_pokemon
+                for evo in pokemon.previous_evolutions
+                if evo.previous_pokemon
             ],
-            after_evolutions=[
+            next_evolutions=[
                 PokemonEvolutionModel(
-                    no=evo.after_pokemon.no,
-                    name=evo.after_pokemon.name,
+                    no=evo.next_pokemon.no,
+                    name=evo.next_pokemon.name,
                 )
-                for evo in pokemon.after_evolutions
-                if evo.after_pokemon
+                for evo in pokemon.next_evolutions
+                if evo.next_pokemon
             ],
         )
 

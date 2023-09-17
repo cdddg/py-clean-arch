@@ -26,23 +26,23 @@ class PokemonRequestMapper:
             no=PokemonNumberStr(instance.no),
             name=instance.name,
             type_names=instance.type_names or [],
-            before_evolution_numbers=list(
-                map(PokemonNumberStr, instance.before_evolution_numbers or [])
+            previous_evolution_numbers=list(
+                map(PokemonNumberStr, instance.previous_evolution_numbers or [])
             ),
-            after_evolution_numbers=list(
-                map(PokemonNumberStr, instance.after_evolution_numbers or [])
+            next_evolution_numbers=list(
+                map(PokemonNumberStr, instance.next_evolution_numbers or [])
             ),
         )
 
     @staticmethod
     def update_request_to_entity(instance: UpdatePokemonRequest) -> UpdatePokemonModel:
-        if instance.before_evolution_numbers:
-            instance.before_evolution_numbers = list(
-                map(PokemonNumberStr, instance.before_evolution_numbers)
+        if instance.previous_evolution_numbers:
+            instance.previous_evolution_numbers = list(
+                map(PokemonNumberStr, instance.previous_evolution_numbers)
             )
-        if instance.after_evolution_numbers:
-            instance.after_evolution_numbers = list(
-                map(PokemonNumberStr, instance.after_evolution_numbers)
+        if instance.next_evolution_numbers:
+            instance.next_evolution_numbers = list(
+                map(PokemonNumberStr, instance.next_evolution_numbers)
             )
         kwargs = instance.dict(exclude_unset=True)
 
@@ -56,11 +56,11 @@ class PokemonResponseMapper:
             no=instance.no,
             name=instance.name,
             types=list(map(TypeResponseMapper.entity_to_response, instance.types)),
-            before_evolutions=list(
-                map(EvolutionResponseMapper.entity_to_response, instance.before_evolutions)
+            previous_evolutions=list(
+                map(EvolutionResponseMapper.entity_to_response, instance.previous_evolutions)
             ),
-            after_evolutions=list(
-                map(EvolutionResponseMapper.entity_to_response, instance.after_evolutions)
+            next_evolutions=list(
+                map(EvolutionResponseMapper.entity_to_response, instance.next_evolutions)
             ),
         )
 
