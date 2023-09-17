@@ -12,7 +12,7 @@ Usage:
 
 
 from app.repositories.nosql.pokemon.repository import MongoDBPokemonRepository
-from app.repositories.relationaldb.pokemon.repository import RelationalDBPokemonRepository
+from app.repositories.relational_db.pokemon.repository import RelationalDBPokemonRepository
 from settings.db import IS_NOSQL, IS_RELATIONAL_DB
 
 from .unit_of_work import AsyncMotorUnitOfWork, AsyncSqlAlchemyUnitOfWork

@@ -5,7 +5,7 @@ import pytest
 from httpx import AsyncClient
 from pytest import Config
 
-from app.repositories.relationaldb.pokemon.orm import Base
+from app.repositories.relational_db.pokemon.orm import Base
 from main import app as fastapi_app
 from settings.db import IS_NOSQL, IS_RELATIONAL_DB, initialize_db
 
@@ -38,10 +38,14 @@ async def mock_async_uow():
 
 
 if IS_RELATIONAL_DB:
+    # pylint: disable=ungrouped-imports
     from sqlalchemy import event
     from sqlalchemy.sql import text
 
-    from settings.db import AsyncRelationalDBEngine, AsyncScopedSession  # pylint: disable=ungrouped-imports
+    from settings.db import (
+        AsyncRelationalDBEngine,
+        AsyncScopedSession
+    )
 
     @pytest.fixture(scope='module', autouse=True)
     async def engine():

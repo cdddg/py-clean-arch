@@ -14,16 +14,21 @@ from typing import Union
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from models.exception import PokedexError, PokemonNotFound, PokemonUnknownError
+from models.exception import (
+    PokemonAlreadyExists,
+    PokemonError,
+    PokemonNotFound,
+    PokemonUnknownError,
+)
 
 
 def handle_custom_error(
     request: Request,
-    exc: Union[PokedexError, PokemonNotFound, PokemonUnknownError],
+    exc: Union[PokemonError, PokemonNotFound, PokemonUnknownError, PokemonAlreadyExists],
 ) -> JSONResponse:
     return JSONResponse({'error': f'{type(exc).__name__}: {exc}'}, status_code=400)
 
 
 def add_exception_handlers(app: FastAPI):
-    for exc in (PokedexError, PokemonNotFound, PokemonUnknownError):
+    for exc in (PokemonError, PokemonNotFound, PokemonUnknownError, PokemonAlreadyExists):
         app.add_exception_handler(exc, handle_custom_error)

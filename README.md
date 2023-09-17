@@ -29,7 +29,7 @@ This project doesn't just adhere to Uncle Bob's Clean Architecture principles; i
 
 - **GraphQL vs HTTP**: The `deliveries` module houses two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
 
-- **RelationalDB vs NoSQL**: The `repositories` module supports both relational and NoSQL databases. `relationaldb` manages databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` caters to NoSQL databases like MongoDB and CouchDB.
+- **RelationalDB vs NoSQL**: The `repositories` module supports both relational and NoSQL databases. `relational_db` manages databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` caters to NoSQL databases like MongoDB and CouchDB.
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
 
@@ -53,7 +53,7 @@ src
 │   │                         ('Use Cases' in Clean Architecture)
 │   │
 │   ├── repositories/       - Data interaction layer, converting domain data to/from database format.
-│   │   ├── relationaldb/   - Operations for relational databases (e.g., SQLite, MySQL, PostgreSQL).
+│   │   ├── relational_db/  - Operations for relational databases (e.g., SQLite, MySQL, PostgreSQL).
 │   │   └── nosql/          - Operations for NoSQL databases (e.g., MongoDB, CouchDB).
 │   │                         ('Interface Adapters' in Clean Architecture)
 │   │
@@ -152,14 +152,14 @@ Once you have installed `bats`, run the following commands to test multiple data
 3. Here are the typical test results when using different databases:
 
    ```sh
-     api_db_test.bats
-      ✓ Test using SQLite database [10878ms]
-      ✓ Test using in-memory SQLite database [3708ms]
-      ✓ Test using MySQL database [5518ms]
-      ✓ Test using Postgres database [4582ms]
-      ✓ Test using MongoDB database [4606ms]
+   api_db_test.bats
+    ✓ Test using SQLite           [7008]
+    ✓ Test using in-memory SQLite [2312]
+    ✓ Test using MySQL            [3149]
+    ✓ Test using PostgreSQL       [2974]
+    ✓ Test using MongoDB          [3885]
    
-     5 tests, 0 failures in 30 seconds
+   5 tests, 0 failures in 20 seconds
    ```
 
 

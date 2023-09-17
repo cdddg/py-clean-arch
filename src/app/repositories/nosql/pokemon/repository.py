@@ -124,17 +124,17 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
         return data.no
 
     async def update(self, no: PokemonNumberStr, data: UpdatePokemonModel):
-        res = await self.collection.update_one(
+        result = await self.collection.update_one(
             {'no': no},
             {'$set': {'name': data.name}},
             session=self.session,
         )
-        if res.matched_count == 0:
+        if result.matched_count == 0:
             raise PokemonNotFound(no)
 
     async def delete(self, no: PokemonNumberStr):
-        res = await self.collection.delete_one({'no': no}, session=self.session)
-        if res.deleted_count == 0:
+        result = await self.collection.delete_one({'no': no}, session=self.session)
+        if result.deleted_count == 0:
             raise PokemonNotFound(no)
 
     async def are_existed(self, numbers: List[PokemonNumberStr]) -> bool:
@@ -156,12 +156,12 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
         )
         object_id = pokemon_no_to_object_id_map.pop(pokemon_no)
 
-        res = await self.collection.update_one(
+        result = await self.collection.update_one(
             {'_id': object_id},
             {'$set': {'previous_evolutions': list(pokemon_no_to_object_id_map.values())}},
             session=self.session,
         )
-        if res.matched_count == 0:
+        if result.matched_count == 0:
             raise PokemonNotFound(pokemon_no)
 
         await self.collection.update_many(
@@ -178,12 +178,12 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
         )
         object_id = pokemon_no_to_object_id_map.pop(pokemon_no)
 
-        res = await self.collection.update_one(
+        result = await self.collection.update_one(
             {'_id': object_id},
             {'$set': {'next_evolutions': list(pokemon_no_to_object_id_map.values())}},
             session=self.session,
         )
-        if res.matched_count == 0:
+        if result.matched_count == 0:
             raise PokemonNotFound(pokemon_no)
 
         await self.collection.update_many(

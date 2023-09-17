@@ -6,7 +6,7 @@ from app.deliveries.graphql.extensions.fastapi import customize_graphql_openapi
 from app.deliveries.graphql.pokemon.router import router as pokemon_graphql_router
 from app.deliveries.http.extension import add_exception_handlers as http_add_exception_handlers
 from app.deliveries.http.pokemon.router import router as pokemon_http_router
-from app.repositories.relationaldb.pokemon.orm import Base
+from app.repositories.relational_db.pokemon.orm import Base
 from settings import APP_NAME, APP_VERSION
 from settings.db import initialize_db
 

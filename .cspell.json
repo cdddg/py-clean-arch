@@ -1,10 +1,17 @@
 {
     "language": "en",
     "words": [
+        "uvicorn",
+        "fastapi",
+        "starlette",
         "sqlalchemy",
         "selectinload",
         "joinedload",
-        "pokemons"
+        "NOSQL",
+        "pytest",
+        "asyncio",
+
+        "pokemons",
+        "usecases"
     ]
 }
-
