@@ -10,10 +10,10 @@ class CreatePokemonInput:
     no: str = strawberry.field(description=PokemonNumberStr.__doc__)
     name: str
     type_names: list[str]
-    before_evolution_numbers: Optional[list[str]] = strawberry.field(
+    previous_evolution_numbers: Optional[list[str]] = strawberry.field(
         default_factory=list, description=PokemonNumberStr.__doc__
     )
-    after_evolution_numbers: Optional[list[str]] = strawberry.field(
+    next_evolution_numbers: Optional[list[str]] = strawberry.field(
         default_factory=list, description=PokemonNumberStr.__doc__
     )
 
@@ -22,10 +22,10 @@ class CreatePokemonInput:
 class UpdatePokemonInput:
     name: Optional[str] = None
     type_names: Optional[list[str]] = None
-    before_evolution_numbers: Optional[list[str]] = strawberry.field(
+    previous_evolution_numbers: Optional[list[str]] = strawberry.field(
         default=None, description=PokemonNumberStr.__doc__
     )
-    after_evolution_numbers: Optional[list[str]] = strawberry.field(
+    next_evolution_numbers: Optional[list[str]] = strawberry.field(
         default=None, description=PokemonNumberStr.__doc__
     )
 
@@ -35,8 +35,8 @@ class PokemonNode:
     no: str = strawberry.field(description=PokemonNumberStr.__doc__)
     name: str
     types: list['TypeNode']
-    before_evolutions: list['EvolutionNode']
-    after_evolutions: list['EvolutionNode']
+    previous_evolutions: list['EvolutionNode']
+    next_evolutions: list['EvolutionNode']
 
 
 @strawberry.type

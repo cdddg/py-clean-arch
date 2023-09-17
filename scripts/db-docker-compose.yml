@@ -1,7 +1,7 @@
 version: '3'
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql:8
     environment:
       MYSQL_ROOT_HOST: "%"
       MYSQL_ROOT_PASSWORD: pass
@@ -28,6 +28,17 @@ services:
       - 5432:5432
     expose:
       - 5432
+  mongodb:
+    image: mongo:6
+    environment:
+      MONGO_INITDB_DATABASE: pokedex
+    volumes:
+      - ./mongodb-init-replica-set.sh:/init-replica.sh
+    command: /init-replica.sh
+    ports:
+      - 27017:27017
+    expose:
+      - 27017
   dockerize:
     image: jwilder/dockerize:latest
     depends_on:
@@ -37,4 +48,5 @@ services:
       dockerize
       -wait tcp://mysql:3306
       -wait tcp://postgres:5432
+      -wait tcp://mongodb:27017
       -timeout 30s

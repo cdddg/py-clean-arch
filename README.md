@@ -1,4 +1,4 @@
-# py-clean-arch
+# Python Clean Architecture
 
 This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch)
 
@@ -25,6 +25,12 @@ Core Principles of Clean Architecture by Uncle Bob: [^1]
 
 ### Additional Features and Patterns in This Project
 
+This project doesn't just adhere to Uncle Bob's Clean Architecture principles; it also brings in modern adaptions and extended features to suit contemporary development needs:
+
+- **GraphQL vs HTTP**: The `deliveries` module houses two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
+
+- **RelationalDB vs NoSQL**: The `repositories` module supports both relational and NoSQL databases. `relational_db` manages databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` caters to NoSQL databases like MongoDB and CouchDB.
+
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
 
 - **Unit of Work Pattern**: Ensures that all work is completed as a single unit for every transactional operation. [^2]
@@ -39,20 +45,24 @@ The directory structure below provides a high-level view of the project. Each di
 src
 ├── app/
 │   ├── deliveries/         - External interfaces like HTTP & GraphQL endpoints.
-│   │                       ("Frameworks and Drivers" in Clean Architecture)
+│   │   ├── graphql/        - GraphQL components for a flexible API.
+│   │   └── http/           - RESTful API routes and controllers
+│   │                         ('Frameworks and Drivers' in Clean Architecture)
 │   │
 │   ├── usecases/           - Contains application-specific business rules.
-│   │                       ("Use Cases" in Clean Architecture)
+│   │                         ('Use Cases' in Clean Architecture)
 │   │
 │   ├── repositories/       - Data interaction layer, converting domain data to/from database format.
-│   │                       ("Interface Adapters" in Clean Architecture)
+│   │   ├── relational_db/  - Operations for relational databases (e.g., SQLite, MySQL, PostgreSQL).
+│   │   └── nosql/          - Operations for NoSQL databases (e.g., MongoDB, CouchDB).
+│   │                         ('Interface Adapters' in Clean Architecture)
 │   │
 │   └── di/                 - Dependency injection module.
 │       ├── dependency_injection.py
 │       └── unit_of_work.py
 │
 ├── models/                 - Entity representations & core business logic.
-│                           ("Entities" in Clean Architecture)
+│                             ('Entities' in Clean Architecture)
 │
 ├── common/                 - Shared code and utilities.
 │
@@ -94,13 +104,14 @@ application run on http://localhost:8000
 
 ### Run the Testing
 
-To test a single database, set the `SQLALCHEMY_DATABASE_URI` environment variable to the database URI and run:
+To test a single database, set the `DATABASE_URI` environment variable to the database URI and run:
 
 ```sh
-$ SQLALCHEMY_DATABASE_URI=<database-uri> pytest
+$ DATABASE_URI=<database-uri> pytest
 ```
 
-If no URI is provided, an in-memory SQLite database is used by default.
+> Note: By default, an in-memory SQLite database is used if no URI is provided.
+>
 
 \---
 
@@ -126,10 +137,31 @@ $ ./install.sh /usr/local
 
 Once you have installed `bats`, run the following commands to test multiple databases:
 
-```sh
-$ make db
-$ make test
-```
+1. Set up the databases:
+
+   ```sh
+   $ make db
+   ```
+
+2. Run the tests:
+
+   ```sh
+   $ make test
+   ```
+
+3. Here are the typical test results when using different databases:
+
+   ```sh
+   api_db_test.bats
+    ✓ Test using SQLite           [7008]
+    ✓ Test using in-memory SQLite [2312]
+    ✓ Test using MySQL            [3149]
+    ✓ Test using PostgreSQL       [2974]
+    ✓ Test using MongoDB          [3885]
+   
+   5 tests, 0 failures in 20 seconds
+   ```
+
 
 ### Code Coverage
 
@@ -141,7 +173,9 @@ To generate a coverage report:
 $ pytest --cov
 ```
 
-[^1]: https://github.com/bxcodec/go-clean-arch#description
+
+
+[^1]: https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
 [^2]: https://www.cosmicpython.com/book/chapter_06_uow.html
 [^3]: https://en.wikipedia.org/wiki/Dependency_injection
 [^4]:  The asyncio extension as of SQLAlchemy 1.4.3 can now be considered to be **beta level** software. API details are subject to change however at this point it is unlikely for there to be significant backwards-incompatible changes. https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
