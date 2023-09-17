@@ -1,4 +1,4 @@
-# py-clean-arch
+# Python Clean Architecture
 
 This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch)
 
@@ -24,6 +24,12 @@ Core Principles of Clean Architecture by Uncle Bob: [^1]
 ![clean-arch-02](./docs/clean-arch-02.png)
 
 ### Additional Features and Patterns in This Project
+
+This project doesn't just adhere to Uncle Bob's Clean Architecture principles; it also brings in modern adaptions and extended features to suit contemporary development needs:
+
+- **GraphQL vs HTTP**: The `deliveries` module houses two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
+
+- **RelationalDB vs NoSQL**: The `repositories` module supports both relational and NoSQL databases. `relationaldb` manages databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` caters to NoSQL databases like MongoDB and CouchDB.
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
 
