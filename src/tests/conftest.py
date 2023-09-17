@@ -41,7 +41,7 @@ if IS_RELATIONAL_DB:
     from sqlalchemy import event
     from sqlalchemy.sql import text
 
-    from settings.db import AsyncRelationalDBEngine, AsyncScopedSession
+    from settings.db import AsyncRelationalDBEngine, AsyncScopedSession  # pylint: disable=ungrouped-imports
 
     @pytest.fixture(scope='module', autouse=True)
     async def engine():

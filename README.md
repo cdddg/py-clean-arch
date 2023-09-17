@@ -41,22 +41,22 @@ src
 │   ├── deliveries/         - External interfaces like HTTP & GraphQL endpoints.
 │   │   ├── graphql/        - GraphQL components for a flexible API.
 │   │   └── http/           - RESTful API routes and controllers
-│   │                         ("Frameworks and Drivers" in Clean Architecture)
+│   │                         ('Frameworks and Drivers' in Clean Architecture)
 │   │
 │   ├── usecases/           - Contains application-specific business rules.
-│   │                         ("Use Cases" in Clean Architecture)
+│   │                         ('Use Cases' in Clean Architecture)
 │   │
 │   ├── repositories/       - Data interaction layer, converting domain data to/from database format.
 │   │   ├── relationaldb/   - Operations for relational databases (e.g., SQLite, MySQL, PostgreSQL).
 │   │   └── nosql/          - Operations for NoSQL databases (e.g., MongoDB, CouchDB).
-│   │                         ("Interface Adapters" in Clean Architecture)
+│   │                         ('Interface Adapters' in Clean Architecture)
 │   │
 │   └── di/                 - Dependency injection module.
 │       ├── dependency_injection.py
 │       └── unit_of_work.py
 │
 ├── models/                 - Entity representations & core business logic.
-│                             ("Entities" in Clean Architecture)
+│                             ('Entities' in Clean Architecture)
 │
 ├── common/                 - Shared code and utilities.
 │
