@@ -1,0 +1,10 @@
+{
+    "language": "en",
+    "words": [
+        "sqlalchemy",
+        "selectinload",
+        "joinedload",
+        "pokemons"
+    ]
+}
+
