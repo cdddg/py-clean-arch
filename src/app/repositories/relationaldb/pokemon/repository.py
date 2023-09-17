@@ -80,15 +80,12 @@ class RelationalDBPokemonRepository(AbstractPokemonRepository):
         return count == len(numbers)
 
     async def replace_types(self, pokemon_no: PokemonNumberStr, type_names: List[str]):
-        # 1. remove old associations
         await self.session.execute(delete(PokemonType).where(PokemonType.pokemon_no == pokemon_no))
 
-        # 2. fetch existing types
         stmt = select(Type).where(Type.name.in_(type_names))
         existing_types = (await self.session.execute(stmt)).scalars().all()
         existing_type_name_to_id_map = {type_.name: type_.id for type_ in existing_types}
 
-        # 3. determine and create new types
         to_be_created_names = [
             name for name in type_names if name not in existing_type_name_to_id_map
         ]
@@ -96,7 +93,6 @@ class RelationalDBPokemonRepository(AbstractPokemonRepository):
             self.session.add_all(new_types)
             await self.session.flush()
 
-        # 4. add new associations
         stmt = insert(PokemonType).values(
             [
                 {'pokemon_no': pokemon_no, 'type_id': type_id}
