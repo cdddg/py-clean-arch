@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import delete, func, insert, select, update
 
 from common.type import PokemonNumberStr
-from models.exception import PokemonNotFound, PokemonAlreadyExists
+from models.exception import PokemonAlreadyExists, PokemonNotFound
 from models.pokemon import (
     CreatePokemonModel,
     GetPokemonParamsModel,
@@ -49,7 +49,7 @@ class RelationalDBPokemonRepository(AbstractPokemonRepository):
             selectinload(Pokemon.next_evolutions).joinedload(PokemonEvolution.next_pokemon),
         )
         if params:
-            stmt = stmt.offset(params.offset).limit(params.limit)
+            stmt = stmt.offset((params.page - 1) * params.size).limit(params.size)
         pokemons = (await self.session.execute(stmt)).scalars().all()
 
         return list(map(PokemonOrmMapper.orm_to_entity, pokemons))

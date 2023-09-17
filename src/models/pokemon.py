@@ -6,8 +6,8 @@ from common.type import PokemonNumberStr, UUIDStr
 
 @dataclass
 class GetTypeParamsModel:
-    offset: int = 0
-    limit: Optional[int] = None
+    page: int = 0
+    size: Optional[int] = None
     pokemon_numbers: Optional[list[str]] = None
 
 
@@ -25,8 +25,8 @@ class PokemonEvolutionModel:
 
 @dataclass
 class GetPokemonParamsModel:
-    offset: int = 0
-    limit: Optional[int] = None
+    page: int = 1
+    size: int = 100
 
 
 @dataclass

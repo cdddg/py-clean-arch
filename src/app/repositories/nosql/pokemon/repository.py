@@ -99,9 +99,9 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
     async def list(self, params: Optional[GetPokemonParamsModel] = None) -> List[PokemonModel]:
         pipeline = self._build_evolution_pipeline()
         pipeline.append({'$sort': {'no': 1}})
-        # if params:
-        #     pipeline.append({'$skip': params.offset})
-        #     pipeline.append({'$limit': params.limit})
+        if params:
+            pipeline.append({'$skip': (params.page - 1) * params.size})
+            pipeline.append({'$limit': params.size})
         cursor = self.collection.aggregate(pipeline, session=self.session)
         documents = await cursor.to_list(None)  # pyright: ignore[reportGeneralTypeIssues]
 

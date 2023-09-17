@@ -39,7 +39,6 @@ services:
       - 27017:27017
     expose:
       - 27017
-
   dockerize:
     image: jwilder/dockerize:latest
     depends_on:
@@ -47,5 +46,7 @@ services:
       - postgres
     command: |
       dockerize
+      -wait tcp://mysql:3306
+      -wait tcp://postgres:5432
       -wait tcp://mongodb:27017
       -timeout 30s
