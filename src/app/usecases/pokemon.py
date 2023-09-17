@@ -6,21 +6,20 @@ from models.pokemon import CreatePokemonModel, PokemonModel, UpdatePokemonModel
 
 async def create_pokemon(data: CreatePokemonModel) -> PokemonModel:
     async with async_unit_of_work() as auow:
-        pokemon_no = await auow.pokemon_repo.create(data)
+        no = await auow.pokemon_repo.create(data)
+        await auow.pokemon_repo.replace_types(no, data.type_names)
 
-        types = [await auow.type_repo.get_or_create(type_) for type_ in data.type_names]
-        await auow.pokemon_repo.put_types(pokemon_no, types)
+        if data.previous_evolution_numbers:
+            if not await auow.pokemon_repo.are_existed(data.previous_evolution_numbers):
+                raise PokemonNotFound(data.previous_evolution_numbers)
+            await auow.pokemon_repo.replace_previous_evolutions(no, data.previous_evolution_numbers)
+        if data.next_evolution_numbers:
+            if not await auow.pokemon_repo.are_existed(data.next_evolution_numbers):
+                raise PokemonNotFound(data.next_evolution_numbers)
+            await auow.pokemon_repo.replace_next_evolutions(no, data.next_evolution_numbers)
 
-        if data.before_evolution_numbers:
-            if not await auow.pokemon_repo.are_duplicated(data.before_evolution_numbers):
-                raise PokemonNotFound(data.before_evolution_numbers)
-            await auow.pokemon_repo.put_before_evolutions(pokemon_no, data.before_evolution_numbers)
-        if data.after_evolution_numbers:
-            if not await auow.pokemon_repo.are_duplicated(data.after_evolution_numbers):
-                raise PokemonNotFound(data.after_evolution_numbers)
-            await auow.pokemon_repo.put_after_evolutions(pokemon_no, data.after_evolution_numbers)
-
-        return await auow.pokemon_repo.get(pokemon_no)
+        # raise RuntimeWarning('Not Implemented')
+        return await auow.pokemon_repo.get(no)
 
 
 async def get_pokemon(no: PokemonNumberStr) -> PokemonModel:
@@ -30,7 +29,7 @@ async def get_pokemon(no: PokemonNumberStr) -> PokemonModel:
 
 async def get_pokemons() -> list[PokemonModel]:
     async with async_unit_of_work() as auow:
-        return await auow.pokemon_repo.list_()
+        return await auow.pokemon_repo.list()
 
 
 async def update_pokemon(no: PokemonNumberStr, data: UpdatePokemonModel):
@@ -38,17 +37,16 @@ async def update_pokemon(no: PokemonNumberStr, data: UpdatePokemonModel):
         await auow.pokemon_repo.update(no, data)
 
         if data.type_names is not None:
-            types = [await auow.type_repo.get_or_create(type_) for type_ in data.type_names]
-            await auow.pokemon_repo.put_types(no, types)
+            await auow.pokemon_repo.replace_types(no, data.type_names)
 
-        if data.before_evolution_numbers is not None:
-            if not await auow.pokemon_repo.are_duplicated(data.before_evolution_numbers):
-                raise PokemonNotFound(data.before_evolution_numbers)
-            await auow.pokemon_repo.put_before_evolutions(no, data.before_evolution_numbers)
-        if data.after_evolution_numbers is not None:
-            if not await auow.pokemon_repo.are_duplicated(data.after_evolution_numbers):
-                raise PokemonNotFound(data.after_evolution_numbers)
-            await auow.pokemon_repo.put_after_evolutions(no, data.after_evolution_numbers)
+        if data.previous_evolution_numbers is not None:
+            if not await auow.pokemon_repo.are_existed(data.previous_evolution_numbers):
+                raise PokemonNotFound(data.previous_evolution_numbers)
+            await auow.pokemon_repo.replace_previous_evolutions(no, data.previous_evolution_numbers)
+        if data.next_evolution_numbers is not None:
+            if not await auow.pokemon_repo.are_existed(data.next_evolution_numbers):
+                raise PokemonNotFound(data.next_evolution_numbers)
+            await auow.pokemon_repo.replace_next_evolutions(no, data.next_evolution_numbers)
 
         return await auow.pokemon_repo.get(no)
 

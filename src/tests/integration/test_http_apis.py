@@ -19,8 +19,8 @@ async def test_create_pokemon(client):
             {'id': data['types'][0]['id'], 'name': 'Grass'},
             {'id': data['types'][1]['id'], 'name': 'Poison'},
         ],
-        'before_evolutions': [],
-        'after_evolutions': [],
+        'previous_evolutions': [],
+        'next_evolutions': [],
     }
 
     # test create 0002
@@ -30,7 +30,7 @@ async def test_create_pokemon(client):
             'no': '0002',
             'name': 'Ivysaur',
             'type_names': ['Grass', 'Poison'],
-            'before_evolution_numbers': ['0001'],
+            'previous_evolution_numbers': ['0001'],
         },
     )
     data = response.json()
@@ -43,8 +43,8 @@ async def test_create_pokemon(client):
             {'id': data['types'][0]['id'], 'name': 'Grass'},
             {'id': data['types'][1]['id'], 'name': 'Poison'},
         ],
-        'before_evolutions': [{'no': '0001', 'name': 'Bulbasaur'}],
-        'after_evolutions': [],
+        'previous_evolutions': [{'no': '0001', 'name': 'Bulbasaur'}],
+        'next_evolutions': [],
     }
 
     # test create 0003
@@ -54,12 +54,12 @@ async def test_create_pokemon(client):
             'no': '0003',
             'name': 'Venusaur',
             'type_names': ['Grass', 'Poison'],
-            'before_evolution_numbers': ['0001', '0002'],
+            'previous_evolution_numbers': ['0001', '0002'],
         },
     )
     data = response.json()
     data.get('types', []).sort(key=lambda k: k['name'])
-    data.get('before_evolutions', []).sort(key=lambda k: k['no'])
+    data.get('previous_evolutions', []).sort(key=lambda k: k['no'])
     assert response.status_code == 201
     assert data == {
         'no': '0003',
@@ -68,11 +68,11 @@ async def test_create_pokemon(client):
             {'id': data['types'][0]['id'], 'name': 'Grass'},
             {'id': data['types'][1]['id'], 'name': 'Poison'},
         ],
-        'before_evolutions': [
+        'previous_evolutions': [
             {'no': '0001', 'name': 'Bulbasaur'},
             {'no': '0002', 'name': 'Ivysaur'},
         ],
-        'after_evolutions': [],
+        'next_evolutions': [],
     }
 
 
@@ -98,8 +98,8 @@ async def test_get_pokemon(client):
             {'id': data['types'][0]['id'], 'name': 'Grass'},
             {'id': data['types'][1]['id'], 'name': 'Poison'},
         ],
-        'before_evolutions': [],
-        'after_evolutions': [],
+        'previous_evolutions': [],
+        'next_evolutions': [],
     }
 
 
@@ -131,8 +131,8 @@ async def test_get_pokemons(client):
                 {'id': data[0]['types'][0]['id'], 'name': 'Grass'},
                 {'id': data[0]['types'][1]['id'], 'name': 'Poison'},
             ],
-            'before_evolutions': [],
-            'after_evolutions': [],
+            'previous_evolutions': [],
+            'next_evolutions': [],
         },
         {
             'no': '0004',
@@ -140,8 +140,8 @@ async def test_get_pokemons(client):
             'types': [
                 {'id': data[1]['types'][0]['id'], 'name': 'Fire'},
             ],
-            'before_evolutions': [],
-            'after_evolutions': [],
+            'previous_evolutions': [],
+            'next_evolutions': [],
         },
     ]
 
@@ -169,8 +169,8 @@ async def test_update_pokemon(client):
         json={
             'name': 'BBB-2',
             'type_names': ['B-2'],
-            'before_evolution_numbers': ['9001'],
-            'after_evolution_numbers': ['9003'],
+            'previous_evolution_numbers': ['9001'],
+            'next_evolution_numbers': ['9003'],
         },
     )
     data = response.json()
@@ -181,8 +181,8 @@ async def test_update_pokemon(client):
         'types': [
             {'id': data['types'][0]['id'], 'name': 'B-2'},
         ],
-        'before_evolutions': [{'no': '9001', 'name': 'AAA'}],
-        'after_evolutions': [{'no': '9003', 'name': 'CCC'}],
+        'previous_evolutions': [{'no': '9001', 'name': 'AAA'}],
+        'next_evolutions': [{'no': '9003', 'name': 'CCC'}],
     }
 
 

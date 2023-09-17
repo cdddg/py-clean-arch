@@ -28,17 +28,17 @@ class Pokemon(Base):
     types: Mapped[list['Type']] = relationship(
         'Type', secondary='pokemon_type', backref='pokemon', lazy='raise', order_by='Type.name'
     )
-    before_evolutions: Mapped[list['PokemonEvolution']] = relationship(
+    previous_evolutions: Mapped[list['PokemonEvolution']] = relationship(
         'PokemonEvolution',
-        primaryjoin='PokemonEvolution.after_no==Pokemon.no',
+        primaryjoin='PokemonEvolution.next_no==Pokemon.no',
         lazy='raise',
-        order_by='PokemonEvolution.before_no',
+        order_by='PokemonEvolution.previous_no',
     )
-    after_evolutions: Mapped[list['PokemonEvolution']] = relationship(
+    next_evolutions: Mapped[list['PokemonEvolution']] = relationship(
         'PokemonEvolution',
-        primaryjoin='PokemonEvolution.before_no==Pokemon.no',
+        primaryjoin='PokemonEvolution.previous_no==Pokemon.no',
         lazy='raise',
-        order_by='PokemonEvolution.after_no',
+        order_by='PokemonEvolution.next_no',
     )
 
 
@@ -63,15 +63,15 @@ class PokemonEvolution(Base):
     __tablename__ = 'pokemon_evolution'
 
     id: Mapped[UUIDStr] = mapped_column(String(32), primary_key=True, default=build_uui4_str)
-    before_no: Mapped[PokemonNumberStr] = mapped_column(
+    previous_no: Mapped[PokemonNumberStr] = mapped_column(
         String(8), ForeignKey('pokemon.no', ondelete='CASCADE')
     )
-    after_no: Mapped[PokemonNumberStr] = mapped_column(
+    next_no: Mapped[PokemonNumberStr] = mapped_column(
         String(8), ForeignKey('pokemon.no', ondelete='CASCADE')
     )
-    before_pokemon: Mapped[Optional['Pokemon']] = relationship(
-        'Pokemon', foreign_keys=[before_no], back_populates='after_evolutions', lazy='raise'
+    previous_pokemon: Mapped[Optional['Pokemon']] = relationship(
+        'Pokemon', foreign_keys=[previous_no], back_populates='next_evolutions', lazy='raise'
     )
-    after_pokemon: Mapped[Optional['Pokemon']] = relationship(
-        'Pokemon', foreign_keys=[after_no], back_populates='before_evolutions', lazy='raise'
+    next_pokemon: Mapped[Optional['Pokemon']] = relationship(
+        'Pokemon', foreign_keys=[next_no], back_populates='previous_evolutions', lazy='raise'
     )

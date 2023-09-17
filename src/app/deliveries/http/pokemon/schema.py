@@ -9,10 +9,10 @@ class CreatePokemonRequest(BaseModel):
     no: str = Field(..., description=PokemonNumberStr.__doc__)
     name: str
     type_names: Optional[list[str]] = None
-    before_evolution_numbers: Optional[list[str]] = Field(
+    previous_evolution_numbers: Optional[list[str]] = Field(
         default=[], unique_items=True, description=PokemonNumberStr.__doc__
     )
-    after_evolution_numbers: Optional[list[str]] = Field(
+    next_evolution_numbers: Optional[list[str]] = Field(
         default=[], unique_items=True, description=PokemonNumberStr.__doc__
     )
 
@@ -20,10 +20,10 @@ class CreatePokemonRequest(BaseModel):
 class UpdatePokemonRequest(BaseModel):
     name: Optional[str]
     type_names: list[str] = []
-    before_evolution_numbers: Optional[list[str]] = Field(
+    previous_evolution_numbers: Optional[list[str]] = Field(
         default=None, unique_items=True, description=PokemonNumberStr.__doc__
     )
-    after_evolution_numbers: Optional[list[str]] = Field(
+    next_evolution_numbers: Optional[list[str]] = Field(
         default=None, unique_items=True, description=PokemonNumberStr.__doc__
     )
 
@@ -32,8 +32,8 @@ class PokemonResponse(BaseModel):
     no: str = Field(..., description=PokemonNumberStr.__doc__)
     name: str
     types: list['TypeResponse']
-    before_evolutions: list['EvolutionResponse']
-    after_evolutions: list['EvolutionResponse']
+    previous_evolutions: list['EvolutionResponse']
+    next_evolutions: list['EvolutionResponse']
 
 
 class TypeResponse(BaseModel):
