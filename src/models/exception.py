@@ -1,10 +1,14 @@
-class PokedexError(Exception):
+class PokemonError(Exception):
     pass
 
 
-class PokemonNotFound(PokedexError):
+class PokemonNotFound(PokemonError):
     pass
 
 
-class PokemonUnknownError(PokedexError):
+class PokemonAlreadyExists(PokemonError):
+    pass
+
+
+class PokemonUnknownError(PokemonError):
     pass

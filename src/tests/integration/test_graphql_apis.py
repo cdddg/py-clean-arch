@@ -18,7 +18,7 @@ async def test_create_pokemon(client):
                 no: "0005",
                 name: "Charmeleon",
                 typeNames: ["FIRE"],
-                beforeEvolutionNumbers: ["0004"]
+                previousEvolutionNumbers: ["0004"]
             }) {
                 no
             }
@@ -26,18 +26,18 @@ async def test_create_pokemon(client):
                 no: "0006",
                 name: "Charizard",
                 typeNames: ["FIRE", "FLYING"],
-                beforeEvolutionNumbers: ["0004", "0005"]
+                previousEvolutionNumbers: ["0004", "0005"]
             }) {
                 no
                 name
                 types {
                     name
                 }
-                beforeEvolutions {
+                previousEvolutions {
                     no
                     name
                 }
-                afterEvolutions {
+                nextEvolutions {
                     no
                     name
                 }
@@ -48,8 +48,8 @@ async def test_create_pokemon(client):
     data = response.json()
     for _, v in data.items():
         v.get('types', []).sort(key=lambda k: k['name'])
-        v.get('beforeEvolutions', []).sort(key=lambda k: k['no'])
-        v.get('afterEvolutions', []).sort(key=lambda k: k['no'])
+        v.get('previousEvolutions', []).sort(key=lambda k: k['no'])
+        v.get('nextEvolutions', []).sort(key=lambda k: k['no'])
     assert response.status_code == 200
     assert data.get('error') is None
     assert data == {
@@ -60,11 +60,11 @@ async def test_create_pokemon(client):
                 'no': '0006',
                 'name': 'Charizard',
                 'types': [{'name': 'FIRE'}, {'name': 'FLYING'}],
-                'beforeEvolutions': [
+                'previousEvolutions': [
                     {'no': '0004', 'name': 'Charmander'},
                     {'no': '0005', 'name': 'Charmeleon'},
                 ],
-                'afterEvolutions': [],
+                'nextEvolutions': [],
             },
         }
     }
@@ -99,11 +99,11 @@ async def test_get_pokemon(client):
                 types {
                     name
                 },
-                beforeEvolutions {
+                previousEvolutions {
                     no
                     name
                 },
-                afterEvolutions {
+                nextEvolutions {
                     no
                     name
                 }
@@ -113,8 +113,8 @@ async def test_get_pokemon(client):
     response = await client.post('/graphql', json={'query': query})
     data = response.json()
     data.get('data', {}).get('types', []).sort(key=lambda k: k['name'])
-    data.get('data', {}).get('before_evolutions', []).sort(key=lambda k: k['no'])
-    data.get('data', {}).get('after_evolutions', []).sort(key=lambda k: k['no'])
+    data.get('data', {}).get('previous_evolutions', []).sort(key=lambda k: k['no'])
+    data.get('data', {}).get('next_evolutions', []).sort(key=lambda k: k['no'])
     assert response.status_code == 200
     assert data.get('error') is None
     assert data == {
@@ -123,8 +123,8 @@ async def test_get_pokemon(client):
                 'no': '0004',
                 'name': 'Charmander',
                 'types': [{'name': 'FIRE'}],
-                'beforeEvolutions': [],
-                'afterEvolutions': [],
+                'previousEvolutions': [],
+                'nextEvolutions': [],
             }
         }
     }
@@ -147,7 +147,7 @@ async def test_get_pokemons(client):
                 no: "0005",
                 name: "Charmeleon",
                 typeNames: ["FIRE"],
-                beforeEvolutionNumbers: ["0004"]
+                previousEvolutionNumbers: ["0004"]
             }) {
                 no
             }
@@ -155,7 +155,7 @@ async def test_get_pokemons(client):
                 no: "0006",
                 name: "Charizard",
                 typeNames: ["FIRE", "FLYING"],
-                beforeEvolutionNumbers: ["0004", "0005"]
+                previousEvolutionNumbers: ["0004", "0005"]
             }) {
                 no
             }
@@ -175,10 +175,10 @@ async def test_get_pokemons(client):
                 types {
                     name
                 },
-                beforeEvolutions {
+                previousEvolutions {
                     no
                 },
-                afterEvolutions {
+                nextEvolutions {
                     no
                 }
             }
@@ -187,8 +187,8 @@ async def test_get_pokemons(client):
     response = await client.post('/graphql', json={'query': query})
     data = response.json()
     data.get('data', {}).get('types', []).sort(key=lambda k: k['name'])
-    data.get('data', {}).get('before_evolutions', []).sort(key=lambda k: k['no'])
-    data.get('data', {}).get('after_evolutions', []).sort(key=lambda k: k['no'])
+    data.get('data', {}).get('previous_evolutions', []).sort(key=lambda k: k['no'])
+    data.get('data', {}).get('next_evolutions', []).sort(key=lambda k: k['no'])
     assert response.status_code == 200
     assert data.get('error') is None
     assert data == {
@@ -198,15 +198,15 @@ async def test_get_pokemons(client):
                     'no': '0004',
                     'name': 'Charmander',
                     'types': [{'name': 'FIRE'}],
-                    'beforeEvolutions': [],
-                    'afterEvolutions': [{'no': '0005'}, {'no': '0006'}],
+                    'previousEvolutions': [],
+                    'nextEvolutions': [{'no': '0005'}, {'no': '0006'}],
                 },
                 {
                     'no': '0005',
                     'name': 'Charmeleon',
                     'types': [{'name': 'FIRE'}],
-                    'beforeEvolutions': [{'no': '0004'}],
-                    'afterEvolutions': [{'no': '0006'}],
+                    'previousEvolutions': [{'no': '0004'}],
+                    'nextEvolutions': [{'no': '0006'}],
                 },
                 {
                     'no': '0006',
@@ -215,8 +215,8 @@ async def test_get_pokemons(client):
                         {'name': 'FIRE'},
                         {'name': 'FLYING'},
                     ],
-                    'beforeEvolutions': [{'no': '0004'}, {'no': '0005'}],
-                    'afterEvolutions': [],
+                    'previousEvolutions': [{'no': '0004'}, {'no': '0005'}],
+                    'nextEvolutions': [],
                 },
             ]
         }
@@ -247,7 +247,7 @@ async def test_update_pokemon(client):
                 no: "9006",
                 name: "CCC",
                 typeNames: ["C"],
-                beforeEvolutionNumbers: ["9004", "9005"]
+                previousEvolutionNumbers: ["9004", "9005"]
             }) {
                 no
             }
@@ -264,19 +264,19 @@ async def test_update_pokemon(client):
             updatePokemon(no: "9006", input: {
                 name: "XXX",
                 typeNames: ["X"],
-                beforeEvolutionNumbers: [],
-                afterEvolutionNumbers: ["9004", "9005"]
+                previousEvolutionNumbers: [],
+                nextEvolutionNumbers: ["9004", "9005"]
             }) {
                 no
                 name
                 types {
                     name
                 }
-                beforeEvolutions {
+                previousEvolutions {
                     no
                     name
                 }
-                afterEvolutions {
+                nextEvolutions {
                     no
                     name
                 }
@@ -293,8 +293,8 @@ async def test_update_pokemon(client):
                 'no': '9006',
                 'name': 'XXX',
                 'types': [{'name': 'X'}],
-                'beforeEvolutions': [],
-                'afterEvolutions': [{'no': '9004', 'name': 'AAA'}, {'no': '9005', 'name': 'BBB'}],
+                'previousEvolutions': [],
+                'nextEvolutions': [{'no': '9004', 'name': 'AAA'}, {'no': '9005', 'name': 'BBB'}],
             }
         }
     }
