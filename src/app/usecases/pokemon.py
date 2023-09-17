@@ -18,7 +18,6 @@ async def create_pokemon(data: CreatePokemonModel) -> PokemonModel:
                 raise PokemonNotFound(data.next_evolution_numbers)
             await auow.pokemon_repo.replace_next_evolutions(no, data.next_evolution_numbers)
 
-        # raise RuntimeWarning('Not Implemented')
         return await auow.pokemon_repo.get(no)
 
 

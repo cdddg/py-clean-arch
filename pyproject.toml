@@ -12,12 +12,8 @@ packages = [{include = "py_clean_arch"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-aiosqlite = "^0.18.0"
-asyncmy = "^0.2.8"
-asyncpg = "^0.28.0"
 fastapi = "<=1.0.0"
 pydantic = "<2.0.0"
-sqlalchemy = ">=2.0.0"
 strawberry-graphql = "^0.204.0"
 uvicorn = "^0.23.2"
 
@@ -29,6 +25,7 @@ pre-commit = "^3.3.3"
 pylint = "^2.17.5"
 pylint-quotes = "^0.2.3"
 remove-print-statements = "^0.5.2"
+pyright = "^1.1.326"
 
 [tool.poetry.group.test.dependencies]
 gevent = "^23.7.0"
@@ -37,6 +34,21 @@ pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
 pytest-dependency = "^0.5.1"
 pytest-env = "^0.8.2"
+
+[tool.poetry.group.sqlite.dependencies]
+aiosqlite = "^0.19.0"
+sqlalchemy = ">=2.0.0"
+
+[tool.poetry.group.mysql.dependencies]
+asyncmy = "^0.2.8"
+sqlalchemy = ">=2.0.0"
+
+[tool.poetry.group.postgres.dependencies]
+asyncpg = "^0.28.0"
+sqlalchemy = ">=2.0.0"
+
+[tool.poetry.group.mongodb.dependencies]
+motor = "^3.3.1"
 
 [tool.black]
 line-length = 100
@@ -52,29 +64,37 @@ init-hook='import sys; sys.path.append(".")'
 [tool.pylint.messages_control]
 max-line-length = 100
 extension-pkg-whitelist = "pydantic"
+# Some of the disabled checks are personal preferences but not needed for this project
 disable = [
     "R",
-    "arguments-differ",
-    "broad-except",
+    # "arguments-differ",
+    # "broad-except",
     "fixme",
     "invalid-name",
     "logging-fstring-interpolation",
     "missing-class-docstring",
     "missing-function-docstring",
     "missing-module-docstring",
-    "no-self-argument",
-    "pointless-statement",
-    "protected-access",
-    "raise-missing-from",
-    "singleton-comparison",
-    "super-init-not-called",
-    "too-many-lines",
-    "unidiomatic-typecheck",
-    "unnecessary-lambda",
+    # "no-self-argument",
+    # "pointless-statement",
+    # "protected-access",
+    # "raise-missing-from",
+    # "singleton-comparison",
+    # "super-init-not-called",
+    # "too-many-lines",
+    # "unidiomatic-typecheck",
+    # "unnecessary-lambda",
     "unused-argument",
-    "unused-import",
+    # "unused-import",
     "line-too-long",
 ]
+
+[tool.pyright]
+typeCheckingMode = "basic"
+reportIncompatibleMethodOverride = true
+reportPrivateUsage = true
+reportUnusedCoroutine = true
+reportUnusedVariable = true
 
 [tool.pytest.ini_options]
 minversion = "7.2"
@@ -82,7 +102,6 @@ addopts = """
 -s
 -vv
 -p no:logging
---tb=short
 --cov-report=term-missing
 --cov-config=pyproject.toml
 --cov-fail-under=90
@@ -91,7 +110,7 @@ addopts = """
 env = [
     "TEST=true",
     "D:SQLALCHEMY_ECHO=false",
-    "D:SQLALCHEMY_DATABASE_URI=sqlite+aiosqlite:///:memory:?drop_existed=true"
+    "D:DATABASE_URI=sqlite+aiosqlite:///:memory:?reinitialize=true"
 ]
 filterwarnings = [
     "error",
@@ -116,4 +135,3 @@ precision = 2
 exclude_lines = [
     "raise NotImplementedError"
 ]
-

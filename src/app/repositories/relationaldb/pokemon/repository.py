@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Callable, List, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -17,8 +17,10 @@ from ...abstraction import AbstractPokemonRepository
 from .mapper import PokemonOrmMapper
 from .orm import Pokemon, PokemonEvolution, PokemonType, Type
 
+func: Callable
 
-class PokemonRepository(AbstractPokemonRepository):
+
+class RelationalDBPokemonRepository(AbstractPokemonRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
@@ -95,11 +97,13 @@ class PokemonRepository(AbstractPokemonRepository):
             await self.session.flush()
 
         # 4. add new associations
-        stmt = insert(PokemonType)
-        for type_id in list(existing_type_name_to_id_map.values()) + [
-            type_.id for type_ in new_types
-        ]:
-            stmt = stmt.values(pokemon_no=pokemon_no, type_id=type_id)
+        stmt = insert(PokemonType).values(
+            [
+                {'pokemon_no': pokemon_no, 'type_id': type_id}
+                for type_id in list(existing_type_name_to_id_map.values())
+                + [type_.id for type_ in new_types]
+            ]
+        )
         await self.session.execute(stmt)
 
     async def replace_previous_evolutions(
@@ -108,9 +112,10 @@ class PokemonRepository(AbstractPokemonRepository):
         stmt = delete(PokemonEvolution).where(PokemonEvolution.next_no == pokemon_no)
         await self.session.execute(stmt)
 
-        stmt = insert(PokemonEvolution)
-        for no in previous_evolution_numbers:
-            stmt = stmt.values(previous_no=no, next_no=pokemon_no)
+        if previous_evolution_numbers:
+            stmt = insert(PokemonEvolution).values(
+                [{'previous_no': no, 'next_no': pokemon_no} for no in previous_evolution_numbers]
+            )
             await self.session.execute(stmt)
 
     async def replace_next_evolutions(
@@ -119,7 +124,8 @@ class PokemonRepository(AbstractPokemonRepository):
         stmt = delete(PokemonEvolution).where(PokemonEvolution.previous_no == pokemon_no)
         await self.session.execute(stmt)
 
-        stmt = insert(PokemonEvolution)
-        for no in next_evolution_numbers:
-            stmt = stmt.values(previous_no=pokemon_no, next_no=no)
+        if next_evolution_numbers:
+            stmt = insert(PokemonEvolution).values(
+                [{'previous_no': pokemon_no, 'next_no': no} for no in next_evolution_numbers]
+            )
             await self.session.execute(stmt)
