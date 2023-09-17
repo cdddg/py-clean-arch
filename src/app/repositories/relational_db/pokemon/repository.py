@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.sql import delete, func, insert, select, update
 
 from common.type import PokemonNumberStr
-from models.exception import PokemonNotFound
+from models.exception import PokemonNotFound, PokemonAlreadyExists
 from models.pokemon import (
     CreatePokemonModel,
     GetPokemonParamsModel,
@@ -55,6 +55,11 @@ class RelationalDBPokemonRepository(AbstractPokemonRepository):
         return list(map(PokemonOrmMapper.orm_to_entity, pokemons))
 
     async def create(self, data: CreatePokemonModel) -> PokemonNumberStr:
+        stmt = select(func.count(Pokemon.no)).where(Pokemon.no == data.no)
+        count = (await self.session.execute(stmt)).scalars().first()
+        if count and count > 0:
+            raise PokemonAlreadyExists(data.no)
+
         stmt = insert(Pokemon).values(no=data.no, name=data.name)
         await self.session.execute(stmt)
 
