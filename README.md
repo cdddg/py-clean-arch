@@ -1,13 +1,12 @@
 # Python Clean Architecture
 
-This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch)
+This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch).
 
 ## Changelog
 
-- **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived in April 2021.. <br>**Description**: Initial proposal by me.
+- **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived in April 2021. <br>**Description**: Initial proposal by me.
 - **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived in July 2023. <br>**Description**: Improvements from v1. See the [merged PRs from PR #1 to PR #10](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-04-09..2023-08-15).
-- **v3**: Current version on the master branch.<br> 🎯 Merged to master in August 2023. <br>
-  **Description**:Transition to Python-centric design from Go. Start with PR [#11](https://github.com/cdddg/py-clean-arch/pull/11) and see [all subsequent PRs](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-16..2099-12-31).
+- **v3**: Current version on the `master` branch.<br> 🎯 Merged to main in August 2023. <br>**Description**: Transition to Python-centric design from Go. Start with PR [#11](https://github.com/cdddg/py-clean-arch/pull/11) and see [all subsequent PRs](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-16..2099-12-31).
 
 ## Description
 
@@ -20,7 +19,7 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
 5. **Independence from External Agencies**: The business logic remains agnostic of external integrations.
 
 ![clean-arch-01](./docs/clean-arch-01.png)
-*source: https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture
+*source: [yoan-thirion.gitbook.io](https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture)*
 
 ### ✨ Additional Features and Patterns in This Project
 
@@ -83,7 +82,7 @@ The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture 
 > For a detailed explanation of the ASCII flow, refer to [ascii-flow.md](./docs/ascii-flow.md).
 
 ![clean-arch-02](./docs/clean-arch-02.png)
-*source: https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture
+*source: [yoan-thirion.gitbook.io](https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture)*
 
 ![clean-arch-03](./docs/clean-arch-03.png)
 *source: https://stackoverflow.com/a/73788685
@@ -94,25 +93,56 @@ The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture 
 
 ### 🚀 Launch the Application
 
-Either use:
+Before launching the application, make sure to configure any desired environment variables. The primary variable to consider is the database URI. If you don't provide a database URI, the application defaults to using an in-memory SQLite.
 
-```sh
-$ docker-compose up
-```
+<a id="supported-database-uris"></a>
+> **Supported Database URIs**:
+>
+> - `sqlite+aiosqlite:///sqlite.db` (SQLite3)
+> - `sqlite+aiosqlite:///:memory:` (SQLite3 in-memory)
+> - `mysql+asyncmy://<username>:<password>@<host>:<port>/<dbname>` (MySQL)
+> - `postgresql+asyncpg://<username>:<password>@<host>:<port>/<dbname>` (PostgreSQL)
+> - `mongodb://<username>:<password>@<host>:<port>/<dbname>` (MongoDB)
+>
+> ⚠️ **Note**: Failing to initialize the database might result in erroneous outcomes. If initialization is required, append `?reinitialize=true` to your database URI. For instance:
+>
+> ```
+> sqlite+aiosqlite:///sqlite.db?reinitialize=true
+> ```
 
-Or set up the environment with Python (>=3.10), Poetry (>=1.5.1,<1.6) and:
+#### Using Docker:
 
-```sh
-$ poetry env use python3.10
-$ poetry shell
-$ poetry install --no-root
-```
+1. Build the Docker image:
 
-```sh
-$ make up
-```
+   ```sh
+   $ docker build -t <your-image-name> .
+   ```
 
-The application will run on [http://localhost:8000](http://localhost:8000/)
+2. Run the Docker container:
+
+   ```sh
+   $ DATABASE_URI=<database-uri> docker run -p 8000:8000 <your-image-name>
+   ```
+
+#### Using Make (via Poetry):
+
+1. Set up the poetry environment:
+
+   Ensure you have Python (version >= 3.10) and Poetry (version >= 1.5, < 1.6).
+
+   ```sh
+   $ poetry env use python3.10
+   $ poetry shell
+   $ poetry install --no-root
+   ```
+
+2. Launch the application:
+
+   ```sh
+   $ DATABASE_URI=<database-uri> make up
+   ```
+
+Upon successful initialization, the application will be accessible via [http://localhost:8000](http://localhost:8000/).
 
 ![fastapi-doc](./docs/fastapi-doc.png)
 
@@ -122,30 +152,27 @@ The application will run on [http://localhost:8000](http://localhost:8000/)
 
 To test against a single database, specify its URI by setting the `DATABASE_URI` environment variable:
 
-```
-shCopy code
+```sh
 $ DATABASE_URI=<database-uri> pytest
 ```
 
-> **Note**: If no URI is provided, an in-memory SQLite database will be used by default.
+For the list of supported database URIs, please refer to the [**Supported Database URIs**](#supported-database-uris)
+
+> ⚠️ **Note**: We recommend using a different `dbname` for testing, preferably appending "_test" (e.g., "mydatabase_test"). This ensures your tests don't interfere with your main application data.
 
 #### Multi-Database Testing:
 
-To validate your application across various databases like in-memory SQLite, SQLite, MySQL, and Postgres, follow these steps:
+To validate your application across various databases like in-memory SQLite, SQLite, MySQL, Postgres and MongoDB, you'll utilize the tool called `bats`.
 
-###### 1. Installing `bats`:
+##### 1. Installing `bats`
 
-- **On macOS**:
-
-  Using [Homebrew](https://brew.sh/):
+**-** On macOS: use [Homebrew](https://brew.sh/)
 
   ```sh
   $ brew install bats
   ```
 
-- **On Linux**:
-
-  Compile `bats` from its official [GitHub repository](https://github.com/bats-core/bats-core):
+**-** On Linux: compile from the official [GitHub repository](https://github.com/bats-core/bats-core)
 
   ```sh
   $ git clone https://github.com/bats-core/bats-core.git
@@ -153,28 +180,35 @@ To validate your application across various databases like in-memory SQLite, SQL
   $ ./install.sh /usr/local
   ```
 
-###### 2. Running Multi-DB Tests:
+##### 2. Running Multi-DB Tests
 
-After successfully installing `bats`:
+Once `bats` is installed:
 
-Initialize the databases and execute the tests:
+###### 2-1. Initialize the databases:
 
 ```sh
 $ make db
+```
+
+###### 2-2. Execute the tests:
+
+```sh
 $ make test
 ```
 
-Typical test results across different databases might look like:
+###### Sample Test Results:
 
-```sh
+When executed across different databases, your test results might resemble the following:
+
+```
 api_db_test.bats
- ✓ Test using SQLite [7008]
- ✓ Test using in-memory SQLite [2312]
- ✓ Test using MySQL [3149]
- ✓ Test using PostgreSQL [2974]
- ✓ Test using MongoDB [3885]
+ ✓ Test using SQLite [3136]
+ ✓ Test using in-memory SQLite [2399]
+ ✓ Test using MySQL [3615]
+ ✓ Test using PostgreSQL [3437]
+ ✓ Test using MongoDB [4099]
 
-5 tests, 0 failures in 20 seconds
+5 tests, 0 failures in 18 seconds
 ```
 
 
@@ -187,8 +221,6 @@ To generate a coverage report:
 ```sh
 $ pytest --cov
 ```
-
-
 
 [^1]: https://www.cosmicpython.com/book/chapter_06_uow.html
 [^2]: https://en.wikipedia.org/wiki/Dependency_injection
