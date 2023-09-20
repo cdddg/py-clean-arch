@@ -24,4 +24,4 @@ SQLALCHEMY_ISOLATION_LEVEL = os.environ.get('SQLALCHEMY_ISOLATION_LEVEL') or 'SE
 # creating new tables. Example:
 #   sqlite+aiosqlite:///sqlite.db?reinitialize=true
 
-DATABASE_URI = os.environ.get('DATABASE_URI', 'sqlite+aiosqlite:///sqlite.db')
+DATABASE_URI = os.environ.get('DATABASE_URI', 'sqlite+aiosqlite:///:memory:')
