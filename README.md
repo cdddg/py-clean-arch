@@ -1,4 +1,4 @@
-# Python Clean Architecture
+# py-clean-arch
 
 This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch).
 
@@ -19,26 +19,26 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
 5. **Independence from External Agencies**: The business logic remains agnostic of external integrations.
 
 ![clean-arch-01](./docs/clean-arch-01.png)
-*source: [yoan-thirion.gitbook.io](https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture)*
+*source: [yoan-thirion.gitbook.io](https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture)
 
 ### ✨ Additional Features and Patterns in This Project
 
 This project doesn't just adhere to Uncle Bob's Clean Architecture principles; it also brings in modern adaptions and extended features to suit contemporary development needs:
 
-- **GraphQL vs HTTP**: The `deliveries` module houses two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
-- **RelationalDB vs NoSQL**: The `repositories` module supports both relational and NoSQL databases. `relational_db` manages operations for databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` manages operations for NoSQL databases like MongoDB and CouchDB.
+- **GraphQL vs HTTP**:<br>The `deliveries` module houses two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
+- **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational and NoSQL databases. `relational_db` manages operations for databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` manages operations for NoSQL databases like MongoDB and CouchDB.
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
 
-- **Unit of Work Pattern**: This pattern ensures that all operations within a single transaction are completed successfully, or none are completed at all. [^1]
-- **Dependency Injection Pattern**: Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^2]
-- **Asynchronous SQLalchemy**: By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^3]
+- **Unit of Work Pattern**:<br>This pattern ensures that all operations within a single transaction are completed successfully, or none are completed at all. [^1]
+- **Dependency Injection Pattern**:<br>Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^2]
+- **Asynchronous SQLalchemy**:<br>By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^3]
 
-### Project Structure Overview & Clean Architecture Mapping
+### 🧱 Project Structure Overview & Clean Architecture Mapping
 
 Based on Uncle Bob's Clean Architecture principles, this project's structure and architecture flow diagrams are aligned with these principles.
 
-#### 📁 Directory Structure
+#### Directory Structure
 
 Here's an insight into the project's high-level organization, detailing only primary directories and key files:
 
@@ -72,10 +72,9 @@ src
 │   └── integration/        - Tests for interactions between components.
 │
 └── main.py                 - Main file to launch the application.
-
 ```
 
-#### 🔄 Clean Architecture Flow Diagram
+#### Clean Architecture Flow Diagram
 
 The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture and how they interact. It consists of two images and an ASCII flow for clarity:
 
@@ -88,61 +87,57 @@ The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture 
 *source: https://stackoverflow.com/a/73788685
 
 
-
 ## How To Run This Project
+
+### 🐳 Initialize the Database Using Docker-Compose
+
+Before launching or testing the application, make sure to initialize your database with Docker-Compose:
+
+```sh
+$ docker compose down --remove-orphans -v
+$ docker compose up dockerize
+```
 
 ### 🚀 Launch the Application
 
-Before launching the application, make sure to configure any desired environment variables. The primary variable to consider is the database URI. If you don't provide a database URI, the application defaults to using an in-memory SQLite.
+When launching, set up the environment variables, especially `DATABASE_URI`. If left unset, the application defaults to an in-memory SQLite database.
 
 <a id="supported-database-uris"></a>
+
 > **Supported Database URIs**:
 >
-> - `sqlite+aiosqlite:///sqlite.db` (SQLite3)
-> - `sqlite+aiosqlite:///:memory:` (SQLite3 in-memory)
+> - `sqlite+aiosqlite:///sqlite.db` (SQLite)
+> - `sqlite+aiosqlite:///:memory:` (SQLite in-memory mode)
 > - `mysql+asyncmy://<username>:<password>@<host>:<port>/<dbname>` (MySQL)
 > - `postgresql+asyncpg://<username>:<password>@<host>:<port>/<dbname>` (PostgreSQL)
 > - `mongodb://<username>:<password>@<host>:<port>/<dbname>` (MongoDB)
 >
-> ⚠️ **Note**: Failing to initialize the database might result in erroneous outcomes. If initialization is required, append `?reinitialize=true` to your database URI. For instance:
->
-> ```
-> sqlite+aiosqlite:///sqlite.db?reinitialize=true
-> ```
+> ⚠️ **Note**: Ensure database initialization to prevent issues. If needed, append `?reinitialize=true` to your database URI, e.g., `sqlite+aiosqlite:///sqlite.db?reinitialize=true`.
 
-#### Using Docker:
+#### Using Docker compose:
 
-1. Build the Docker image:
+Run the application inside a Docker container:
+```sh
+$ DATABASE_URI=<database-uri> docker-compose up app
+```
 
-   ```sh
-   $ docker build -t <your-image-name> .
-   ```
+#### Using Make (with Poetry):
 
-2. Run the Docker container:
+1. Ensure Python (version >= 3.10) and Poetry (version >= 1.5, < 1.6) are installed.
 
-   ```sh
-   $ DATABASE_URI=<database-uri> docker run -p 8000:8000 <your-image-name>
-   ```
-
-#### Using Make (via Poetry):
-
-1. Set up the poetry environment:
-
-   Ensure you have Python (version >= 3.10) and Poetry (version >= 1.5, < 1.6).
-
+2. Configure your environment:
    ```sh
    $ poetry env use python3.10
    $ poetry shell
    $ poetry install --no-root
    ```
 
-2. Launch the application:
-
+3. Launch the application:
    ```sh
    $ DATABASE_URI=<database-uri> make up
    ```
 
-Upon successful initialization, the application will be accessible via [http://localhost:8000](http://localhost:8000/).
+After setup, access the application at [http://localhost:8000](http://localhost:8000/).
 
 ![fastapi-doc](./docs/fastapi-doc.png)
 
@@ -156,61 +151,48 @@ To test against a single database, specify its URI by setting the `DATABASE_URI`
 $ DATABASE_URI=<database-uri> pytest
 ```
 
-For the list of supported database URIs, please refer to the [**Supported Database URIs**](#supported-database-uris)
-
+> For the list of supported database URIs, please refer to the [**Supported Database URIs**](#supported-database-uris)
+>
 > ⚠️ **Note**: We recommend using a different `dbname` for testing, preferably appending "_test" (e.g., "mydatabase_test"). This ensures your tests don't interfere with your main application data.
 
 #### Multi-Database Testing:
 
 To validate your application across various databases like in-memory SQLite, SQLite, MySQL, Postgres and MongoDB, you'll utilize the tool called `bats`.
 
-##### 1. Installing `bats`
+1. Installing `bats`
 
-**-** On macOS: use [Homebrew](https://brew.sh/)
+   **-** On macOS: use [Homebrew](https://brew.sh/)
 
-  ```sh
-  $ brew install bats
-  ```
+      ```sh
+      $ brew install bats
+      ```
+   
+   **-** On Linux: compile from the official [GitHub repository](https://github.com/bats-core/bats-core)
+   
+   ```sh
+   $ git clone https://github.com/bats-core/bats-core.git
+   $ cd bats-core
+   $ ./install.sh /usr/local
+   ```
+   
+2. Running Multi-DB Tests
 
-**-** On Linux: compile from the official [GitHub repository](https://github.com/bats-core/bats-core)
-
-  ```sh
-  $ git clone https://github.com/bats-core/bats-core.git
-  $ cd bats-core
-  $ ./install.sh /usr/local
-  ```
-
-##### 2. Running Multi-DB Tests
-
-Once `bats` is installed:
-
-###### 2-1. Initialize the databases:
-
-```sh
-$ make db
-```
-
-###### 2-2. Execute the tests:
-
-```sh
-$ make test
-```
-
-###### Sample Test Results:
-
-When executed across different databases, your test results might resemble the following:
-
-```
-api_db_test.bats
- ✓ Test using SQLite [3136]
- ✓ Test using in-memory SQLite [2399]
- ✓ Test using MySQL [3615]
- ✓ Test using PostgreSQL [3437]
- ✓ Test using MongoDB [4099]
-
-5 tests, 0 failures in 18 seconds
-```
-
+      ```sh
+      $ make test
+      ```
+      
+   When executed across different databases, your test results might resemble the following:
+   
+   ```
+   api_db_test.bats
+    ✓ Test using SQLite [3136]
+    ✓ Test using in-memory SQLite [2399]
+    ✓ Test using MySQL [3615]
+    ✓ Test using PostgreSQL [3437]
+    ✓ Test using MongoDB [4099]
+   
+   5 tests, 0 failures in 18 seconds
+   ```
 
 ### 🔍 Checking Code Coverage
 
@@ -221,6 +203,10 @@ To generate a coverage report:
 ```sh
 $ pytest --cov
 ```
+
+## Enjoying the Project?
+
+A simple ⭐ can go a long way in showing your appreciation!
 
 [^1]: https://www.cosmicpython.com/book/chapter_06_uow.html
 [^2]: https://en.wikipedia.org/wiki/Dependency_injection
