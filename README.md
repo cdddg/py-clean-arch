@@ -5,12 +5,14 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
 ## Changelog
 
 - **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived in April 2021. <br>**Description**: Initial proposal by me.
+
 - **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived in July 2023. <br>**Description**: Improvements from v1. See the [merged PRs from PR #1 to PR #10](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-04-09..2023-08-15).
-- **v3**: Current version on the `master` branch.<br> 🎯 Merged to main in August 2023. <br>**Description**: Transition to Python-centric design from Go. Start with PR [#11](https://github.com/cdddg/py-clean-arch/pull/11) and see [all subsequent PRs](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-16..2099-12-31).
+
+- ✏️ **v3**: Current version on the `master` branch. <br>Merged to main in August 2023 and still evolving. <br>**Description**: Transition to Python-centric design from Go. Start with PR [#11](https://github.com/cdddg/py-clean-arch/pull/11) and see [all subsequent PRs](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-16..2099-12-31).
 
 ## Description
 
-**Clean Architecture**, as coined by [Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), emphasizes several foundational principles:
+The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), emphasizes several foundational principles:
 
 1. **Framework Independence**: The system isn't reliant on external libraries or frameworks.
 2. **Testability**: Business rules can be validated without any external elements.
@@ -25,7 +27,7 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
 
 This project doesn't just adhere to Uncle Bob's Clean Architecture principles; it also brings in modern adaptions and extended features to suit contemporary development needs:
 
-- **GraphQL vs HTTP**:<br>The `deliveries` module houses two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
+- **GraphQL vs HTTP**:<br>The `deliveries` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
 - **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational and NoSQL databases. `relational_db` manages operations for databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` manages operations for NoSQL databases like MongoDB and CouchDB.
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
@@ -40,15 +42,15 @@ Based on Uncle Bob's Clean Architecture principles, this project's structure and
 
 #### Directory Structure
 
-Here's an insight into the project's high-level organization, detailing only primary directories and key files:
+Here's a glimpse of the project's high-level structure, highlighting primary directories and key files:
 
-```
+```ini
 src
 ├── app/
 │   ├── deliveries/         - External interfaces like HTTP & GraphQL endpoints.
 │   │   ├── graphql/        - GraphQL components for a flexible API.
-│   │   └── http/           - RESTful API routes and controllers
-│   │                         ('Frameworks and Drivers' in Clean Architecture)
+│   │   └── http/           - RESTful API routes and controllers.
+│   │                         ('Frameworks and Drivers' and part of 'Interface Adapters' in Clean Architecture)
 │   │
 │   ├── usecases/           - Contains application-specific business rules.
 │   │                         ('Use Cases' in Clean Architecture)
@@ -66,7 +68,10 @@ src
 │                             ('Entities' in Clean Architecture)
 │
 ├── common/                 - Shared code and utilities.
-├── settings/               - Application configurations.
+├── settings/
+│   └── db/                 - Database configurations.
+│                             ('Frameworks and Drivers' in Clean Architecture)
+│
 ├── tests/                  - Testing module for the application.
 │   ├── unit/               - Tests for individual components in isolation.
 │   └── integration/        - Tests for interactions between components.
@@ -89,30 +94,39 @@ The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture 
 
 ## How To Run This Project
 
-### 🐳 Initialize the Database Using Docker-Compose
+### 🐳 Database Setup
 
-Before launching or testing the application, make sure to initialize your database with Docker-Compose:
+This application is designed to support multiple databases. Choose one of the following setups:
+
+#### Default Configuration (In-Memory SQLite)
+
+The application will default to using an **In-Memory SQLite** database if no `DATABASE_URI` is specified.
+
+#### Diverse Databases with Docker-Compose
+
+For other databases, Docker-Compose can be used:
 
 ```sh
 $ docker compose down --remove-orphans -v
 $ docker compose up dockerize
 ```
 
-### 🚀 Launch the Application
+### 🚀 Launching the Application
 
-When launching, set up the environment variables, especially `DATABASE_URI`. If left unset, the application defaults to an in-memory SQLite database.
+1. If employing a specific database, ensure the `DATABASE_URI` environment variable is set appropriately.
+2. Proceed to initiate the application.
 
 <a id="supported-database-uris"></a>
 
-> **Supported Database URIs**:
+> **Supported Database URIs:**:
 >
 > - `sqlite+aiosqlite:///sqlite.db` (SQLite)
-> - `sqlite+aiosqlite:///:memory:` (SQLite in-memory mode)
+> - `sqlite+aiosqlite:///:memory:` (In-Memory SQLite)
 > - `mysql+asyncmy://<username>:<password>@<host>:<port>/<dbname>` (MySQL)
 > - `postgresql+asyncpg://<username>:<password>@<host>:<port>/<dbname>` (PostgreSQL)
 > - `mongodb://<username>:<password>@<host>:<port>/<dbname>` (MongoDB)
 >
-> ⚠️ **Note**: Ensure database initialization to prevent issues. If needed, append `?reinitialize=true` to your database URI, e.g., `sqlite+aiosqlite:///sqlite.db?reinitialize=true`.
+> 📌 **Note**: If encountering issues with database initialization, consider appending **`reinitialize=true`** to the `DATABASE_URI` for reconfiguration, e.g., `sqlite+aiosqlite:///sqlite.db?reinitialize=true`.
 
 #### Using Docker compose:
 
@@ -153,11 +167,11 @@ $ DATABASE_URI=<database-uri> pytest
 
 > For the list of supported database URIs, please refer to the [**Supported Database URIs**](#supported-database-uris)
 >
-> ⚠️ **Note**: We recommend using a different `dbname` for testing, preferably appending "_test" (e.g., "mydatabase_test"). This ensures your tests don't interfere with your main application data.
+> 📌 **Note**: For testing, it's recommended to use a different `dbname`, preferably with a "_test" suffix (e.g., "mydatabase_test"). This ensures your tests don't interfere with your main application data.
 
 #### Multi-Database Testing:
 
-To validate your application across various databases like in-memory SQLite, SQLite, MySQL, Postgres and MongoDB, you'll utilize the tool called `bats`.
+To validate your application across various databases like In-Memory SQLite, SQLite, MySQL, Postgres and MongoDB, you'll utilize the tool called `bats`.
 
 1. Installing `bats`
 
@@ -177,26 +191,23 @@ To validate your application across various databases like in-memory SQLite, SQL
    
 2. Running Multi-DB Tests
 
-      ```sh
+      ```console
       $ make test
-      ```
       
-   When executed across different databases, your test results might resemble the following:
-   
-   ```
-   api_db_test.bats
+      api_db_test.bats
     ✓ Test using SQLite [3136]
-    ✓ Test using in-memory SQLite [2399]
+    ✓ Test using In-Memory SQLite [2399]
     ✓ Test using MySQL [3615]
     ✓ Test using PostgreSQL [3437]
     ✓ Test using MongoDB [4099]
    
    5 tests, 0 failures in 18 seconds
    ```
+   
 
 ### 🔍 Checking Code Coverage
 
-As part of our commitment to maintain high standards, we use `pytest-cov` to ensure extensive test coverage. Currently, our code coverage stands at 91.33%. [^4]
+To demonstrate best practices and emphasize the importance of thorough testing, we've integrated `pytest-cov` to monitor our test coverage. [^4] 
 
 To generate a coverage report:
 
@@ -208,7 +219,10 @@ $ pytest --cov
 
 A simple ⭐ can go a long way in showing your appreciation!
 
+
+
+
 [^1]: https://www.cosmicpython.com/book/chapter_06_uow.html
 [^2]: https://en.wikipedia.org/wiki/Dependency_injection
 [^3]: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
-[^4]: Test results as of [today's date, e.g., August 20, 2023]
+[^4]: The coverage rate for this 'py-clean-arch' project stands at 91.33%, based on test results from August 20, 2023.
