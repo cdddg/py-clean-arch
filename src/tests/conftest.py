@@ -5,7 +5,6 @@ import pytest
 from httpx import AsyncClient
 from pytest import Config
 
-from app.repositories.relational_db.pokemon.orm import Base
 from main import app as fastapi_app
 from settings.db import IS_NOSQL, IS_RELATIONAL_DB, initialize_db
 
@@ -42,11 +41,12 @@ if IS_RELATIONAL_DB:
     from sqlalchemy import event
     from sqlalchemy.sql import text
 
+    from app.repositories.relational_db.pokemon.orm import Base
     from settings.db import AsyncRelationalDBEngine, AsyncScopedSession
 
     @pytest.fixture(scope='module', autouse=True)
     async def engine():
-        await initialize_db(**{'declarative_base': Base})
+        await initialize_db(declarative_base=Base)
 
     @pytest.fixture(scope='function', autouse=True)
     async def session():

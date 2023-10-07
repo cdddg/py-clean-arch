@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-from .. import DATABASE_URI, IS_TEST, SQLALCHEMY_ECHO, SQLALCHEMY_ISOLATION_LEVEL
+from .. import DATABASE_URI, IS_TESTING, SQLALCHEMY_ECHO, SQLALCHEMY_ISOLATION_LEVEL
 from ..test import pytest_scope_func
 from .base import normalize_uri, should_reinitialize
 
@@ -28,7 +28,7 @@ AsyncMySQLScopedSession = async_scoped_session(
         autocommit=False,
         class_=AsyncSession,
     ),
-    scopefunc=current_task if not IS_TEST else pytest_scope_func,
+    scopefunc=current_task if not IS_TESTING else pytest_scope_func,
 )
 
 

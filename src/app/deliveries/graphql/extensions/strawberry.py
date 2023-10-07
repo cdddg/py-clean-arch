@@ -5,7 +5,7 @@ from strawberry.exceptions import GraphQLError  # pyright: ignore[reportPrivateI
 from strawberry.types import ExecutionContext
 from strawberry.utils.logging import StrawberryLogger
 
-from settings import IS_TEST
+from settings import IS_TESTING
 
 
 class Schema(strawberry.Schema):
@@ -21,7 +21,7 @@ class Schema(strawberry.Schema):
             _error: Union[Exception, GraphQLError] = error
             if isinstance(error, GraphQLError) and error.original_error:
                 _error = error.original_error
-            if IS_TEST:
+            if IS_TESTING:
                 raise _error
 
             error.message = f'{type(_error).__name__}: {error.message}'
