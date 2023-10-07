@@ -1,6 +1,12 @@
 """
 Dependency Injection Configuration for the Application.
 
+This module handles the setup and configuration for database interactions in the application.
+The current architecture is designed with the flexibility to support multiple databases in the future.
+All related database packages are imported for this purpose.
+However, as a best practice, if a specific database becomes unnecessary, 
+its associated code should be removed to streamline and maintain the clarity of the application.
+
 For specialized or more advanced requirements, consider some of the recommended DI tools within the Python community:
     - https://github.com/python-injector/injector
     - https://github.com/ets-labs/python-dependency-injector

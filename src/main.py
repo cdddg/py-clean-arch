@@ -6,9 +6,8 @@ from app.deliveries.graphql.extensions.fastapi import customize_graphql_openapi
 from app.deliveries.graphql.pokemon.router import router as pokemon_graphql_router
 from app.deliveries.http.extension import add_exception_handlers as http_add_exception_handlers
 from app.deliveries.http.pokemon.router import router as pokemon_http_router
-from app.repositories.relational_db.pokemon.orm import Base
 from settings import APP_NAME, APP_VERSION
-from settings.db import initialize_db
+from settings.db import IS_RELATIONAL_DB, initialize_db
 
 app = FastAPI(title=APP_NAME, version=APP_VERSION)
 app.add_exception_handler(
@@ -34,7 +33,13 @@ customize_graphql_openapi(app)
 
 @app.on_event('startup')
 async def startup():
-    await initialize_db(**{'declarative_base': Base})
+    # pylint: disable=import-outside-toplevel
+    kwargs = {}
+    if IS_RELATIONAL_DB:
+        from app.repositories.relational_db.pokemon.orm import Base  # fmt: skip
+        kwargs = {'declarative_base': Base}
+
+    await initialize_db(**kwargs)
 
 
 @app.get('/', include_in_schema=False)
