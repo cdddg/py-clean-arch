@@ -36,10 +36,10 @@ class AsyncSqlAlchemyUnitOfWork:
     async def remove(self):
         # https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.async_scoped_session.remove
 
-        from settings import IS_TEST
+        from settings import IS_TESTING
         from settings.db import AsyncScopedSession
 
-        if not IS_TEST:
+        if not IS_TESTING:
             await AsyncScopedSession.remove()
 
 
