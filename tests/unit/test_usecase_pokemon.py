@@ -23,12 +23,12 @@ Overall, this test module showcases how to effectively unit test asynchronous us
 
 import pytest
 
-from app.usecases import pokemon as pokemon_ucase
 from common.type import PokemonNumberStr
+from usecases import pokemon as pokemon_ucase
 
 
 @pytest.mark.anyio
-async def test_get_pokemon(mock_async_uow):
+async def test_get_pokemon(mock_async_unit_of_work):
     no = PokemonNumberStr('9999')
-    await pokemon_ucase.get_pokemon(no)
-    assert mock_async_uow.pokemon_repo.get.call_count == 1
+    await pokemon_ucase.get_pokemon(mock_async_unit_of_work, no)
+    assert mock_async_unit_of_work.pokemon_repo.get.call_count == 1

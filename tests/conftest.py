@@ -1,5 +1,5 @@
 import os
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from httpx import AsyncClient
@@ -27,13 +27,12 @@ async def client():
 
 
 @pytest.fixture(scope='session')
-async def mock_async_uow():
+async def mock_async_unit_of_work():
     auow = MagicMock()
     auow.__aenter__.return_value = auow
     auow.pokemon_repo = AsyncMock()
 
-    with patch('app.usecases.pokemon.async_unit_of_work', return_value=auow):
-        yield auow
+    yield auow
 
 
 if IS_RELATIONAL_DB:
@@ -41,7 +40,7 @@ if IS_RELATIONAL_DB:
     from sqlalchemy import event
     from sqlalchemy.sql import text
 
-    from app.repositories.relational_db.pokemon.orm import Base
+    from repositories.relational_db.pokemon.orm import Base
     from settings.db import AsyncRelationalDBEngine, AsyncScopedSession
 
     @pytest.fixture(scope='module', autouse=True)
@@ -61,7 +60,7 @@ if IS_RELATIONAL_DB:
             async_session = AsyncScopedSession(bind=conn)
 
             @event.listens_for(async_session.sync_session, 'after_transaction_end')
-            def end_savepoint(sess, transaction):
+            def end_savepoint(*args, **kwargs):
                 if conn.closed:
                     return
                 if not conn.in_nested_transaction():
