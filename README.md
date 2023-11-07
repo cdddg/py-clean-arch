@@ -32,9 +32,10 @@ This project doesn't just adhere to Uncle Bob's Clean Architecture principles; i
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
 
-- **Unit of Work Pattern**:<br>This pattern ensures that all operations within a single transaction are completed successfully, or none are completed at all. [^1]
-- **Dependency Injection Pattern**:<br>Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^2]
-- **Asynchronous SQLalchemy**:<br>By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^3]
+- **Repository Pattern**:<br>A simplifying abstraction that decouples the model layer from data storage, promoting flexibility and maintainability in the codebase.[^1]
+- **Unit of Work Pattern**:<br>This pattern ensures that all operations within a single transaction are completed successfully, or none are completed at all. [^2]
+- **Dependency Injection Pattern**:<br>Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^3]
+- **Asynchronous SQLalchemy**:<br>By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^4]
 
 ### 🧱 Project Structure Overview & Clean Architecture Mapping
 
@@ -45,38 +46,40 @@ Based on Uncle Bob's Clean Architecture principles, this project's structure and
 Here's a glimpse of the project's high-level structure, highlighting primary directories and key files:
 
 ```ini
-src
-├── app/
-│   ├── deliveries/         - External interfaces like HTTP & GraphQL endpoints.
-│   │   ├── graphql/        - GraphQL components for a flexible API.
-│   │   └── http/           - RESTful API routes and controllers.
-│   │                         ('Frameworks and Drivers' and part of 'Interface Adapters' in Clean Architecture)
+./
+├── ...
+├── src/
+│   ├── di/                   - Dependency injection configurations for managing dependencies.
+│   │   ├── dependency_injection.py
+│   │   └── unit_of_work.py
 │   │
-│   ├── usecases/           - Contains application-specific business rules.
-│   │                         ('Use Cases' in Clean Architecture)
+│   ├── entrypoints/          - External interfaces like HTTP & GraphQL endpoints.
+│   │   ├── graphql/          - GraphQL components for a flexible API.
+│   │   └── http/             - RESTful API routes and controllers.
+│   │                           ('Frameworks and Drivers' and part of 'Interface Adapters' in Clean Architecture)
 │   │
-│   ├── repositories/       - Data interaction layer, converting domain data to/from database format.
-│   │   ├── relational_db/  - Operations for relational databases (e.g., SQLite, MySQL, PostgreSQL).
-│   │   └── nosql/          - Operations for NoSQL databases (e.g., MongoDB, CouchDB).
-│   │                         ('Interface Adapters' in Clean Architecture)
+│   ├── usecases/             - Contains application-specific business rules and implementations.
+│   │                           ('Use Cases' in Clean Architecture)
 │   │
-│   └── di/                 - Dependency injection module.
-│       ├── dependency_injection.py
-│       └── unit_of_work.py
+│   ├── repositories/         - Data interaction layer, converting domain data to/from database format.
+│   │   ├── nosql/            - Operations for NoSQL databases (e.g., MongoDB, CouchDB).
+│   │   └── relational_db/    - Operations for relational databases (e.g., SQLite, MySQL, PostgreSQL).
+│   │                           ('Interface Adapters' in Clean Architecture)
+│   │
+│   ├── models/               - Domain entities representing the business data.
+│   │                           ('Entities' in Clean Architecture)
+│   │
+│   ├── common/               - Shared code and utilities.
+│   ├── settings/
+│   │   └── db/               - Database configurations.
+│   │                           ('Frameworks and Drivers' in Clean Architecture)
+│   │
+│   └── main.py               - Main file to launch the application.
 │
-├── models/                 - Entity representations & core business logic.
-│                             ('Entities' in Clean Architecture)
-│
-├── common/                 - Shared code and utilities.
-├── settings/
-│   └── db/                 - Database configurations.
-│                             ('Frameworks and Drivers' in Clean Architecture)
-│
-├── tests/                  - Testing module for the application.
-│   ├── unit/               - Tests for individual components in isolation.
-│   └── integration/        - Tests for interactions between components.
-│
-└── main.py                 - Main file to launch the application.
+└── tests/
+    ├── api_db_test.bats      - BATs tests for API and database interactions.
+    ├── integration/          - Integration tests for testing module interactions.
+    └── unit/                 - Unit tests for testing individual components in isolation.
 ```
 
 #### Clean Architecture Flow Diagram
@@ -200,14 +203,14 @@ To validate your application across various databases like In-Memory SQLite, SQL
     ✓ Test using MySQL [3615]
     ✓ Test using PostgreSQL [3437]
     ✓ Test using MongoDB [4099]
-   
+      
    5 tests, 0 failures in 18 seconds
    ```
    
 
 ### 🔍 Checking Code Coverage
 
-To demonstrate best practices and emphasize the importance of thorough testing, we've integrated `pytest-cov` to monitor our test coverage. [^4] 
+To demonstrate best practices and emphasize the importance of thorough testing, we've integrated `pytest-cov` to monitor our test coverage. [^5] 
 
 To generate a coverage report:
 
@@ -221,8 +224,8 @@ A simple ⭐ can go a long way in showing your appreciation!
 
 
 
-
-[^1]: https://www.cosmicpython.com/book/chapter_06_uow.html
-[^2]: https://en.wikipedia.org/wiki/Dependency_injection
-[^3]: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
-[^4]: The coverage rate for this 'py-clean-arch' project stands at 91.33%, based on test results from August 20, 2023.
+[^1]: https://www.cosmicpython.com/book/chapter_02_repository.html
+[^2]: https://www.cosmicpython.com/book/chapter_06_uow.html
+[^3]: https://en.wikipedia.org/wiki/Dependency_injection
+[^4]: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
+[^5]: The coverage rate for this 'py-clean-arch' project stands at 91.33%, based on test results from August 20, 2023.

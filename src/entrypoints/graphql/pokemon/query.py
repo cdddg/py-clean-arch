@@ -3,8 +3,10 @@ from typing import Annotated
 import strawberry
 from strawberry.types import Info
 
-import app.usecases.pokemon as pokemon_ucase
+import usecases.pokemon as pokemon_ucase
 from common.type import PokemonNumberStr
+from di.dependency_injection import injector
+from di.unit_of_work import AbstractUnitOfWork
 
 from .mapper import PokemonNodeMapper
 from .schema import PokemonNode
@@ -14,7 +16,8 @@ from .schema import PokemonNode
 class Query:
     @strawberry.field
     async def pokemons(self, _: Info) -> list[PokemonNode]:
-        pokemons = await pokemon_ucase.get_pokemons()
+        async_unit_of_work = injector.get(AbstractUnitOfWork)
+        pokemons = await pokemon_ucase.get_pokemons(async_unit_of_work)
 
         return list(map(PokemonNodeMapper.entity_to_node, pokemons))
 
@@ -24,6 +27,8 @@ class Query:
         no: Annotated[str, strawberry.argument(description=PokemonNumberStr.__doc__)],
         _: Info,
     ) -> PokemonNode:
-        pokemon = await pokemon_ucase.get_pokemon(PokemonNumberStr(no))
+        async_unit_of_work = injector.get(AbstractUnitOfWork)
+        no = PokemonNumberStr(no)
+        pokemon = await pokemon_ucase.get_pokemon(async_unit_of_work, no)
 
         return PokemonNodeMapper.entity_to_node(pokemon)

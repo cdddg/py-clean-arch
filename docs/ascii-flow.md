@@ -3,7 +3,7 @@
 | Frameworks & Drivers  |    |
 | (graphql, http)       |    |
 +-----------------------+    |
-     |            ^          | deliveries/graphql/, http/
+     |            ^          | entrypoints/graphql/, http/
      v            |          |
 +-----------------------+    |
 | Interface Adapters    |    |

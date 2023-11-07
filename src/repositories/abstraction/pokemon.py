@@ -1,5 +1,5 @@
 import abc
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from common.type import PokemonNumberStr
 from models.pokemon import (
@@ -11,12 +11,14 @@ from models.pokemon import (
 
 
 class AbstractPokemonRepository(abc.ABC):
+    session: Any
+
     @abc.abstractmethod
     async def get(self, no: PokemonNumberStr):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def list(self, params: Optional[GetPokemonParamsModel]) -> List[PokemonModel]:
+    async def list(self, params: Optional[GetPokemonParamsModel] = None) -> List[PokemonModel]:
         raise NotImplementedError
 
     @abc.abstractmethod
