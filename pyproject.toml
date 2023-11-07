@@ -13,6 +13,7 @@ packages = [{include = "py_clean_arch"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = "<=1.0.0"
+injector = "^0.21.0"
 pydantic = "<2.0.0"
 strawberry-graphql = "^0.204.0"
 uvicorn = "^0.23.2"
@@ -26,6 +27,7 @@ pylint = "^2.17.5"
 pylint-quotes = "^0.2.3"
 pyright = "^1.1.326"
 remove-print-statements = "^0.5.2"
+ruff = "^0.1.4"
 
 [tool.poetry.group.test.dependencies]
 gevent = "^23.7.0"
@@ -53,33 +55,41 @@ line_length = 100
 [tool.pylint.master]
 init-hook='import sys; sys.path.append(".")'
 
-[tool.pylint.messages_control]
+[tool.pylint]
+extension-pkg-whitelist = ["pydantic"]
+load-plugins = ["pylint_quotes"]
 max-line-length = 100
-extension-pkg-whitelist = "pydantic"
-# Some of the disabled checks are personal preferences but not needed for this project
 disable = [
-    "R",
-    # "arguments-differ",
-    # "broad-except",
-    "fixme",
-    "invalid-name",
-    "logging-fstring-interpolation",
-    "missing-class-docstring",
-    "missing-function-docstring",
-    "missing-module-docstring",
-    # "no-self-argument",
-    # "pointless-statement",
-    # "protected-access",
-    # "raise-missing-from",
-    # "singleton-comparison",
-    # "super-init-not-called",
-    # "too-many-lines",
-    # "unidiomatic-typecheck",
-    # "unnecessary-lambda",
-    "unused-argument",
-    # "unused-import",
-    "line-too-long",
+    "W0613", # unused-argument
+    "C0114", # missing-module-docstring
+    "C0115", # missing-class-docstring
+    "C0116", # missing-function-docstring
+    "C0301", # line-too-long
+    "W0511", # fixme
+    "E0213", # no-self-argument
+    "C0103", # invalid-name
+    "W0707", # raise-missing-from
+    "C0123", # unidiomatic-typecheck
+    "W0613", # unused-argument
+    "C0301", # line-too-long
+    "R0903", # too-few-public-methods
 ]
+
+[tool.ruff]
+line-length = 100
+select = [
+    "D",    # pydocstyle
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "T20",  # flake8-print
+]
+ignore = [
+    "E501", # line too long, handled by black
+    "D10",  # Missing docstring
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
 
 [tool.pyright]
 typeCheckingMode = "basic"
@@ -89,6 +99,7 @@ reportUnusedCoroutine = true
 reportUnusedVariable = true
 
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 minversion = "7.2"
 addopts = """
 -s
