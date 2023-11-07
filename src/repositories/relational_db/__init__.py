@@ -1,0 +1,1 @@
+from .pokemon.repository import RelationalDBPokemonRepository
