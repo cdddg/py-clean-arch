@@ -10,10 +10,10 @@ class CreatePokemonRequest(BaseModel):
     name: str
     type_names: Optional[list[str]] = None
     previous_evolution_numbers: Optional[list[str]] = Field(
-        default=[], unique_items=True, description=PokemonNumberStr.__doc__
+        default=[], description=PokemonNumberStr.__doc__
     )
     next_evolution_numbers: Optional[list[str]] = Field(
-        default=[], unique_items=True, description=PokemonNumberStr.__doc__
+        default=[], description=PokemonNumberStr.__doc__
     )
 
 
@@ -21,10 +21,10 @@ class UpdatePokemonRequest(BaseModel):
     name: Optional[str]
     type_names: list[str] = []
     previous_evolution_numbers: Optional[list[str]] = Field(
-        default=None, unique_items=True, description=PokemonNumberStr.__doc__
+        default=None, description=PokemonNumberStr.__doc__
     )
     next_evolution_numbers: Optional[list[str]] = Field(
-        default=None, unique_items=True, description=PokemonNumberStr.__doc__
+        default=None, description=PokemonNumberStr.__doc__
     )
 
 
@@ -46,4 +46,4 @@ class EvolutionResponse(BaseModel):
     name: str
 
 
-PokemonResponse.update_forward_refs()
+PokemonResponse.model_rebuild()
