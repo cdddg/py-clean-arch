@@ -8,18 +8,22 @@ DIFF_FILES = `git diff $(GIT_ARGS) | grep .py$$`
 
 
 format:
-	echo $(DIFF_FILES) | sed -e 's/ /\n/g' ;
 	@if [[ ! -z ${DIFF_FILES} ]]; then \
-		remove-print-statements $(DIFF_FILES); \
+		echo "> autoflake"; \
 		autoflake --remove-all-unused-imports --ignore-init-module-imports -r -i $(DIFF_FILES); \
+		echo "> isort"; \
 		isort -settings_path=$(SETTINGS_PATH) --quiet $(DIFF_FILES); \
-		black --config $(SETTINGS_PATH) $(DIFF_FILES); \
+		echo "> black"; \
+		black --config $(SETTINGS_PATH) -q $(DIFF_FILES); \
 	fi
 
 lint:
-	echo $(DIFF_FILES) | sed -e 's/ /\n/g' ;
 	@if [[ ! -z $(DIFF_FILES) ]]; then \
-		pylint --rcfile=$(SETTINGS_PATH) --load-plugins=pylint_quotes -sn -v $(DIFF_FILES); \
+		echo "> pylint"; \
+		pylint --rcfile=$(SETTINGS_PATH) -sn $(DIFF_FILES); \
+		echo "> ruff"; \
+		ruff check $(DIFF_FILES); \
+		echo "> pyright"; \
 		pyright $(DIFF_FILES); \
 	fi
 
