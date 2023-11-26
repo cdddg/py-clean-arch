@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python",
+            "type": "python",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "src.main:app",
+                "--reload",
+                "--app-dir",
+                "./src",
+            ],
+            "cwd": "${workspaceRoot}",
+            "env": {
+                "API_DOCS": "true"
+            },
+            "justMyCode": false,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Testing",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "args": [
+                "-c=./pyproject.toml",
+                "-sxvv",
+                "./"
+              ],
+            "cwd": "${workspaceRoot}",
+            "env": {
+                "TEST": "true"
+            },
+            "justMyCode": false,
+            "console": "integratedTerminal"
+        }
+    ]
+}
