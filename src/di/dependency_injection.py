@@ -1,4 +1,15 @@
 """
+
+
+
+
+
+
+
+
+
+
+
 Dependency Injection Configuration for the Application.
 
 This module sets up dependency injection for database interactions within the
@@ -79,9 +90,16 @@ class NoSQLModule(Module):
         return AsyncMotorUnitOfWork(AsyncMongoDBEngine, pokemon_repo)
 
 
-if IS_RELATIONAL_DB:
-    injector = Injector([RelationalDBModule()])
-elif IS_NOSQL:
-    injector = Injector([NoSQLModule()])
-else:
-    raise RuntimeError('Invalid database type configuration. It\'s neither relational nor NoSQL')
+class DatabaseModuleFactory:
+    def create_module(self):
+        if IS_RELATIONAL_DB:
+            return RelationalDBModule()
+        if IS_NOSQL:
+            return NoSQLModule()
+
+        raise RuntimeError(
+            'Invalid database type configuration. It\'s neither relational nor NoSQL'
+        )
+
+
+injector = Injector([DatabaseModuleFactory().create_module()])

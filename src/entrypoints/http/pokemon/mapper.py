@@ -44,7 +44,7 @@ class PokemonRequestMapper:
             instance.next_evolution_numbers = list(
                 map(PokemonNumberStr, instance.next_evolution_numbers)
             )
-        kwargs = instance.dict(exclude_unset=True)
+        kwargs = instance.model_dump(exclude_unset=True)
 
         return UpdatePokemonModel(**kwargs)
 

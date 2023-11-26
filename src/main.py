@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -9,7 +11,22 @@ from entrypoints.http.pokemon.router import router as pokemon_http_router
 from settings import APP_NAME, APP_VERSION
 from settings.db import IS_RELATIONAL_DB, initialize_db
 
-app = FastAPI(title=APP_NAME, version=APP_VERSION)
+
+# https://fastapi.tiangolo.com/advanced/events/#lifespan
+@asynccontextmanager
+async def lifespan(app: FastAPI):  # pylint: disable=redefined-outer-name
+    # pylint: disable=import-outside-toplevel
+
+    kwargs = {}
+    if IS_RELATIONAL_DB:
+        from repositories.relational_db.pokemon.orm import Base  # fmt: skip
+        kwargs = {'declarative_base': Base}
+
+    await initialize_db(**kwargs)
+    yield
+
+
+app = FastAPI(title=APP_NAME, version=APP_VERSION, lifespan=lifespan)
 app.add_exception_handler(
     Exception,
     lambda request, exc: JSONResponse({'error': f'{type(exc).__name__}: {exc}'}, status_code=500),
@@ -29,18 +46,6 @@ http_add_exception_handlers(app)
 # deliveries/graphql
 app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
 customize_graphql_openapi(app)
-
-
-@app.on_event('startup')
-async def startup():
-    # pylint: disable=import-outside-toplevel
-
-    kwargs = {}
-    if IS_RELATIONAL_DB:
-        from repositories.relational_db.pokemon.orm import Base  # fmt: skip
-        kwargs = {'declarative_base': Base}
-
-    await initialize_db(**kwargs)
 
 
 @app.get('/', include_in_schema=False)

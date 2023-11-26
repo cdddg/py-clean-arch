@@ -1,6 +1,6 @@
 import abc
 from abc import abstractmethod
-from typing import Any, Optional, Type
+from typing import Any, Generic, Optional, Type, TypeVar
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,15 +12,17 @@ from repositories.relational_db import RelationalDBPokemonRepository
 # pylint: disable=import-outside-toplevel,attribute-defined-outside-init
 
 
-class AbstractUnitOfWork(abc.ABC):
+T = TypeVar('T', bound=AbstractPokemonRepository)
+
+
+class AbstractUnitOfWork(Generic[T], abc.ABC):
     pokemon_repo: AbstractPokemonRepository
 
-    @abc.abstractmethod
-    def __init__(self, pokemon_repo: AbstractPokemonRepository):
+    def __init__(self, pokemon_repo: T):
         self.pokemon_repo = pokemon_repo
 
     @abstractmethod
-    async def __aenter__(self) -> 'AbstractUnitOfWork':
+    async def __aenter__(self) -> 'AbstractUnitOfWork[T]':
         raise NotImplementedError
 
     @abstractmethod
@@ -28,7 +30,7 @@ class AbstractUnitOfWork(abc.ABC):
         raise NotImplementedError
 
 
-class AsyncSqlAlchemyUnitOfWork(AbstractUnitOfWork):
+class AsyncSqlAlchemyUnitOfWork(AbstractUnitOfWork[RelationalDBPokemonRepository]):
     def __init__(self, session: AsyncSession, pokemon_repo: RelationalDBPokemonRepository):
         super().__init__(pokemon_repo)
         self._session = session
@@ -58,7 +60,7 @@ class AsyncSqlAlchemyUnitOfWork(AbstractUnitOfWork):
             await AsyncScopedSession.remove()
 
 
-class AsyncMotorUnitOfWork(AbstractUnitOfWork):
+class AsyncMotorUnitOfWork(AbstractUnitOfWork[MongoDBPokemonRepository]):
     def __init__(self, engine: AsyncIOMotorClient, pokemon_repo: MongoDBPokemonRepository):
         super().__init__(pokemon_repo)
         self._engine = engine
