@@ -1,31 +1,63 @@
 {
     "language": "en",
+    "ignorePaths": [
+        "Dockerfile",
+        "Makefile",
+        "docker-compose.yml",
+        "pyproject.toml",
+        "scripts/mongodb-init.sh",
+    ],
+   "overrides": [
+        {
+            "filename": "src/settings/db/*.py",
+            "ignoreWords": ["doseq", "dbapi"]
+        },
+        {
+            "filename": "README.md",
+            "ignoreWords": ["yoan-thirion", "gitbook", "dbname", "mydatabase"]
+        }
+    ],
     "words": [
+        "aiosqlite",
         "anyio",
         "asyncio",
-        "auow",
+        "asyncmy",
+        "asyncpg",
+        "fastapi",
+        "httpx",
+        "pydantic",
+        "pytest",
+        "starlette",
+        "uvicorn",
+        "bson",
+
+        // sqlalchemy
         "autoflush",
         "autouse",
         "backref",
-        "Charizard",
-        "Charmander",
-        "Charmeleon",
-        "fastapi",
-        "httpx",
         "joinedload",
-        "NOSQL",
         "ondelete",
-        "pokemons",
         "primaryjoin",
-        "pytest",
         "scopefunc",
         "selectinload",
         "sessionmaker",
         "sqlalchemy",
-        "starlette",
-        "ucase",
+
+        // customized words
+        "NOSQL",
+        "Pokédex",
         "Usecase",
+        "auow",
+        "pokemons",
+        "ucase",
         "usecases",
-        "uvicorn"
+
+        // pokemon names
+        "Bulbasaur",
+        "Ivysaur",
+        "Venusaur",
+        "Charizard",
+        "Charmander",
+        "Charmeleon"
     ]
 }
