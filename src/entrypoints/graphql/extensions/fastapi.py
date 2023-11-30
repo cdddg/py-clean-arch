@@ -7,4 +7,4 @@ def customize_graphql_openapi(app: FastAPI) -> None:
         openapi_schema['paths']['/graphql']['get']['summary'] = 'GraphQL IDE access'
         openapi_schema['paths']['/graphql']['post'][
             'summary'
-        ] = 'Execute GraphQL Queries/Mutationss'
+        ] = 'Execute GraphQL Queries/Mutations'

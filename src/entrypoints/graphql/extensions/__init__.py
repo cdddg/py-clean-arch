@@ -1,5 +1,5 @@
 """
-Extensions for Deliveries Layer
+Extensions for Entrypoint Layer
 
 This module provides the base schema configuration for the GraphQL API using the strawberry framework.
 

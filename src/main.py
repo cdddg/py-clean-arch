@@ -39,11 +39,11 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-# deliveries/http
+# entrypoints/http
 app.include_router(pokemon_http_router, tags=['HTTP'])
 http_add_exception_handlers(app)
 
-# deliveries/graphql
+# entrypoints/graphql
 app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
 customize_graphql_openapi(app)
 
