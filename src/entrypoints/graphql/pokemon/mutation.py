@@ -22,7 +22,9 @@ class Mutation:
     ) -> PokemonNode:
         async_unit_of_work = injector.get(AbstractUnitOfWork)
         create_pokemon_data = PokemonInputMapper.create_input_to_entity(input_)
-        created_pokemon = await pokemon_ucase.create_pokemon(async_unit_of_work, create_pokemon_data)
+        created_pokemon = await pokemon_ucase.create_pokemon(
+            async_unit_of_work, create_pokemon_data
+        )
 
         return PokemonNodeMapper.entity_to_node(created_pokemon)
 
@@ -36,7 +38,9 @@ class Mutation:
         async_unit_of_work = injector.get(AbstractUnitOfWork)
         no = PokemonNumberStr(no)
         update_pokemon_data = PokemonInputMapper.update_input_to_entity(input_)
-        updated_pokemon = await pokemon_ucase.update_pokemon(async_unit_of_work, no, update_pokemon_data)
+        updated_pokemon = await pokemon_ucase.update_pokemon(
+            async_unit_of_work, no, update_pokemon_data
+        )
 
         return PokemonNodeMapper.entity_to_node(updated_pokemon)
 

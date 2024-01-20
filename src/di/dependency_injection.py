@@ -16,9 +16,9 @@ Usage:
 
 For detailed guidance and advanced use cases of dependency injection in Python,
 refer to:
-- https://github.com/python-injector/injector
-- https://github.com/ets-labs/python-dependency-injector
-- https://github.com/ivankorobkov/python-inject
+    - https://github.com/python-injector/injector
+    - https://github.com/ets-labs/python-dependency-injector
+    - https://github.com/ivankorobkov/python-inject
 """
 
 # pylint: disable=import-outside-toplevel
@@ -58,7 +58,9 @@ class RelationalDBModule(Module):
 class NoSQLModule(Module):
     @singleton
     @provider
-    def provide_async_mongo_collection(self) -> AsyncIOMotorCollection:
+    def provide_async_mongo_collection(
+        self,
+    ) -> AsyncIOMotorCollection:  # pyright: ignore[reportGeneralTypeIssues]
         from settings.db.mongodb import COLLECTION_NAME, DATABASE_NAME, AsyncMongoDBEngine
 
         return AsyncMongoDBEngine[DATABASE_NAME][COLLECTION_NAME]
@@ -66,7 +68,8 @@ class NoSQLModule(Module):
     @provider
     @inject
     def provide_pokemon_repository(
-        self, collection: AsyncIOMotorCollection
+        self,
+        collection: AsyncIOMotorCollection,  # pyright: ignore[reportGeneralTypeIssues]
     ) -> MongoDBPokemonRepository:
         return MongoDBPokemonRepository(collection, session=None)
 

@@ -1,5 +1,5 @@
 FROM python:3.10-slim-buster
-LABEL project = py-clean-arch
+LABEL project=py-clean-arch
 
 COPY ./pyproject.toml ./poetry.lock /
 RUN pip install --upgrade pip \

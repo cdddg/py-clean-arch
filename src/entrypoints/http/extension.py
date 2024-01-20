@@ -1,12 +1,12 @@
 """
-Extensions for Entrypoint Layer
+Extensions for Entrypoint Layer.
 
 This module provides utility functions to integrate FastAPI exception handlers with the application's
 domain-specific exceptions. It ensures that custom errors in the domain layer are transformed into appropriate
 HTTP responses when they propagate to the HTTP layer.
 
 Note:
-For simpler requirements, use extension.py. For more complex needs, consider extensions/$package.py for better clarity and scalability.
+    For simpler requirements, use extension.py. For more complex needs, consider extensions/$package.py for better clarity and scalability.
 """
 
 from typing import Union
