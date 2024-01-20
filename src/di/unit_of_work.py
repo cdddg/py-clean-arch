@@ -61,7 +61,11 @@ class AsyncSqlAlchemyUnitOfWork(AbstractUnitOfWork[RelationalDBPokemonRepository
 
 
 class AsyncMotorUnitOfWork(AbstractUnitOfWork[MongoDBPokemonRepository]):
-    def __init__(self, engine: AsyncIOMotorClient, pokemon_repo: MongoDBPokemonRepository):
+    def __init__(
+        self,
+        engine: AsyncIOMotorClient,  # pyright: ignore[reportGeneralTypeIssues]
+        pokemon_repo: MongoDBPokemonRepository,
+    ):
         super().__init__(pokemon_repo)
         self._engine = engine
 

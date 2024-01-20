@@ -2,9 +2,7 @@ import re
 
 
 class UUIDStr(str):
-    """
-    UUID represented as a hexadecimal string
-    """
+    """UUID represented as a hexadecimal string."""
 
     # regular expression to match 32 hexadecimal characters
 
@@ -20,9 +18,7 @@ class UUIDStr(str):
 
 
 class PokemonNumberStr(str):
-    """
-    Pokemon Number represented as a string in the range "0001" to "9999"
-    """
+    """Pokemon Number represented as a string in the range "0001" to "9999"."""
 
     # regular expression to match numbers from 0001 to 9999
     NUMBER_PATTERN = re.compile(r'^[0-9]{4}$')

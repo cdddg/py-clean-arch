@@ -1,5 +1,5 @@
 """
-Integration and Functional Testing for the Application
+Integration and Functional Testing for the Application.
 
 This module contains the integration and functional tests for the entire application.
 The tests here mainly focus on the interactions between different components and
