@@ -17,13 +17,15 @@ from .mapper import PokemonDictMapper
 
 
 class MongoDBPokemonRepository(AbstractPokemonRepository):
+    # fmt: off
     def __init__(
         self,
-        collection: AsyncIOMotorCollection,
-        session: Optional[AsyncIOMotorClientSession] = None,
+        collection: AsyncIOMotorCollection,  # pyright: ignore[reportGeneralTypeIssues]
+        session: Optional[AsyncIOMotorClientSession] = None,  # pyright: ignore[reportGeneralTypeIssues]
     ):
         self.collection = collection
         self.session = session
+    # fmt: on
 
     def _build_evolution_pipeline(self) -> List:
         return [
@@ -103,7 +105,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
             pipeline.append({'$skip': (params.page - 1) * params.size})
             pipeline.append({'$limit': params.size})
         cursor = self.collection.aggregate(pipeline, session=self.session)
-        documents = await cursor.to_list(None)  # pyright: ignore[reportGeneralTypeIssues]
+        documents = await cursor.to_list(None)
 
         return list(map(PokemonDictMapper.dict_to_entity, documents))
 

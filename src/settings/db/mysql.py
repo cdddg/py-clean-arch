@@ -14,6 +14,9 @@ from .. import DATABASE_URI, IS_TESTING, SQLALCHEMY_ECHO, SQLALCHEMY_ISOLATION_L
 from ..test import pytest_scope_func
 from .base import normalize_uri, should_reinitialize
 
+# pylint: disable=duplicate-code
+# Disabling due to similar implementation in postgres.py and mysql.py, leading to code duplication.
+
 AsyncMySQLEngine = create_async_engine(
     normalize_uri(DATABASE_URI),
     echo=SQLALCHEMY_ECHO,

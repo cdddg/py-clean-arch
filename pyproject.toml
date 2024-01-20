@@ -52,9 +52,6 @@ skip-string-normalization = true
 profile = "black"
 line_length = 100
 
-[tool.pylint.master]
-init-hook='import sys; sys.path.append(".")'
-
 [tool.pylint]
 extension-pkg-whitelist = ["pydantic"]
 load-plugins = ["pylint_quotes"]
@@ -73,10 +70,19 @@ disable = [
     "W0613", # unused-argument
     "C0301", # line-too-long
     "R0903", # too-few-public-methods
+    "W1203", # logging-fstring-interpolation
 ]
+
+[tool.pylint.master]
+init-hook='import sys; sys.path.append(".")'
 
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint]
 select = [
     "D",    # pydocstyle
     "E",    # pycodestyle errors
@@ -90,8 +96,8 @@ ignore = [
     "D212"
 ]
 
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["F401"]
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.pyright]
 typeCheckingMode = "basic"

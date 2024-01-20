@@ -1,5 +1,5 @@
 """
-Unit Testing for the Application
+Unit Testing for the Application.
 
 This module contains the unit tests for individual components and modules within the application. The tests here aim to ensure that each piece of functionality behaves as expected when tested in isolation from other components.
 
