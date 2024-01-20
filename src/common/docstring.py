@@ -1,9 +1,9 @@
 MAPPER_DOCSTRING = '''
 Mapping Logic:
 
-This documentation describes the conversion logic used across various mapper.py files in the project. 
-The purpose of these mappers is to convert between different data representations, 
-such as input data, data objects, and business logic models. 
+This documentation describes the conversion logic used across various mapper.py files in the project.
+The purpose of these mappers is to convert between different data representations,
+such as input data, data objects, and business logic models.
 
 Advantages of placing conversion logic directly in models or data objects:
 - Centralized Management: All conversion operations related to the data are in one place.

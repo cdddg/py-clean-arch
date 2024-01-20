@@ -142,7 +142,7 @@ $ DATABASE_URI=<database-uri> docker-compose up app
 
 1. Ensure Python (version >= 3.10) and Poetry (version >= 1.5, < 1.6) are installed.
 
-2. Configure your environment:
+2. Configure your environment: [^6]
    ```sh
    $ poetry env use python3.10
    $ poetry shell
@@ -229,3 +229,4 @@ A simple ⭐ can go a long way in showing your appreciation!
 [^3]: https://en.wikipedia.org/wiki/Dependency_injection
 [^4]: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
 [^5]: The coverage rate for this 'py-clean-arch' project stands at 91.33%, based on test results from August 20, 2023.
+[^6]: The `poetry install` command installs all required packages for running and developing the application. However, it does not include `cspell`. If you need `cspell` for spell checking, please refer to the official installation guide at [cspell installation guide](https://cspell.org/docs/installation/)

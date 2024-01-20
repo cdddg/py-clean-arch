@@ -8,7 +8,7 @@ DIFF_FILES = `git diff $(GIT_ARGS) | grep .py$$`
 
 
 format:
-	@if [[ ! -z ${DIFF_FILES} ]]; then \
+	@if [[ ! -z "${DIFF_FILES}" ]]; then \
 		echo "> autoflake"; \
 		autoflake --remove-all-unused-imports --ignore-init-module-imports -r -i $(DIFF_FILES); \
 		echo "> isort"; \
@@ -18,13 +18,13 @@ format:
 	fi
 
 lint:
-	@if [[ ! -z $(DIFF_FILES) ]]; then \
-		echo "> pylint"; \
-		pylint --rcfile=$(SETTINGS_PATH) -sn $(DIFF_FILES); \
-		echo "> ruff"; \
-		ruff check $(DIFF_FILES); \
-		echo "> pyright"; \
-		pyright $(DIFF_FILES); \
+	@if [[ ! -z "$(DIFF_FILES)" ]]; then \
+		echo "> pylint"; pylint --rcfile=$(SETTINGS_PATH) -sn $(DIFF_FILES); \
+		echo "> ruff"; ruff check $(DIFF_FILES); \
+		if command -v cspell > /dev/null; then \
+			echo "> cspell"; cspell $(DIFF_FILES) --no-progress --no-summary; \
+		fi; \
+		echo "> pyright"; pyright $(DIFF_FILES); \
 	fi
 
 test:
