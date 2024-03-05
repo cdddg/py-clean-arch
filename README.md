@@ -25,14 +25,14 @@ The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/u
 
 ### ✨ Additional Features and Patterns in This Project
 
-This project doesn't just adhere to Uncle Bob's Clean Architecture principles; it also brings in modern adaptions and extended features to suit contemporary development needs:
+This project not only adheres to Uncle Bob's Clean Architecture principles but also incorporates modern adaptations and extended features to meet contemporary development needs:
 
 - **GraphQL vs HTTP**:<br>The `entrypoints` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
 - **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational and NoSQL databases. `relational_db` manages operations for databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` manages operations for NoSQL databases like MongoDB and CouchDB.
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
 
-- **Repository Pattern**:<br>A simplifying abstraction that decouples the model layer from data storage, promoting flexibility and maintainability in the codebase.[^1]
+- **Repository Pattern**:<br>An abstraction that simplifies the decoupling of the model layer from data storage, thereby promoting flexibility and maintainability in the codebase. [^1]
 - **Unit of Work Pattern**:<br>This pattern ensures that all operations within a single transaction are completed successfully, or none are completed at all. [^2]
 - **Dependency Injection Pattern**:<br>Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^3]
 - **Asynchronous SQLalchemy**:<br>By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^4]
@@ -107,7 +107,7 @@ The application will default to using an **In-Memory SQLite** database if no `DA
 
 #### Diverse Databases with Docker-Compose
 
-For other databases, Docker-Compose can be used:
+For utilizing other databases, Docker Compose can be employed:
 
 ```sh
 $ docker compose down --remove-orphans -v
@@ -131,16 +131,16 @@ $ docker compose up dockerize
 >
 > 📌 **Note**: If encountering issues with database initialization, consider appending **`reinitialize=true`** to the `DATABASE_URI` for reconfiguration, e.g., `sqlite+aiosqlite:///sqlite.db?reinitialize=true`.
 
-#### Using Docker compose:
+#### Using Docker Compose:
 
-Run the application inside a Docker container:
+To run the application inside a Docker container:
 ```sh
-$ DATABASE_URI=<database-uri> docker-compose up app
+$ DATABASE_URI=<database-uri> docker compose up app
 ```
 
 #### Using Make (with Poetry):
 
-1. Ensure Python (version >= 3.10) and Poetry (version >= 1.5, < 1.6) are installed.
+1. Ensure Python (version 3.10 or higher) and Poetry (version 1.5.x) are installed.
 
 2. Configure your environment: [^6]
    ```sh
@@ -162,7 +162,7 @@ After setup, access the application at [http://localhost:8000](http://localhost:
 
 #### Single Database Testing:
 
-To test against a single database, specify its URI by setting the `DATABASE_URI` environment variable:
+To conduct tests against a single database, specify its URI by configuring the `DATABASE_URI` environment variable:
 
 ```sh
 $ DATABASE_URI=<database-uri> pytest
