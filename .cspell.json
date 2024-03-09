@@ -5,7 +5,8 @@
         "Makefile",
         "docker-compose.yml",
         "pyproject.toml",
-        "scripts/mongodb-init.sh",
+        ".cspell.json",
+        "scripts/mongodb-init.sh"
     ],
    "overrides": [
         {
