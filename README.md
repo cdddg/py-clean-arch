@@ -140,13 +140,13 @@ $ DATABASE_URI=<database-uri> docker compose up app
 
 #### Using Make (with Poetry):
 
-1. Ensure Python (version 3.10 or higher) and Poetry (version 1.5.x) are installed.
+1. Ensure Python (version 3.10 or higher) and Poetry (version 1.8.x) are installed.
 
 2. Configure your environment: [^6]
    ```sh
    $ poetry env use python3.10
    $ poetry shell
-   $ poetry install --no-root
+   $ poetry install
    ```
 
 3. Launch the application:
