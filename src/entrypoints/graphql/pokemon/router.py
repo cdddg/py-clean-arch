@@ -1,7 +1,7 @@
 from strawberry.fastapi import GraphQLRouter
+from strawberry.schema import Schema
 from strawberry.schema.config import StrawberryConfig
 
-from ..extensions.strawberry import Schema
 from .mutation import Mutation
 from .query import Query
 
