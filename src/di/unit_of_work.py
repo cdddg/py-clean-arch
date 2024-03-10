@@ -30,7 +30,7 @@ class AbstractUnitOfWork(Generic[T], abc.ABC):
         raise NotImplementedError
 
 
-class AsyncSqlAlchemyUnitOfWork(AbstractUnitOfWork[RelationalDBPokemonRepository]):
+class AsyncSQLAlchemyUnitOfWork(AbstractUnitOfWork[RelationalDBPokemonRepository]):
     def __init__(self, session: AsyncSession, pokemon_repo: RelationalDBPokemonRepository):
         super().__init__(pokemon_repo)
         self._session = session
@@ -51,13 +51,10 @@ class AsyncSqlAlchemyUnitOfWork(AbstractUnitOfWork[RelationalDBPokemonRepository
             await self.remove()
 
     async def remove(self):
-        # https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.async_scoped_session.remove
-
-        from settings import IS_TESTING
         from settings.db import AsyncScopedSession
 
-        if not IS_TESTING:
-            await AsyncScopedSession.remove()
+        # https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.async_scoped_session.remove
+        await AsyncScopedSession.remove()
 
 
 class AsyncMotorUnitOfWork(AbstractUnitOfWork[MongoDBPokemonRepository]):

@@ -8,7 +8,6 @@ from .base import normalize_uri, should_reinitialize
 DATABASE_NAME = urlparse(DATABASE_URI).path.lstrip('/')
 COLLECTION_NAME = 'pokemon'
 
-
 AsyncMongoDBEngine = AsyncIOMotorClient(normalize_uri(DATABASE_URI))
 
 
