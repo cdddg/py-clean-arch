@@ -119,7 +119,6 @@ addopts = """
 --no-cov-on-fail
 """
 env = [
-    "TEST=true",
     "D:SQLALCHEMY_ECHO=false",
     "D:DATABASE_URI=sqlite+aiosqlite:///:memory:?reinitialize=true"
 ]

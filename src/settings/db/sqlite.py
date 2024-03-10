@@ -12,8 +12,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import text
 
-from .. import DATABASE_URI, IS_TESTING, SQLALCHEMY_ECHO, SQLALCHEMY_ISOLATION_LEVEL
-from ..test import pytest_scope_func
+from .. import DATABASE_URI, SQLALCHEMY_ECHO, SQLALCHEMY_ISOLATION_LEVEL
 from .base import should_reinitialize
 
 AsyncSQLiteEngine = create_async_engine(
@@ -21,8 +20,6 @@ AsyncSQLiteEngine = create_async_engine(
     echo=SQLALCHEMY_ECHO,
     isolation_level=SQLALCHEMY_ISOLATION_LEVEL,
 )
-
-
 AsyncSQLiteScopedSession = async_scoped_session(
     async_sessionmaker(
         AsyncSQLiteEngine,
@@ -31,7 +28,7 @@ AsyncSQLiteScopedSession = async_scoped_session(
         autocommit=False,
         class_=AsyncSession,
     ),
-    scopefunc=current_task if not IS_TESTING else pytest_scope_func,
+    scopefunc=current_task,
 )
 
 

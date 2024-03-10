@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from entrypoints.graphql.extensions.fastapi import customize_graphql_openapi
+from entrypoints.graphql.extension import customize_graphql_openapi
 from entrypoints.graphql.pokemon.router import router as pokemon_graphql_router
 from entrypoints.http.extension import add_exception_handlers as http_add_exception_handlers
 from entrypoints.http.pokemon.router import router as pokemon_http_router

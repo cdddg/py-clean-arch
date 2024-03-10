@@ -4,9 +4,6 @@ import os
 APP_NAME = 'Pokédex API'
 APP_VERSION = '3'
 
-# check if running in a test environment
-IS_TESTING = os.getenv('TEST', '').lower() == 'true'
-
 # enable/disable logging of SQL statements
 SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', '').lower() == 'true'
 
