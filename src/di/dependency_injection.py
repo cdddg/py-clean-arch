@@ -32,7 +32,7 @@ from repositories.nosql import MongoDBPokemonRepository
 from repositories.relational_db import RelationalDBPokemonRepository
 from settings.db import IS_NOSQL, IS_RELATIONAL_DB
 
-from .unit_of_work import AbstractUnitOfWork, AsyncMotorUnitOfWork, AsyncSqlAlchemyUnitOfWork
+from .unit_of_work import AbstractUnitOfWork, AsyncMotorUnitOfWork, AsyncSQLAlchemyUnitOfWork
 
 
 class RelationalDBModule(Module):
@@ -52,7 +52,7 @@ class RelationalDBModule(Module):
     def provide_async_sqlalchemy_unit_of_work(
         self, session: AsyncSession, pokemon_repo: RelationalDBPokemonRepository
     ) -> AbstractUnitOfWork:
-        return AsyncSqlAlchemyUnitOfWork(session, pokemon_repo)
+        return AsyncSQLAlchemyUnitOfWork(session, pokemon_repo)
 
 
 class NoSQLModule(Module):
