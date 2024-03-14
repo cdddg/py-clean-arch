@@ -1,12 +1,12 @@
 # py-clean-arch
 
-This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, referencing [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch).
+This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, using the FastAPI framework.
 
 ## Changelog
 
 - **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived in April 2021. <br>**Description**: Initial proposal by me.
 
-- **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived in July 2023. <br>**Description**: Improvements from v1. See the [merged PRs from PR #1 to PR #10](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-04-09..2023-08-15).
+- **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived in July 2023. <br>**Description**: Improvement from v1 were inspired by the v3 branch of the [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch/tree/v3). See the merged PRs from [PR #1 to PR #10](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-04-09..2023-08-15).
 
 - ✏️ **v3**: Current version on the `master` branch. <br>Merged to main in August 2023 and still evolving. <br>**Description**: Transition to Python-centric design from Go. Start with PR [#11](https://github.com/cdddg/py-clean-arch/pull/11) and see [all subsequent PRs](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-16..2099-12-31).
 
@@ -89,13 +89,14 @@ The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture 
 > For a detailed explanation of the ASCII flow, refer to [ascii-flow.md](./docs/ascii-flow.md).
 
 ![clean-arch-02](./docs/clean-arch-02.png)
-*source: [yoan-thirion.gitbook.io](https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture)*
+*source: [yoan-thirion.gitbook.io](https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture)
 
 ![clean-arch-03](./docs/clean-arch-03.png)
 *source: https://stackoverflow.com/a/73788685
 
+## Getting Started
 
-## How To Run This Project
+Here's everything you need to get this project running on your local machine for development and testing.
 
 ### 🐳 Database Setup
 
