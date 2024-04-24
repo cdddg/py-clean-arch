@@ -69,9 +69,9 @@ class RelationalDBModule(Module):
             |-> provide_async_sqlalchemy_unit_of_work()
         ```
         """
-        from settings.db import AsyncScopedSession
+        from settings.db import get_async_session
 
-        return AsyncScopedSession()
+        return get_async_session()
 
     @provider
     def provide_pokemon_repository(self, session: AsyncSession) -> RelationalDBPokemonRepository:
