@@ -1,6 +1,6 @@
 from asyncio import current_task
 from logging import Logger, getLogger
-from typing import Type
+from typing import AsyncGenerator, Type
 
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -55,3 +55,12 @@ async def initialize_postgres_db(
         await connection.run_sync(metadata.create_all)
 
     await async_engine.dispose()
+
+
+def get_async_postgresql_session() -> AsyncSession:
+    return AsyncPostgreSQLScopedSession()
+
+
+async def async_postgresql_session_context_manager() -> AsyncGenerator[AsyncSession, None]:
+    async with AsyncPostgreSQLScopedSession() as session:
+        yield session

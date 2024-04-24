@@ -1,6 +1,6 @@
 from asyncio import current_task
 from logging import Logger, getLogger
-from typing import Type
+from typing import AsyncGenerator, Type
 
 from sqlalchemy import event
 from sqlalchemy.ext.asyncio import (
@@ -64,3 +64,12 @@ async def initialize_sqlite_db(
         != 'sqlite:///:memory:'
     ):
         await async_engine.dispose()
+
+
+def get_async_sqlite_session() -> AsyncSession:
+    return AsyncSQLiteScopedSession()
+
+
+async def async_sqlite_session_context_manager() -> AsyncGenerator[AsyncSession, None]:
+    async with AsyncSQLiteScopedSession() as session:
+        yield session
