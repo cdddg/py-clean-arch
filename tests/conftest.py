@@ -43,21 +43,6 @@ if IS_RELATIONAL_DB:
     from repositories.relational_db.pokemon.orm import Base
     from settings.db import AsyncRelationalDBEngine, AsyncScopedSession
 
-    @pytest.fixture(scope='session', autouse=True)
-    def patch_functions():
-        # https://docs.pytest.org/en/latest/example/simple.html#pytest-current-test-environment-variable
-        def mock_scopefunc():
-            env = os.getenv('PYTEST_CURRENT_TEST')
-            if not env:
-                raise RuntimeError('PYTEST_CURRENT_TEST not found')
-            return env.split(' ')[0]
-
-        with (
-            patch('settings.db.AsyncScopedSession.registry.scopefunc', new=mock_scopefunc),
-            patch('di.unit_of_work.AsyncSQLAlchemyUnitOfWork.remove', new_callable=AsyncMock),
-        ):
-            yield
-
     @pytest.fixture(scope='package', autouse=True)
     async def engine():
         await initialize_db(declarative_base=Base)
@@ -82,6 +67,14 @@ if IS_RELATIONAL_DB:
                     conn.sync_connection.begin_nested()  # pyright: ignore[reportOptionalMemberAccess]
 
             yield async_session
+
+    @pytest.fixture(scope='function', autouse=True)
+    def patch_functions(session):  # pylint: disable=redefined-outer-name
+        with (
+            patch('settings.db.get_async_session', return_value=session),
+            patch('di.unit_of_work.AsyncSQLAlchemyUnitOfWork.remove', new_callable=AsyncMock),
+        ):
+            yield
 
 elif IS_NOSQL:
 
