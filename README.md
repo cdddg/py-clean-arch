@@ -104,7 +104,7 @@ $ pytest --cov
 ## Changelog
 
 - **v1**: checkout to the [v1 branch ](https://github.com/cdddg/py-clean-arch/tree/v1)<br>
-  archived to v1 branch on 2018 <br>
+  archived to v1 branch on 2021 <br>
   Desc: Initial proposal by me
 - **v2**: master branch <br>
   merged to master on 2023. <br>
