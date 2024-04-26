@@ -20,8 +20,8 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
     # fmt: off
     def __init__(
         self,
-        collection: AsyncIOMotorCollection,  # pyright: ignore[reportGeneralTypeIssues]
-        session: Optional[AsyncIOMotorClientSession] = None,  # pyright: ignore[reportGeneralTypeIssues]
+        collection: AsyncIOMotorCollection,  # pyright: ignore[reportInvalidTypeForm]
+        session: Optional[AsyncIOMotorClientSession] = None,  # pyright: ignore[reportInvalidTypeForm]
     ):
         self.collection = collection
         self.session = session
@@ -29,6 +29,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
     def _build_evolution_pipeline(self) -> List:
         return [
+            # previous_evolutions
             {
                 '$lookup': {
                     'from': self.collection.name,
@@ -55,6 +56,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
                     'previous_evolutions_detail': {'$push': '$previous_evolutions_detail'},
                 }
             },
+            # next_evolutions
             {
                 '$lookup': {
                     'from': self.collection.name,
@@ -110,7 +112,10 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
         return list(map(PokemonDictMapper.dict_to_entity, documents))
 
     async def create(self, data: CreatePokemonModel) -> PokemonNumberStr:
-        count = await self.collection.count_documents({'no': data.no})
+        count = await self.collection.count_documents(
+            {'no': data.no},
+            session=self.session,
+        )
         if count > 0:
             raise PokemonAlreadyExists(data.no)
 
@@ -135,7 +140,10 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
             raise PokemonNotFound(no)
 
     async def delete(self, no: PokemonNumberStr):
-        result = await self.collection.delete_one({'no': no}, session=self.session)
+        result = await self.collection.delete_one(
+            {'no': no},
+            session=self.session,
+        )
         if result.deleted_count == 0:
             raise PokemonNotFound(no)
 
@@ -147,7 +155,9 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
     async def replace_types(self, pokemon_no: PokemonNumberStr, type_names: List[str]):
         await self.collection.update_one(
-            {'no': pokemon_no}, {'$set': {'types': type_names}}, session=self.session
+            {'no': pokemon_no},
+            {'$set': {'types': type_names}},
+            session=self.session,
         )
 
     async def replace_previous_evolutions(
