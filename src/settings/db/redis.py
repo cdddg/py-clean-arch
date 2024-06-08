@@ -15,7 +15,7 @@ async_redis = AsyncRedis.from_url(
 )
 
 
-async def initialize_redis(**kwargs):
+async def initialize_redis():
     if has_reinitialize(DATABASE_URI):
         async with async_redis.client() as client:
             cursor = '0'

@@ -28,6 +28,9 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
     # fmt: on
 
     def _build_evolution_pipeline(self) -> List:
+        PREVIOUS_EVOLUTION_DETAILS = 'previous_evolution_details'
+        NEXT_EVOLUTION_DETAILS = 'next_evolution_details'
+
         return [
             # previous_evolutions
             {
@@ -35,16 +38,16 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
                     'from': self.collection.name,
                     'localField': 'previous_evolution_object_ids',
                     'foreignField': '_id',
-                    'as': 'previous_evolution_details',
+                    'as': PREVIOUS_EVOLUTION_DETAILS,
                 }
             },
             {
                 '$unwind': {
-                    'path': '$previous_evolution_details',
+                    'path': f'${PREVIOUS_EVOLUTION_DETAILS}',
                     'preserveNullAndEmptyArrays': True,
                 }
             },
-            {'$sort': {'previous_evolution_details.no': 1}},
+            {'$sort': {f'{PREVIOUS_EVOLUTION_DETAILS}.no': 1}},
             {
                 '$group': {
                     '_id': '$_id',
@@ -53,7 +56,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
                     'types': {'$first': '$types'},
                     'previous_evolution_object_ids': {'$first': '$previous_evolution_object_ids'},
                     'next_evolution_object_ids': {'$first': '$next_evolution_object_ids'},
-                    'previous_evolution_details': {'$push': '$previous_evolution_details'},
+                    PREVIOUS_EVOLUTION_DETAILS: {'$push': f'${PREVIOUS_EVOLUTION_DETAILS}'},
                 }
             },
             # next_evolution_object_ids
@@ -62,11 +65,11 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
                     'from': self.collection.name,
                     'localField': 'next_evolution_object_ids',
                     'foreignField': '_id',
-                    'as': 'next_evolution_details',
+                    'as': NEXT_EVOLUTION_DETAILS,
                 }
             },
-            {'$unwind': {'path': '$next_evolution_details', 'preserveNullAndEmptyArrays': True}},
-            {'$sort': {'next_evolution_details.no': 1}},
+            {'$unwind': {'path': f'${NEXT_EVOLUTION_DETAILS}', 'preserveNullAndEmptyArrays': True}},
+            {'$sort': {f'{NEXT_EVOLUTION_DETAILS}.no': 1}},
             {
                 '$group': {
                     '_id': '$_id',
@@ -74,9 +77,9 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
                     'name': {'$first': '$name'},
                     'types': {'$first': '$types'},
                     'previous_evolution_object_ids': {'$first': '$previous_evolution_object_ids'},
-                    'previous_evolution_details': {'$first': '$previous_evolution_details'},
+                    PREVIOUS_EVOLUTION_DETAILS: {'$first': f'${PREVIOUS_EVOLUTION_DETAILS}'},
                     'next_evolution_object_ids': {'$first': '$next_evolution_object_ids'},
-                    'next_evolution_details': {'$push': '$next_evolution_details'},
+                    NEXT_EVOLUTION_DETAILS: {'$push': f'${NEXT_EVOLUTION_DETAILS}'},
                 }
             },
         ]

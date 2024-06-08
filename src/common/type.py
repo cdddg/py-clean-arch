@@ -21,7 +21,7 @@ class PokemonNumberStr(str):
     """Pokemon Number represented as a string in the range "0001" to "9999"."""
 
     # regular expression to match numbers from 0001 to 9999
-    NUMBER_PATTERN = re.compile(r'^[0-9]{4}$')
+    NUMBER_PATTERN = re.compile(r'^\d{4}$')
 
     def __new__(cls, *args, **kwargs):
         instance = super().__new__(cls, *args, **kwargs)

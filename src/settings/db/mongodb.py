@@ -11,7 +11,7 @@ COLLECTION_NAME = 'pokemon'
 AsyncMongoDBEngine = AsyncIOMotorClient(normalize_uri(DATABASE_URI))
 
 
-async def initialize_mongo_db(**kwargs):
+async def initialize_mongo_db():
     if has_reinitialize(DATABASE_URI):
         await AsyncMongoDBEngine.drop_database(AsyncMongoDBEngine.get_default_database().name)
 
