@@ -12,6 +12,7 @@ from fastapi import FastAPI
 
 def customize_graphql_openapi(app: FastAPI) -> None:
     openapi_schema = app.openapi()
-    if '/graphql' in openapi_schema['paths']:
-        openapi_schema['paths']['/graphql']['get']['summary'] = 'GraphQL IDE access'
-        openapi_schema['paths']['/graphql']['post']['summary'] = 'Execute GraphQL Queries/Mutations'
+    graphql_path = '/graphql'
+    if graphql_path in openapi_schema['paths']:
+        openapi_schema['paths'][graphql_path]['get']['summary'] = 'GraphQL IDE access'
+        openapi_schema['paths'][graphql_path]['post']['summary'] = 'Execute GraphQL Queries/Mutations'  # fmt: skip
