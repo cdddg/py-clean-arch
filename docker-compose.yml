@@ -33,17 +33,23 @@ services:
     command: /init-replica.sh
     ports:
       - 27017:27017
+  redis:
+    image: redis:7
+    ports:
+      - 6379:6379
   dockerize:
     image: jwilder/dockerize:latest
     depends_on:
       - mysql
       - postgres
       - mongodb
+      - redis
     command: |
       dockerize
       -wait tcp://mysql:3306
       -wait tcp://postgres:5432
       -wait tcp://mongodb:27017
+      -wait tcp://reids:6379
       -timeout 30s
   app:
     build: .

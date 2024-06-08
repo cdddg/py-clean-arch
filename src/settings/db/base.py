@@ -13,7 +13,7 @@ def normalize_uri(database_uri: str) -> str:
     return normalized_url
 
 
-def should_reinitialize(database_uri: str) -> bool:
+def has_reinitialize(database_uri: str) -> bool:
     parsed_uri = urlparse(database_uri)
     query_params = parse_qs(parsed_uri.query)
     reinitialize_values = query_params.get('reinitialize', [])

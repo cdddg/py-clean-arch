@@ -16,10 +16,10 @@ class PokemonDictMapper:
             ],
             previous_evolutions=[
                 PokemonEvolutionModel(no=evo['no'], name=evo['name'])
-                for evo in document.get('previous_evolutions_detail', [])
+                for evo in document.get('previous_evolution_details', [])
             ],
             next_evolutions=[
                 PokemonEvolutionModel(no=evo['no'], name=evo['name'])
-                for evo in document.get('next_evolutions_detail', [])
+                for evo in document.get('next_evolution_details', [])
             ],
         )
