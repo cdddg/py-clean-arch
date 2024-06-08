@@ -33,55 +33,55 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
             {
                 '$lookup': {
                     'from': self.collection.name,
-                    'localField': 'previous_evolutions',
+                    'localField': 'previous_evolution_object_ids',
                     'foreignField': '_id',
-                    'as': 'previous_evolutions_detail',
+                    'as': 'previous_evolution_details',
                 }
             },
             {
                 '$unwind': {
-                    'path': '$previous_evolutions_detail',
+                    'path': '$previous_evolution_details',
                     'preserveNullAndEmptyArrays': True,
                 }
             },
-            {'$sort': {'previous_evolutions_detail.no': 1}},
+            {'$sort': {'previous_evolution_details.no': 1}},
             {
                 '$group': {
                     '_id': '$_id',
                     'no': {'$first': '$no'},
                     'name': {'$first': '$name'},
                     'types': {'$first': '$types'},
-                    'previous_evolutions': {'$first': '$previous_evolutions'},
-                    'next_evolutions': {'$first': '$next_evolutions'},
-                    'previous_evolutions_detail': {'$push': '$previous_evolutions_detail'},
+                    'previous_evolution_object_ids': {'$first': '$previous_evolution_object_ids'},
+                    'next_evolution_object_ids': {'$first': '$next_evolution_object_ids'},
+                    'previous_evolution_details': {'$push': '$previous_evolution_details'},
                 }
             },
-            # next_evolutions
+            # next_evolution_object_ids
             {
                 '$lookup': {
                     'from': self.collection.name,
-                    'localField': 'next_evolutions',
+                    'localField': 'next_evolution_object_ids',
                     'foreignField': '_id',
-                    'as': 'next_evolutions_detail',
+                    'as': 'next_evolution_details',
                 }
             },
-            {'$unwind': {'path': '$next_evolutions_detail', 'preserveNullAndEmptyArrays': True}},
-            {'$sort': {'next_evolutions_detail.no': 1}},
+            {'$unwind': {'path': '$next_evolution_details', 'preserveNullAndEmptyArrays': True}},
+            {'$sort': {'next_evolution_details.no': 1}},
             {
                 '$group': {
                     '_id': '$_id',
                     'no': {'$first': '$no'},
                     'name': {'$first': '$name'},
                     'types': {'$first': '$types'},
-                    'previous_evolutions': {'$first': '$previous_evolutions'},
-                    'previous_evolutions_detail': {'$first': '$previous_evolutions_detail'},
-                    'next_evolutions': {'$first': '$next_evolutions'},
-                    'next_evolutions_detail': {'$push': '$next_evolutions_detail'},
+                    'previous_evolution_object_ids': {'$first': '$previous_evolution_object_ids'},
+                    'previous_evolution_details': {'$first': '$previous_evolution_details'},
+                    'next_evolution_object_ids': {'$first': '$next_evolution_object_ids'},
+                    'next_evolution_details': {'$push': '$next_evolution_details'},
                 }
             },
         ]
 
-    async def _get_pokemon_no_to_object_id_map(
+    async def _get_filtered_pokemon_id_map(
         self, numbers: List[PokemonNumberStr]
     ) -> dict[PokemonNumberStr, ObjectId]:
         cursor = self.collection.find({'no': {'$in': numbers}}, session=self.session)
@@ -94,8 +94,11 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
     async def get(self, no: PokemonNumberStr):
         pipeline = self._build_evolution_pipeline()
         pipeline.append({'$match': {'no': no}})
-        document = await self.collection.aggregate(pipeline, session=self.session).next()
-        if not document:
+        try:
+            document = await self.collection.aggregate(pipeline, session=self.session).next()
+            if not document:
+                raise PokemonNotFound(no)
+        except StopAsyncIteration:
             raise PokemonNotFound(no)
 
         return PokemonDictMapper.dict_to_entity(document)
@@ -122,30 +125,49 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
         document = {
             'no': data.no,
             'name': data.name,
+            'hp': None,
+            'attack': None,
+            'defense': None,
+            'sp_atk': None,
+            'sp_def': None,
+            'speed': None,
             'types': [],
-            'previous_evolutions': [],
-            'next_evolutions': [],
+            'previous_evolution_object_ids': [],
+            'next_evolution_object_ids': [],
         }
         await self.collection.insert_one(document, session=self.session)
 
         return data.no
 
     async def update(self, no: PokemonNumberStr, data: UpdatePokemonModel):
-        result = await self.collection.update_one(
-            {'no': no},
-            {'$set': {'name': data.name}},
-            session=self.session,
-        )
-        if result.matched_count == 0:
-            raise PokemonNotFound(no)
+        if data.name is not None:
+            result = await self.collection.update_one(
+                {'no': no},
+                {'$set': {'name': data.name}},
+                session=self.session,
+            )
+            if result.matched_count == 0:
+                raise PokemonNotFound(no)
 
     async def delete(self, no: PokemonNumberStr):
+        pokemon = await self.collection.find_one({'no': no}, session=self.session)
         result = await self.collection.delete_one(
             {'no': no},
             session=self.session,
         )
-        if result.deleted_count == 0:
+        if result.deleted_count == 0 or not pokemon:
             raise PokemonNotFound(no)
+
+        await self.collection.update_many(
+            {'previous_evolution_object_ids': pokemon['_id']},
+            {'$pull': {'previous_evolution_object_ids': pokemon['_id']}},
+            session=self.session,
+        )
+        await self.collection.update_many(
+            {'next_evolution_object_ids': pokemon['_id']},
+            {'$pull': {'next_evolution_object_ids': pokemon['_id']}},
+            session=self.session,
+        )
 
     async def are_existed(self, numbers: List[PokemonNumberStr]) -> bool:
         count = await self.collection.count_documents(
@@ -163,43 +185,43 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
     async def replace_previous_evolutions(
         self, pokemon_no: PokemonNumberStr, previous_evolution_numbers: List[PokemonNumberStr]
     ):
-        pokemon_no_to_object_id_map = await self._get_pokemon_no_to_object_id_map(
+        number_to_object_id_map = await self._get_filtered_pokemon_id_map(
             [pokemon_no] + previous_evolution_numbers
         )
-        object_id = pokemon_no_to_object_id_map.pop(pokemon_no)
+        object_id = number_to_object_id_map.pop(pokemon_no)
 
         result = await self.collection.update_one(
             {'_id': object_id},
-            {'$set': {'previous_evolutions': list(pokemon_no_to_object_id_map.values())}},
+            {'$set': {'previous_evolution_object_ids': list(number_to_object_id_map.values())}},
             session=self.session,
         )
         if result.matched_count == 0:
             raise PokemonNotFound(pokemon_no)
 
         await self.collection.update_many(
-            {'_id': {'$in': list(pokemon_no_to_object_id_map.values())}},
-            {'$push': {'next_evolutions': object_id}},
+            {'_id': {'$in': list(number_to_object_id_map.values())}},
+            {'$push': {'next_evolution_object_ids': object_id}},
             session=self.session,
         )
 
     async def replace_next_evolutions(
         self, pokemon_no: PokemonNumberStr, next_evolution_numbers: List[PokemonNumberStr]
     ):
-        pokemon_no_to_object_id_map = await self._get_pokemon_no_to_object_id_map(
+        number_to_object_id_map = await self._get_filtered_pokemon_id_map(
             [pokemon_no] + next_evolution_numbers
         )
-        object_id = pokemon_no_to_object_id_map.pop(pokemon_no)
+        object_id = number_to_object_id_map.pop(pokemon_no)
 
         result = await self.collection.update_one(
             {'_id': object_id},
-            {'$set': {'next_evolutions': list(pokemon_no_to_object_id_map.values())}},
+            {'$set': {'next_evolution_object_ids': list(number_to_object_id_map.values())}},
             session=self.session,
         )
         if result.matched_count == 0:
             raise PokemonNotFound(pokemon_no)
 
         await self.collection.update_many(
-            {'_id': {'$in': list(pokemon_no_to_object_id_map.values())}},
-            {'$push': {'previous_evolutions': object_id}},
+            {'_id': {'$in': list(number_to_object_id_map.values())}},
+            {'$push': {'previous_evolution_object_ids': object_id}},
             session=self.session,
         )

@@ -18,7 +18,7 @@ class CreatePokemonRequest(BaseModel):
 
 
 class UpdatePokemonRequest(BaseModel):
-    name: Optional[str]
+    name: Optional[str] = None
     type_names: list[str] = []
     previous_evolution_numbers: Optional[list[str]] = Field(
         default=None, description=PokemonNumberStr.__doc__

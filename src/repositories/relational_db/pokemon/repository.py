@@ -66,7 +66,7 @@ class RelationalDBPokemonRepository(AbstractPokemonRepository):
         return data.no
 
     async def update(self, no: PokemonNumberStr, data: UpdatePokemonModel):
-        if data.name:
+        if data.name is not None:
             stmt = update(Pokemon).where(Pokemon.no == no).values(name=data.name)
             result = await self.session.execute(stmt)
             if result.rowcount == 0:

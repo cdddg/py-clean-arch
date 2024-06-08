@@ -27,10 +27,6 @@ async def lifespan(app: FastAPI):  # pylint: disable=redefined-outer-name
 
 
 app = FastAPI(title=APP_NAME, version=APP_VERSION, lifespan=lifespan)
-app.add_exception_handler(
-    Exception,
-    lambda request, exc: JSONResponse({'error': f'{type(exc).__name__}: {exc}'}, status_code=500),
-)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],
@@ -46,6 +42,11 @@ http_add_exception_handlers(app)
 # entrypoints/graphql
 app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
 customize_graphql_openapi(app)
+
+
+@app.exception_handler(Exception)
+async def universal_exception_handler(_, exc):
+    return JSONResponse(content={'error': f'{type(exc).__name__}: {exc}'}, status_code=500)
 
 
 @app.get('/', include_in_schema=False)
