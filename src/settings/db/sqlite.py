@@ -1,5 +1,4 @@
 from asyncio import current_task
-from logging import Logger, getLogger
 from typing import AsyncGenerator, Type
 
 from sqlalchemy import event
@@ -13,7 +12,7 @@ from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.sql import text
 
 from .. import DATABASE_URI, SQLALCHEMY_ECHO, SQLALCHEMY_ISOLATION_LEVEL
-from .base import should_reinitialize
+from .base import has_reinitialize
 
 AsyncSQLiteEngine = create_async_engine(
     DATABASE_URI,
@@ -39,24 +38,19 @@ def connect(dbapi_conn, connection_record):
 
 async def initialize_sqlite_db(
     declarative_base: Type[DeclarativeBase],
-    logger: Logger = getLogger('uvicorn.error'),
 ):
     async_engine = AsyncSQLiteEngine
     metadata = declarative_base.metadata
 
-    logger.info('(initialize_sqlite_db) Creating database tables...')
     async with async_engine.begin() as connection:
         # enable foreign keys for SQLite
         await connection.execute(text('PRAGMA foreign_keys = ON;'))
 
         # drop tables if "reinitialize" flag is True
-        if should_reinitialize(DATABASE_URI):
-            logger.info('(initialize_db) Dropping existing tables')
+        if has_reinitialize(DATABASE_URI):
             await connection.run_sync(metadata.drop_all)
 
         # create tables
-        for table_name in metadata.tables.keys():
-            logger.info(f'(initialize_sqlite_db)   - {table_name}')
         await connection.run_sync(metadata.create_all)
 
     if (

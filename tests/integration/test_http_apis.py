@@ -181,8 +181,12 @@ async def test_update_pokemon(client):
         'types': [
             {'id': data['types'][0]['id'], 'name': 'B-2'},
         ],
-        'previous_evolutions': [{'no': '9001', 'name': 'AAA'}],
-        'next_evolutions': [{'no': '9003', 'name': 'CCC'}],
+        'previous_evolutions': [
+            {'no': '9001', 'name': 'AAA'},
+        ],
+        'next_evolutions': [
+            {'no': '9003', 'name': 'CCC'},
+        ],
     }
 
 

@@ -44,6 +44,15 @@
         "sessionmaker",
         "sqlalchemy",
 
+        // redis
+        "SADD",
+        "SREM",
+        "SMEMBERS",
+        "HGET",
+        "HGETALL",
+        "HSET",
+        "HMSET",
+
         // customized words
         "NOSQL",
         "Pokédex",
@@ -52,6 +61,7 @@
         "pokemons",
         "ucase",
         "usecases",
+        "evos",
 
         // pokemon names
         "Bulbasaur",

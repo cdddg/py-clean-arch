@@ -9,9 +9,8 @@ Note:
     For simpler requirements, use extension.py. For more complex needs, consider extensions/$package.py for better clarity and scalability.
 """
 
-from typing import Union
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 from models.exception import (
@@ -22,13 +21,16 @@ from models.exception import (
 )
 
 
-def handle_custom_error(
-    request: Request,
-    exc: Union[PokemonError, PokemonNotFound, PokemonUnknownError, PokemonAlreadyExists],
-) -> JSONResponse:
-    return JSONResponse({'error': f'{type(exc).__name__}: {exc}'}, status_code=400)
-
-
 def add_exception_handlers(app: FastAPI):
-    for exc in (PokemonError, PokemonNotFound, PokemonUnknownError, PokemonAlreadyExists):
-        app.add_exception_handler(exc, handle_custom_error)
+    @app.exception_handler(PokemonError)
+    @app.exception_handler(PokemonUnknownError)
+    async def handle_general_pokemon_error(_, exc):
+        return JSONResponse(content={'error': f'{type(exc).__name__}: {exc}'}, status_code=400)
+
+    @app.exception_handler(PokemonNotFound)
+    async def handle_pokemon_not_found_error(_, exc):
+        return JSONResponse(content={'error': f'{type(exc).__name__}: {exc}'}, status_code=404)
+
+    @app.exception_handler(PokemonAlreadyExists)
+    async def handle_pokemon_already_exists_error(_, exc):
+        return JSONResponse(content={'error': f'{type(exc).__name__}: {exc}'}, status_code=409)

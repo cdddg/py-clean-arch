@@ -28,11 +28,17 @@ from injector import Injector, Module, provider, singleton
 from motor.motor_asyncio import AsyncIOMotorCollection
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from repositories.nosql import MongoDBPokemonRepository
+from repositories.document_db import MongoDBPokemonRepository
+from repositories.key_value_db import RedisPokemonRepository
 from repositories.relational_db import RelationalDBPokemonRepository
-from settings.db import IS_NOSQL, IS_RELATIONAL_DB
+from settings.db import IS_DOCUMENT_DB, IS_KEY_VALUE_DB, IS_RELATIONAL_DB
 
-from .unit_of_work import AbstractUnitOfWork, AsyncMotorUnitOfWork, AsyncSQLAlchemyUnitOfWork
+from .unit_of_work import (
+    AbstractUnitOfWork,
+    AsyncMotorUnitOfWork,
+    AsyncRedisUnitOfWork,
+    AsyncSQLAlchemyUnitOfWork,
+)
 
 
 class RelationalDBModule(Module):
@@ -84,12 +90,12 @@ class RelationalDBModule(Module):
         return AsyncSQLAlchemyUnitOfWork(session, pokemon_repo)
 
 
-class NoSQLModule(Module):
+class DocumentDBModule(Module):
     @singleton
     @provider
     def provide_async_mongo_collection(
         self,
-    ) -> AsyncIOMotorCollection:  # pyright: ignore[reportGeneralTypeIssues]
+    ) -> AsyncIOMotorCollection:  # pyright: ignore[reportInvalidTypeForm]
         from settings.db.mongodb import COLLECTION_NAME, DATABASE_NAME, AsyncMongoDBEngine
 
         return AsyncMongoDBEngine[DATABASE_NAME][COLLECTION_NAME]
@@ -97,7 +103,7 @@ class NoSQLModule(Module):
     @provider
     def provide_pokemon_repository(
         self,
-        collection: AsyncIOMotorCollection,  # pyright: ignore[reportGeneralTypeIssues]
+        collection: AsyncIOMotorCollection,  # pyright: ignore[reportInvalidTypeForm]
     ) -> MongoDBPokemonRepository:
         return MongoDBPokemonRepository(collection, session=None)
 
@@ -110,12 +116,25 @@ class NoSQLModule(Module):
         return AsyncMotorUnitOfWork(AsyncMongoDBEngine, pokemon_repo)
 
 
+class KeyValueDBModule(Module):
+    @provider
+    def provide_async_motor_unit_of_work(self) -> AbstractUnitOfWork:
+        from settings.db import get_async_client
+
+        client = get_async_client()
+        pokemon_repo = RedisPokemonRepository(client)
+
+        return AsyncRedisUnitOfWork(client, pokemon_repo)
+
+
 class DatabaseModuleFactory:
     def create_module(self):
         if IS_RELATIONAL_DB:
             return RelationalDBModule()
-        if IS_NOSQL:
-            return NoSQLModule()
+        if IS_DOCUMENT_DB:
+            return DocumentDBModule()
+        if IS_KEY_VALUE_DB:
+            return KeyValueDBModule()
 
         raise RuntimeError(
             'Invalid database type configuration. It\'s neither relational nor NoSQL'

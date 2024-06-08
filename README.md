@@ -28,7 +28,7 @@ The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/u
 This project not only adheres to Uncle Bob's Clean Architecture principles but also incorporates modern adaptations and extended features to meet contemporary development needs:
 
 - **GraphQL vs HTTP**:<br>The `entrypoints` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
-- **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational and NoSQL databases. `relational_db` manages operations for databases like SQLite, MySQL, and PostgreSQL, whereas `nosql` manages operations for NoSQL databases like MongoDB and CouchDB.
+- **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational databases (e.g., SQLite, MySQL, PostgreSQL) and NoSQL databases, including document-oriented stores (e.g., MongoDB, CouchDB) and key-value stores (e.g., Redis, Memcached).
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
 
@@ -62,8 +62,9 @@ Here's a glimpse of the project's high-level structure, highlighting primary dir
 │   │                           ('Use Cases' in Clean Architecture)
 │   │
 │   ├── repositories/         - Data interaction layer, converting domain data to/from database format.
-│   │   ├── nosql/            - Operations for NoSQL databases (e.g., MongoDB, CouchDB).
-│   │   └── relational_db/    - Operations for relational databases (e.g., SQLite, MySQL, PostgreSQL).
+│   │   ├── relational_db/    - Operations for relational databases (e.g., SQLite, MySQL, PostgreSQL).
+│   │   ├── document_db/      - Operations for document-oriented databases (e.g., MongoDB, CouchDB).
+│   │   └── key_value_db/     - Operations for key-value databases (e.g., Redis, Memcached).
 │   │                           ('Interface Adapters' in Clean Architecture)
 │   │
 │   ├── models/               - Domain entities representing the business data.
@@ -124,11 +125,12 @@ $ docker compose up dockerize
 
 > **Supported Database URIs:**:
 >
-> - `sqlite+aiosqlite:///sqlite.db` (SQLite)
+> - `sqlite+aiosqlite:///<dbname>.db` (SQLite)
 > - `sqlite+aiosqlite:///:memory:` (In-Memory SQLite)
 > - `mysql+asyncmy://<username>:<password>@<host>:<port>/<dbname>` (MySQL)
 > - `postgresql+asyncpg://<username>:<password>@<host>:<port>/<dbname>` (PostgreSQL)
 > - `mongodb://<username>:<password>@<host>:<port>/<dbname>` (MongoDB)
+> - `redis://<username>:<password>@<host>:<port>/<dbname>` (Redis)
 >
 > 📌 **Note**: If encountering issues with database initialization, consider appending **`reinitialize=true`** to the `DATABASE_URI` for reconfiguration, e.g., `sqlite+aiosqlite:///sqlite.db?reinitialize=true`.
 
