@@ -194,9 +194,7 @@ async def test_update_pokemon(client):
 @pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_delete_pokemon(client):
     # pre-work
-    response = await client.post(
-        '/pokemons', json={'no': '9001', 'name': 'AAA', 'type_names': ['A']}
-    )
+    _ = await client.post('/pokemons', json={'no': '9001', 'name': 'AAA', 'type_names': ['A']})
 
     # test delete
     response = await client.delete('/pokemons/9001')
