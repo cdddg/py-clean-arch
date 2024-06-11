@@ -54,7 +54,7 @@ class PokemonType(Base):
 
     id: Mapped[int] = mapped_column('id', Integer, primary_key=True)
     pokemon_no: Mapped[PokemonNumberStr] = mapped_column(
-        String(8), ForeignKey('pokemon.no', ondelete='CASCADE')
+        String(8), ForeignKey(f'{Pokemon.__tablename__}.no', ondelete='CASCADE')
     )
     type_id: Mapped[str] = mapped_column(String(32), ForeignKey('type.id'))
 
@@ -64,10 +64,10 @@ class PokemonEvolution(Base):
 
     id: Mapped[UUIDStr] = mapped_column(String(32), primary_key=True, default=build_uui4_str)
     previous_no: Mapped[PokemonNumberStr] = mapped_column(
-        String(8), ForeignKey('pokemon.no', ondelete='CASCADE')
+        String(8), ForeignKey(f'{Pokemon.__tablename__}.no', ondelete='CASCADE')
     )
     next_no: Mapped[PokemonNumberStr] = mapped_column(
-        String(8), ForeignKey('pokemon.no', ondelete='CASCADE')
+        String(8), ForeignKey(f'{Pokemon.__tablename__}.no', ondelete='CASCADE')
     )
     previous_pokemon: Mapped[Optional['Pokemon']] = relationship(
         'Pokemon', foreign_keys=[previous_no], back_populates='next_evolutions', lazy='raise'

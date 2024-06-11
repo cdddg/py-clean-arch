@@ -1,4 +1,3 @@
-from typing import Any
 from urllib.parse import urlparse
 
 from settings import DATABASE_URI

@@ -17,6 +17,15 @@ from .mapper import PokemonDictMapper
 
 
 class MongoDBPokemonRepository(AbstractPokemonRepository):
+    LOOKUP = '$lookup'
+    UNWIND = '$unwind'
+    SORT = '$sort'
+    GROUP = '$group'
+    FIRST = '$first'
+    PUSH = '$push'
+    MATCH = '$match'
+    SET = '$set'
+
     # fmt: off
     def __init__(
         self,
@@ -34,7 +43,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
         return [
             # previous_evolutions
             {
-                '$lookup': {
+                self.LOOKUP: {
                     'from': self.collection.name,
                     'localField': 'previous_evolution_object_ids',
                     'foreignField': '_id',
@@ -42,44 +51,49 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
                 }
             },
             {
-                '$unwind': {
+                self.UNWIND: {
                     'path': f'${PREVIOUS_EVOLUTION_DETAILS}',
                     'preserveNullAndEmptyArrays': True,
                 }
             },
-            {'$sort': {f'{PREVIOUS_EVOLUTION_DETAILS}.no': 1}},
+            {self.SORT: {f'{PREVIOUS_EVOLUTION_DETAILS}.no': 1}},
             {
-                '$group': {
+                self.GROUP: {
                     '_id': '$_id',
-                    'no': {'$first': '$no'},
-                    'name': {'$first': '$name'},
-                    'types': {'$first': '$types'},
-                    'previous_evolution_object_ids': {'$first': '$previous_evolution_object_ids'},
-                    'next_evolution_object_ids': {'$first': '$next_evolution_object_ids'},
-                    PREVIOUS_EVOLUTION_DETAILS: {'$push': f'${PREVIOUS_EVOLUTION_DETAILS}'},
+                    'no': {self.FIRST: '$no'},
+                    'name': {self.FIRST: '$name'},
+                    'types': {self.FIRST: '$types'},
+                    'previous_evolution_object_ids': {self.FIRST: '$previous_evolution_object_ids'},
+                    'next_evolution_object_ids': {self.FIRST: '$next_evolution_object_ids'},
+                    PREVIOUS_EVOLUTION_DETAILS: {self.PUSH: f'${PREVIOUS_EVOLUTION_DETAILS}'},
                 }
             },
             # next_evolution_object_ids
             {
-                '$lookup': {
+                self.LOOKUP: {
                     'from': self.collection.name,
                     'localField': 'next_evolution_object_ids',
                     'foreignField': '_id',
                     'as': NEXT_EVOLUTION_DETAILS,
                 }
             },
-            {'$unwind': {'path': f'${NEXT_EVOLUTION_DETAILS}', 'preserveNullAndEmptyArrays': True}},
-            {'$sort': {f'{NEXT_EVOLUTION_DETAILS}.no': 1}},
             {
-                '$group': {
+                self.UNWIND: {
+                    'path': f'${NEXT_EVOLUTION_DETAILS}',
+                    'preserveNullAndEmptyArrays': True,
+                }
+            },
+            {self.SORT: {f'{NEXT_EVOLUTION_DETAILS}.no': 1}},
+            {
+                self.GROUP: {
                     '_id': '$_id',
-                    'no': {'$first': '$no'},
-                    'name': {'$first': '$name'},
-                    'types': {'$first': '$types'},
-                    'previous_evolution_object_ids': {'$first': '$previous_evolution_object_ids'},
-                    PREVIOUS_EVOLUTION_DETAILS: {'$first': f'${PREVIOUS_EVOLUTION_DETAILS}'},
-                    'next_evolution_object_ids': {'$first': '$next_evolution_object_ids'},
-                    NEXT_EVOLUTION_DETAILS: {'$push': f'${NEXT_EVOLUTION_DETAILS}'},
+                    'no': {self.FIRST: '$no'},
+                    'name': {self.FIRST: '$name'},
+                    'types': {self.FIRST: '$types'},
+                    'previous_evolution_object_ids': {self.FIRST: '$previous_evolution_object_ids'},
+                    PREVIOUS_EVOLUTION_DETAILS: {self.FIRST: f'${PREVIOUS_EVOLUTION_DETAILS}'},
+                    'next_evolution_object_ids': {self.FIRST: '$next_evolution_object_ids'},
+                    NEXT_EVOLUTION_DETAILS: {self.PUSH: f'${NEXT_EVOLUTION_DETAILS}'},
                 }
             },
         ]
@@ -96,7 +110,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
     async def get(self, no: PokemonNumberStr):
         pipeline = self._build_evolution_pipeline()
-        pipeline.append({'$match': {'no': no}})
+        pipeline.append({self.MATCH: {'no': no}})
         try:
             document = await self.collection.aggregate(pipeline, session=self.session).next()
             if not document:
@@ -108,7 +122,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
     async def list(self, params: Optional[GetPokemonParamsModel] = None) -> List[PokemonModel]:
         pipeline = self._build_evolution_pipeline()
-        pipeline.append({'$sort': {'no': 1}})
+        pipeline.append({self.SORT: {'no': 1}})
         if params:
             pipeline.append({'$skip': (params.page - 1) * params.size})
             pipeline.append({'$limit': params.size})
@@ -146,7 +160,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
         if data.name is not None:
             result = await self.collection.update_one(
                 {'no': no},
-                {'$set': {'name': data.name}},
+                {self.SET: {'name': data.name}},
                 session=self.session,
             )
             if result.matched_count == 0:
@@ -181,7 +195,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
     async def replace_types(self, pokemon_no: PokemonNumberStr, type_names: List[str]):
         await self.collection.update_one(
             {'no': pokemon_no},
-            {'$set': {'types': type_names}},
+            {self.SET: {'types': type_names}},
             session=self.session,
         )
 
@@ -195,7 +209,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
         result = await self.collection.update_one(
             {'_id': object_id},
-            {'$set': {'previous_evolution_object_ids': list(number_to_object_id_map.values())}},
+            {self.SET: {'previous_evolution_object_ids': list(number_to_object_id_map.values())}},
             session=self.session,
         )
         if result.matched_count == 0:
@@ -203,7 +217,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
         await self.collection.update_many(
             {'_id': {'$in': list(number_to_object_id_map.values())}},
-            {'$push': {'next_evolution_object_ids': object_id}},
+            {self.PUSH: {'next_evolution_object_ids': object_id}},
             session=self.session,
         )
 
@@ -217,7 +231,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
         result = await self.collection.update_one(
             {'_id': object_id},
-            {'$set': {'next_evolution_object_ids': list(number_to_object_id_map.values())}},
+            {self.SET: {'next_evolution_object_ids': list(number_to_object_id_map.values())}},
             session=self.session,
         )
         if result.matched_count == 0:
@@ -225,6 +239,6 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
         await self.collection.update_many(
             {'_id': {'$in': list(number_to_object_id_map.values())}},
-            {'$push': {'previous_evolution_object_ids': object_id}},
+            {self.PUSH: {'previous_evolution_object_ids': object_id}},
             session=self.session,
         )
