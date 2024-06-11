@@ -96,7 +96,7 @@ if IS_RELATIONAL_DB:
 
     @pytest.fixture(scope='package', autouse=True)
     async def engine():
-        await initialize_db(declarative_base=Base)
+        await initialize_db(declarative_base=Base)  # pyright: ignore[reportCallIssue]
 
     @pytest.fixture(scope='function', autouse=True)
     async def session():
@@ -118,6 +118,9 @@ if IS_RELATIONAL_DB:
                     conn.sync_connection.begin_nested()  # pyright: ignore[reportOptionalMemberAccess]
 
             yield async_session
+
+            # https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html#sqlalchemy.ext.asyncio.async_scoped_session.remove
+            await AsyncScopedSession.remove()
 
     @pytest.fixture(scope='function', autouse=True)
     def patch_functions(session):  # pylint: disable=redefined-outer-name
