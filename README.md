@@ -79,6 +79,7 @@ Here's a glimpse of the project's high-level structure, highlighting primary dir
 │
 └── tests/
     ├── api_db_test.bats      - BATs tests for API and database interactions.
+    ├── functional/           - Functional tests for testing the overall functionality and behavior of the application.
     ├── integration/          - Integration tests for testing module interactions.
     └── unit/                 - Unit tests for testing individual components in isolation.
 ```
@@ -197,17 +198,17 @@ To validate your application across various databases like In-Memory SQLite, SQL
    
 2. Running Multi-DB Tests
 
-      ```console
-      $ make test
-      
-      api_db_test.bats
-    ✓ Test using SQLite [3136]
-    ✓ Test using In-Memory SQLite [2399]
-    ✓ Test using MySQL [3615]
-    ✓ Test using PostgreSQL [3437]
-    ✓ Test using MongoDB [4099]
-      
-   5 tests, 0 failures in 18 seconds
+   ```shell
+   $ make test
+   bats --timing ./tests/api_db_test.bats ;
+   api_db_test.bats
+    ✓ Test using in-memory SQLite [12549]
+    ✓ Test using MySQL [6299]
+    ✓ Test using PostgreSQL [4982]
+    ✓ Test using MongoDB [6639]
+    ✓ Test using Redis [3658]
+   
+   5 tests, 0 failures in 35 seconds
    ```
    
 
