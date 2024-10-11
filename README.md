@@ -176,7 +176,7 @@ $ DATABASE_URI=<database-uri> pytest
 >
 > 📌 **Note**: For testing, it's recommended to use a different `dbname`, preferably with a "_test" suffix (e.g., "mydatabase_test"). This ensures your tests don't interfere with your main application data.
 
-#### Multi-Database Testing:
+#### Multi-Database Testing and Code Coverage: [^5]
 
 To validate your application across various databases like In-Memory SQLite, SQLite, MySQL, Postgres and MongoDB, you'll utilize the tool called `bats`.
 
@@ -196,41 +196,49 @@ To validate your application across various databases like In-Memory SQLite, SQL
    $ ./install.sh /usr/local
    ```
    
-2. Running Multi-DB Tests
+2. Running Multi-DB tests and generating a test coverage report.
 
    ```shell
    $ make test
-   bats --timing ./tests/api_db_test.bats ;
    api_db_test.bats
-    ✓ Test using in-memory SQLite [12549]
-    ✓ Test using MySQL [6299]
-    ✓ Test using PostgreSQL [4982]
-    ✓ Test using MongoDB [6639]
-    ✓ Test using Redis [3658]
+    ✓ Test using in-memory SQLite [9671]
+    ✓ Test using MySQL [10551]
+    ✓ Test using PostgreSQL [9104]
+    ✓ Test using MongoDB [10780]
+    ✓ Test using Redis [8422]
    
-   5 tests, 0 failures in 35 seconds
+   5 tests, 0 failures in 49 seconds
+   
+   Name                                                   Stmts   Miss   Cover   Missing
+   -------------------------------------------------------------------------------------
+   src/common/type.py                                        15      2  86.67%   15, 30
+   src/common/utils.py                                        5      1  80.00%   9
+   src/di/dependency_injection.py                            49      1  97.96%   139
+   src/di/unit_of_work.py                                    58      2  96.55%   56-59
+   src/entrypoints/http/extension.py                         14      1  92.86%   28
+   src/main.py                                               30      8  73.33%   20-26, 49, 54
+   src/models/pokemon.py                                     48      2  95.83%   45, 57
+   src/repositories/document_db/pokemon/repository.py        84      7  91.67%   117, 127-128, 167, 176, 216, 238
+   src/repositories/key_value_db/pokemon/repository.py      148      6  95.95%   71, 82, 128, 142, 210-211
+   src/repositories/relational_db/pokemon/repository.py      72      3  95.83%   52, 73, 79
+   src/usecases/pokemon.py                                   40      6  85.00%   16, 19-21, 47, 51
+   -------------------------------------------------------------------------------------
+   TOTAL                                                    881     39  95.57%
+   
+   36 files skipped due to complete coverage.
+   Wrote HTML report to htmlcov/index.html
    ```
    
 
-### 🔍 Checking Code Coverage
-
-To demonstrate best practices and emphasize the importance of thorough testing, we've integrated `pytest-cov` to monitor our test coverage. [^5] 
-
-To generate a coverage report:
-
-```sh
-$ pytest --cov
-```
+<br>
 
 ## Enjoying the Project?
 
 A simple ⭐ can go a long way in showing your appreciation!
 
-
-
 [^1]: https://www.cosmicpython.com/book/chapter_02_repository.html
 [^2]: https://www.cosmicpython.com/book/chapter_06_uow.html
 [^3]: https://en.wikipedia.org/wiki/Dependency_injection
 [^4]: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
-[^5]: The coverage rate for this 'py-clean-arch' project stands at 91.33%, based on test results from August 20, 2023.
+[^5]: The coverage rate for this 'py-clean-arch' project stands at 95.57%, based on test results from October 11, 2024.
 [^6]: The `poetry install` command installs all required packages for running and developing the application. However, it does not include `cspell`. If you need `cspell` for spell checking, please refer to the official installation guide at [cspell installation guide](https://cspell.org/docs/installation/)
