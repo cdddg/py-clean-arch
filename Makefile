@@ -30,7 +30,10 @@ lint:
 	fi
 
 test:
-	bats --timing ./tests/api_db_test.bats $(filter-out $@,$(MAKECMDGOALS));
+	@coverage erase
+	@bats --timing ./tests/api_db_test.bats $(filter-out $@,$(MAKECMDGOALS));
+	@coverage report --show-missing --skip-covered --fail-under 90
+	@coverage html
 
 up:
 	uvicorn main:app \
