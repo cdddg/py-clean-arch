@@ -112,12 +112,12 @@ reportUnusedVariable = true
 pythonpath = ["src"]
 minversion = "7.2"
 addopts = """
--s
--vv
+-sxvv
 -p no:logging
---cov-report=term-missing
 --cov-config=pyproject.toml
---cov-fail-under=90
+--cov=src
+--cov-report=
+--cov-append
 --no-cov-on-fail
 """
 env = [
