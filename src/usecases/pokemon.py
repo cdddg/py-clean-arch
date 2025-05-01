@@ -1,3 +1,4 @@
+from adapters.mail import AbstractMailAdapter
 from common.type import PokemonNumberStr
 from di.unit_of_work import AbstractUnitOfWork
 from models.exception import PokemonNotFound
@@ -5,7 +6,9 @@ from models.pokemon import CreatePokemonModel, PokemonModel, UpdatePokemonModel
 
 
 async def create_pokemon(
-    async_unit_of_work: AbstractUnitOfWork, data: CreatePokemonModel
+    async_unit_of_work: AbstractUnitOfWork,
+    mail_adapter: AbstractMailAdapter,
+    data: CreatePokemonModel,
 ) -> PokemonModel:
     async with async_unit_of_work as auow:
         no = await auow.pokemon_repo.create(data)
@@ -19,6 +22,10 @@ async def create_pokemon(
             if not await auow.pokemon_repo.are_existed(data.next_evolution_numbers):
                 raise PokemonNotFound(data.next_evolution_numbers)
             await auow.pokemon_repo.replace_next_evolutions(no, data.next_evolution_numbers)
+
+        await mail_adapter.send_mail(
+            to=['test@mail.com'], subject='New Pokemon Created', body=f'Pokemon No: {no}'
+        )
 
         return await auow.pokemon_repo.get(no)
 

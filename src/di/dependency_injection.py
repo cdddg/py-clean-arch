@@ -28,6 +28,8 @@ from injector import Injector, Module, provider, singleton
 from motor.motor_asyncio import AsyncIOMotorCollection
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from adapters.mail import AbstractMailAdapter
+from adapters.mail.aiosmtplib import AiosmtplibMailAdapter
 from repositories.document_db import MongoDBPokemonRepository
 from repositories.key_value_db import RedisPokemonRepository
 from repositories.relational_db import RelationalDBPokemonRepository
@@ -141,4 +143,15 @@ class DatabaseModuleFactory:
         )
 
 
-injector = Injector([DatabaseModuleFactory().create_module()])
+class MailAdpterModule(Module):
+    @provider
+    def provide_aiosmtplib_adapter(self) -> AbstractMailAdapter:
+        return AiosmtplibMailAdapter()
+
+
+injector = Injector(
+    [
+        DatabaseModuleFactory().create_module(),
+        MailAdpterModule(),
+    ]
+)

@@ -1,0 +1,1 @@
+from .abstraction import AbstractMailAdapter
