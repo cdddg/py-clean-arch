@@ -28,7 +28,7 @@ lint:
 
 test:
 	@coverage erase
-	@bats --timing ./tests/api_db_test.bats $(filter-out $@,$(MAKECMDGOALS));
+	@bats --timing ./tests/api_db_test.bats
 	@coverage report --show-missing --skip-covered --fail-under 90
 	@coverage html
 
