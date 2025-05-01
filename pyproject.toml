@@ -59,24 +59,24 @@ extension-pkg-whitelist = ["pydantic"]
 load-plugins = ["pylint_quotes"]
 max-line-length = 100
 disable = [
-    "W0613", # unused-argument
-    "C0114", # missing-module-docstring
-    "C0115", # missing-class-docstring
-    "C0116", # missing-function-docstring
-    "C0301", # line-too-long
-    "W0511", # fixme
-    "E0213", # no-self-argument
-    "C0103", # invalid-name
-    "W0707", # raise-missing-from
-    "C0123", # unidiomatic-typecheck
-    "W0613", # unused-argument
-    "C0301", # line-too-long
-    "R0903", # too-few-public-methods
-    "W1203", # logging-fstring-interpolation
+  "W0613", # unused-argument
+  "C0114", # missing-module-docstring
+  "C0115", # missing-class-docstring
+  "C0116", # missing-function-docstring
+  "C0301", # line-too-long
+  "W0511", # fixme
+  "E0213", # no-self-argument
+  "C0103", # invalid-name
+  "W0707", # raise-missing-from
+  "C0123", # unidiomatic-typecheck
+  "W0613", # unused-argument
+  "C0301", # line-too-long
+  "R0903", # too-few-public-methods
+  "W1203", # logging-fstring-interpolation
 ]
 
 [tool.pylint.master]
-init-hook='import sys; sys.path.append("./src")'
+init-hook = 'import sys; sys.path.append("./src")'
 
 [tool.ruff]
 line-length = 100
@@ -86,16 +86,16 @@ line-length = 100
 
 [tool.ruff.lint]
 select = [
-    "D",    # pydocstyle
-    "E",    # pycodestyle errors
-    "W",    # pycodestyle warnings
-    "T20",  # flake8-print
+  "D",   # pydocstyle
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "T20", # flake8-print
 ]
 ignore = [
-    "E501", # line too long, handled by black
-    "D10",  # Missing docstring
-    "D203", # https://github.com/PyCQA/pydocstyle/issues/141#issuecomment-146903063
-    "D212"
+  "E501", # line too long, handled by black
+  "D10",  # Missing docstring
+  "D203", # https://github.com/PyCQA/pydocstyle/issues/141#issuecomment-146903063
+  "D212",
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -121,29 +121,21 @@ addopts = """
 --no-cov-on-fail
 """
 env = [
-    "D:SQLALCHEMY_ECHO=false",
-    "D:DATABASE_URI=sqlite+aiosqlite:///:memory:?reinitialize=true"
+  "D:SQLALCHEMY_ECHO=false",
+  "D:DATABASE_URI=sqlite+aiosqlite:///:memory:?reinitialize=true",
 ]
 filterwarnings = [
-    "error",
-    "ignore:pkg_resources is deprecated as an API*:DeprecationWarning",
-    "ignore::sqlalchemy.exc.MovedIn20Warning"
+  "error",
+  "ignore:pkg_resources is deprecated as an API*:DeprecationWarning",
+  "ignore::sqlalchemy.exc.MovedIn20Warning",
 ]
-python_files = [
-    "test*.py"
-]
+python_files = ["test*.py"]
 
 [tool.coverage.run]
-concurrency = ["gevent"]  # https://stackoverflow.com/a/76033894
-omit = [
-    "*/settings/db/*",
-    "*/settings/test.py",
-    "*/tests/*"
-]
+concurrency = ["gevent"]                                      # https://stackoverflow.com/a/76033894
+omit = ["*/settings/db/*", "*/settings/test.py", "*/tests/*"]
 
 [tool.coverage.report]
 show_missing = true
 precision = 2
-exclude_lines = [
-    "raise NotImplementedError"
-]
+exclude_lines = ["raise NotImplementedError"]
