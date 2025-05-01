@@ -5,17 +5,25 @@
         "Makefile",
         "docker-compose.yml",
         "pyproject.toml",
-        ".cspell.json",
+        ".cspell.jsonc",
         "scripts/mongodb-init.sh"
     ],
-   "overrides": [
+    "overrides": [
         {
             "filename": "src/settings/db/*.py",
-            "ignoreWords": ["doseq", "dbapi"]
+            "ignoreWords": [
+                "doseq",
+                "dbapi"
+            ]
         },
         {
             "filename": "README.md",
-            "ignoreWords": ["yoan-thirion", "gitbook", "dbname", "mydatabase"]
+            "ignoreWords": [
+                "yoan-thirion",
+                "gitbook",
+                "dbname",
+                "mydatabase"
+            ]
         }
     ],
     "words": [
@@ -31,7 +39,6 @@
         "starlette",
         "uvicorn",
         "bson",
-
         // sqlalchemy
         "autoflush",
         "autouse",
@@ -43,7 +50,6 @@
         "selectinload",
         "sessionmaker",
         "sqlalchemy",
-
         // redis
         "SADD",
         "SREM",
@@ -52,7 +58,6 @@
         "HGETALL",
         "HSET",
         "HMSET",
-
         // customized words
         "NOSQL",
         "Pokédex",
@@ -62,7 +67,6 @@
         "ucase",
         "usecases",
         "evos",
-
         // pokemon names
         "Bulbasaur",
         "Ivysaur",

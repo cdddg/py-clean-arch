@@ -2,7 +2,7 @@
 
 mongod --replSet rs0 --bind_ip_all &
 
-sleep 1;
+sleep 1
 
 mongosh --host localhost:27017 --eval '
     rs.initiate({
@@ -10,4 +10,6 @@ mongosh --host localhost:27017 --eval '
     members: [{ _id: 0, host: "localhost:27017" }]
     })
 '
+
 tail -f /dev/null
+

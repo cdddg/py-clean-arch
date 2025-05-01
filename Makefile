@@ -11,12 +11,9 @@ DIFF_PYTHONS = `git diff $(GIT_ARGS) | grep .py$$`
 
 format:
 	@if [[ ! -z "${DIFF_PYTHONS}" ]]; then \
-		echo "> autoflake"; \
-		autoflake --remove-all-unused-imports --ignore-init-module-imports -r -i $(DIFF_FILES); \
-		echo "> isort"; \
-		isort -settings_path=$(SETTINGS_PATH) --quiet $(DIFF_PYTHONS); \
-		echo "> black"; \
-		black --config $(SETTINGS_PATH) -q $(DIFF_PYTHONS); \
+		echo "> autoflake"; autoflake --remove-all-unused-imports --ignore-init-module-imports -r -i $(DIFF_FILES); \
+		echo "> isort"; isort -settings_path=$(SETTINGS_PATH) --quiet $(DIFF_PYTHONS); \
+		echo "> black"; black --config $(SETTINGS_PATH) -q $(DIFF_PYTHONS); \
 	fi
 
 lint:
