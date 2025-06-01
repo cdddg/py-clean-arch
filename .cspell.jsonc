@@ -17,16 +17,25 @@
             ]
         },
         {
+            "filename": "tests/conftest.py",
+            "ignoreWords": [
+                "ASGI"
+            ]
+        },
+        {
             "filename": "README.md",
             "ignoreWords": [
-                "yoan-thirion",
-                "gitbook",
+                "Stmts",
                 "dbname",
-                "mydatabase"
+                "gitbook",
+                "htmlcov",
+                "mydatabase",
+                "yoan-thirion"
             ]
         }
     ],
     "words": [
+        // Python packages
         "aiosqlite",
         "anyio",
         "asyncio",
@@ -39,7 +48,7 @@
         "starlette",
         "uvicorn",
         "bson",
-        // sqlalchemy
+        // SQLAlchemy
         "autoflush",
         "autouse",
         "backref",
@@ -50,7 +59,7 @@
         "selectinload",
         "sessionmaker",
         "sqlalchemy",
-        // redis
+        // Redis
         "SADD",
         "SREM",
         "SMEMBERS",
@@ -58,21 +67,22 @@
         "HGETALL",
         "HSET",
         "HMSET",
-        // customized words
-        "NOSQL",
-        "Pokédex",
-        "Usecase",
-        "auow",
-        "pokemons",
-        "ucase",
-        "usecases",
-        "evos",
-        // pokemon names
+        // Pokémon names
         "Bulbasaur",
         "Ivysaur",
         "Venusaur",
         "Charizard",
         "Charmander",
-        "Charmeleon"
+        "Charmeleon",
+        // Customized words
+        "NoSQL",
+        "Pokédex",
+        "Statefulness",
+        "Usecase",
+        "auow",
+        "evos",
+        "pokemons",
+        "ucase",
+        "usecases"
     ]
 }

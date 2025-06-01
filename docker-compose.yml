@@ -53,7 +53,7 @@ services:
       -wait tcp://mongodb:27017
       -wait tcp://redis:6379
       -timeout 30s
-      -wait-retry-interval 5s
+      -wait-retry-interval 3s
   app:
     build: .
     environment:

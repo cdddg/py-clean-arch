@@ -15,14 +15,20 @@ jobs:
       - name: Setup Python & Dependencies
         uses: ./.github/actions/setup-poetry-deps
 
+      - name: Install CSpell
+        run: npm install -g cspell
+
       - name: Format check
         run: |
           autoflake --check --quiet --remove-all-unused-imports --ignore-init-module-imports -r .
-          isort --check-only --settings-path pyproject.toml .
           black --check --config pyproject.toml .
 
-      - name: Lint via Makefile
-        run: make lint
+      - name: Lint
+        run: |
+          cspell --gitignore --no-progress --no-summary --no-must-find-files .
+          pylint --rcfile=pyproject.toml $(git ls-files '*.py')
+          ruff check .
+          pyright .
 
   test:
     name: Run API DB Tests
