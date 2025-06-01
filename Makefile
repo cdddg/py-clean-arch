@@ -12,7 +12,6 @@ DIFF_PYTHONS = `git diff $(GIT_ARGS) | grep .py$$`
 format:
 	@if [[ ! -z "${DIFF_PYTHONS}" ]]; then \
 		echo "> autoflake"; autoflake --remove-all-unused-imports --ignore-init-module-imports -r -i $(DIFF_FILES); \
-		echo "> isort"; isort -settings_path=$(SETTINGS_PATH) --quiet $(DIFF_PYTHONS); \
 		echo "> black"; black --config $(SETTINGS_PATH) -q $(DIFF_PYTHONS); \
 	fi
 
@@ -28,7 +27,7 @@ lint:
 
 test:
 	@coverage erase
-	@bats --timing ./tests/api_db_test.bats $(filter-out $@,$(MAKECMDGOALS));
+	@bats --timing ./tests/api_db_test.bats
 	@coverage report --show-missing --skip-covered --fail-under 90
 	@coverage html
 
@@ -40,4 +39,5 @@ up:
 
 db:
 	docker compose down --remove-orphans -v
+	docker compose up postgres mysql mongodb redis -d
 	docker compose up dockerize

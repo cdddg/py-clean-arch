@@ -2,7 +2,7 @@ import os
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from httpx import AsyncClient
+from httpx import ASGITransport, AsyncClient
 from pytest import Config
 
 from main import app as fastapi_app
@@ -73,7 +73,7 @@ def anyio_backend():
 
 @pytest.fixture(scope='session')
 async def client():
-    async with AsyncClient(app=fastapi_app, base_url='http://test') as ac:
+    async with AsyncClient(base_url='http://test', transport=ASGITransport(app=fastapi_app)) as ac:
         yield ac
 
 

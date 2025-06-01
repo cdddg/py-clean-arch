@@ -1,4 +1,4 @@
-CREATE DATABASE test;
+CREATE DATABASE test_db;
 
-GRANT ALL PRIVILEGES ON test.* TO 'user'@'%';
+GRANT ALL PRIVILEGES ON test_db.* TO 'user'@'%';
 FLUSH PRIVILEGES;

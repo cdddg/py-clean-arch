@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check_format_and_lint:
+    name: Check Format and Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python & Dependencies
+        uses: ./.github/actions/setup-poetry-deps
+
+      - name: Install CSpell
+        run: npm install -g cspell
+
+      - name: Format check
+        run: |
+          autoflake --check --quiet --remove-all-unused-imports --ignore-init-module-imports -r .
+          black --check --config pyproject.toml .
+
+      - name: Lint
+        run: |
+          cspell --gitignore --no-progress --no-summary --no-must-find-files .
+          pylint --rcfile=pyproject.toml $(git ls-files '*.py')
+          ruff check .
+          pyright .
+
+  test:
+    name: Run API DB Tests
+    runs-on: ubuntu-latest
+    env:
+      MYSQL_DATABASE: test_db
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{ env.MYSQL_DATABASE }};' -uroot -proot
+          ps aux | grep '[m]ysqld'
+          ss -ltnp | grep ':3306'
+
+      - name: Start DB containers via Docker and Docker Compose
+        run: |
+          docker compose up -d postgres mongodb redis
+          docker compose run --rm --no-deps dockerize \
+            -wait tcp://postgres:5432 \
+            -wait tcp://mongodb:27017 \
+            -wait tcp://redis:6379 \
+            -timeout 60s \
+            -wait-retry-interval 5s
+          docker ps
+
+      - name: Setup Python & Dependencies
+        uses: ./.github/actions/setup-poetry-deps
+
+      - name: Install Bats
+        run: |
+          sudo apt-get update && sudo apt-get install -y bats
+
+      - name: Run API DB tests via Makefile
+        run: |
+          export MYSQL_URL="mysql+asyncmy://$MYSQL_ROOT_USER:$MYSQL_ROOT_PASSWORD@localhost:3306/$MYSQL_DATABASE?reinitialize=true"
+          make test

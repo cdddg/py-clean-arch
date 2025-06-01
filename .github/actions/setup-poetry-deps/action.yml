@@ -1,0 +1,25 @@
+name: "Setup Python and Poetry"
+description: "Sets up the Python environment and installs dependencies via Poetry."
+inputs:
+  python-version:
+    description: "Python version to use"
+    required: false
+    default: "3.11"
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install Poetry
+      run: |
+        pip install --user "poetry>=2.1,<2.2"
+      shell: bash
+
+    - name: Install dependencies
+      run: |
+        poetry config virtualenvs.create false
+        poetry install --no-interaction --no-ansi --no-root -vv
+      shell: bash
