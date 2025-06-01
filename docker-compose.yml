@@ -46,6 +46,11 @@ services:
       - 6379:6379
   dockerize:
     image: jwilder/dockerize:latest
+    depends_on:
+      - mysql
+      - postgres
+      - mongodb
+      - redis
     command: |
       dockerize
       -wait tcp://mysql:3306
