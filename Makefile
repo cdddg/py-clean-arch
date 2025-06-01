@@ -39,5 +39,4 @@ up:
 
 db:
 	docker compose down --remove-orphans -v
-	docker compose up postgres mysql mongodb redis -d
 	docker compose up dockerize
