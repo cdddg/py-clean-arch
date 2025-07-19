@@ -65,14 +65,14 @@ class RelationalDBModule(Module):
         unintended session sharing or leakage across tasks. Ensure thorough testing and understanding
         of the async context and task management in your application.
 
-        Invocation example for obtaining an AbstractUnitOfWork, illustrating the call sequence:
+        Invocation example illustrating the dependency resolution flow when obtaining an AbstractUnitOfWork:
 
         ```
         injector.get(AbstractUnitOfWork)
-            |-> provide_async_session()
-            |-> provide_async_session()  # This call reuses the session from the first invocation within the same asyncio task.
-            |-> provide_pokemon_repository()
-            |-> provide_async_sqlalchemy_unit_of_work()
+            ├─> provide_async_sqlalchemy_unit_of_work()
+            │     ├─> provide_async_session()         # Returns a session scoped to the current asyncio task
+            │     └─> provide_pokemon_repository()
+            │           └─> provide_async_session()   # Reuses the same session instance as above
         ```
         """
         from settings.db import get_async_session
@@ -118,7 +118,7 @@ class DocumentDBModule(Module):
 
 class KeyValueDBModule(Module):
     @provider
-    def provide_async_motor_unit_of_work(self) -> AbstractUnitOfWork:
+    def provide_async_redis_unit_of_work(self) -> AbstractUnitOfWork:
         from settings.db import get_async_client
 
         client = get_async_client()
