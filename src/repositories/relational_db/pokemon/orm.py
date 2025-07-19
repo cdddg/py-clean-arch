@@ -4,7 +4,7 @@ from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 from common.type import PokemonNumberStr, UUIDStr
-from common.utils import build_uui4_str
+from common.utils import build_uuid4_str
 
 
 class Base(DeclarativeBase):
@@ -45,7 +45,7 @@ class Pokemon(Base):
 class Type(Base):
     __tablename__ = 'type'
 
-    id: Mapped[UUIDStr] = mapped_column(String(32), primary_key=True, default=build_uui4_str)
+    id: Mapped[UUIDStr] = mapped_column(String(32), primary_key=True, default=build_uuid4_str)
     name: Mapped[str] = mapped_column(String(256))
 
 
@@ -62,7 +62,7 @@ class PokemonType(Base):
 class PokemonEvolution(Base):
     __tablename__ = 'pokemon_evolution'
 
-    id: Mapped[UUIDStr] = mapped_column(String(32), primary_key=True, default=build_uui4_str)
+    id: Mapped[UUIDStr] = mapped_column(String(32), primary_key=True, default=build_uuid4_str)
     previous_no: Mapped[PokemonNumberStr] = mapped_column(
         String(8), ForeignKey(f'{Pokemon.__tablename__}.no', ondelete='CASCADE')
     )
