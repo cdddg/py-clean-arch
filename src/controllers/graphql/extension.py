@@ -1,5 +1,5 @@
 """
-Extensions for Entrypoint Layer.
+Extensions for Controller Layer.
 
 This module provides the base schema configuration for the GraphQL API using the strawberry framework.
 
