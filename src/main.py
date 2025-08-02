@@ -4,10 +4,10 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from entrypoints.graphql.extension import customize_graphql_openapi
-from entrypoints.graphql.pokemon.router import router as pokemon_graphql_router
-from entrypoints.http.extension import add_exception_handlers as http_add_exception_handlers
-from entrypoints.http.pokemon.router import router as pokemon_http_router
+from controllers.graphql.extension import customize_graphql_openapi
+from controllers.graphql.pokemon.router import router as pokemon_graphql_router
+from controllers.http.extension import add_exception_handlers as http_add_exception_handlers
+from controllers.http.pokemon.router import router as pokemon_http_router
 from settings import APP_NAME, APP_VERSION
 from settings.db import IS_RELATIONAL_DB, initialize_db
 
@@ -35,11 +35,11 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-# entrypoints/http
+# controllers/http
 app.include_router(pokemon_http_router, tags=['HTTP'])
 http_add_exception_handlers(app)
 
-# entrypoints/graphql
+# controllers/graphql
 app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
 customize_graphql_openapi(app)
 

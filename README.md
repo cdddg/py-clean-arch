@@ -27,7 +27,7 @@ The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/u
 
 This project not only adheres to Uncle Bob's Clean Architecture principles but also incorporates modern adaptations and extended features to meet contemporary development needs:
 
-- **GraphQL vs HTTP**:<br>The `entrypoints` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
+- **GraphQL vs HTTP**:<br>The `controllers` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
 - **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational databases (e.g., SQLite, MySQL, PostgreSQL) and NoSQL databases, including document-oriented stores (e.g., MongoDB, CouchDB) and key-value stores (e.g., Redis, Memcached).
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
@@ -53,7 +53,7 @@ Here's a glimpse of the project's high-level structure, highlighting primary dir
 │   │   ├── dependency_injection.py
 │   │   └── unit_of_work.py
 │   │
-│   ├── entrypoints/          - External interfaces like HTTP & GraphQL endpoints.
+│   ├── controllers/          - External interfaces like HTTP & GraphQL endpoints.
 │   │   ├── graphql/          - GraphQL components for a flexible API.
 │   │   └── http/             - RESTful API routes and controllers.
 │   │                           ('Frameworks and Drivers' and part of 'Interface Adapters' in Clean Architecture)
@@ -83,6 +83,8 @@ Here's a glimpse of the project's high-level structure, highlighting primary dir
     ├── integration/          - Integration tests for testing module interactions.
     └── unit/                 - Unit tests for testing individual components in isolation.
 ```
+
+> 📌 **Note**: While this project uses `controllers` for the external interface layer, teams may prefer alternatives like `handlers` (event-driven), `endpoints` (API-focused), `routes` (Express.js style), `api` (simple), `interfaces` (DDD), `gateways` (microservices), or `entrypoints` (original Clean Architecture). Choose what best aligns with your team's vocabulary.
 
 #### Clean Architecture Flow Diagram
 
@@ -208,16 +210,16 @@ To validate your application across various databases like In-Memory SQLite, SQL
     ✓ Test using PostgreSQL [9104]
     ✓ Test using MongoDB [10780]
     ✓ Test using Redis [8422]
-
+   
    5 tests, 0 failures in 49 seconds
-
+   
    Name                                                   Stmts   Miss   Cover   Missing
    -------------------------------------------------------------------------------------
    src/common/type.py                                        15      2  86.67%   15, 30
    src/common/utils.py                                        5      1  80.00%   9
    src/di/dependency_injection.py                            49      1  97.96%   139
    src/di/unit_of_work.py                                    58      2  96.55%   56-59
-   src/entrypoints/http/extension.py                         14      1  92.86%   28
+   src/controllers/http/extension.py                         14      1  92.86%   28
    src/main.py                                               30      8  73.33%   20-26, 49, 54
    src/models/pokemon.py                                     48      2  95.83%   45, 57
    src/repositories/document_db/pokemon/repository.py        84      7  91.67%   117, 127-128, 167, 176, 216, 238
@@ -226,7 +228,7 @@ To validate your application across various databases like In-Memory SQLite, SQL
    src/usecases/pokemon.py                                   40      6  85.00%   16, 19-21, 47, 51
    -------------------------------------------------------------------------------------
    TOTAL                                                    881     39  95.57%
-
+   
    36 files skipped due to complete coverage.
    Wrote HTML report to htmlcov/index.html
    ```
