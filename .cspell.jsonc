@@ -48,6 +48,8 @@
         "starlette",
         "uvicorn",
         "bson",
+        "pylint",
+        "pyright",
         // SQLAlchemy
         "autoflush",
         "autouse",

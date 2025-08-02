@@ -4,11 +4,55 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
 
 ## Changelog
 
-- **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived in April 2021. <br>**Description**: Initial proposal by me.
+- **v1**: Check out the [v1 branch](https://github.com/cdddg/py-clean-arch/tree/v1).<br> Archived in April 2021. <br>
+  Description: Initial proposal by me.
 
-- **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived in July 2023. <br>**Description**: Improvement from v1 were inspired by the v3 branch of the [**go-clean-arch**](https://github.com/bxcodec/go-clean-arch/tree/v3). See the merged PRs from [PR #1 to PR #10](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-04-09..2023-08-15).
+  > Core Architecture Setup<br>
+  > ☑️ Built complete `FastAPI` project structure with modular `src/` organization<br>
+  > ☑️ Implemented `Repository pattern` for data access layer
+  >
+  > API Implementation<br>
+  > ☑️ Implemented `RESTful` Pokemon `CRUD` endpoints<br>
+  >
+  > Development Tooling<br>
+  > ☑️ Added `Docker` containerization support<br>
+  > ☑️ Established `pytest` testing framework with test cases
 
-- ✏️ **v3**: Current version on the `master` branch. <br>Merged to main in August 2023 and still evolving. <br>**Description**: Transition to Python-centric design from Go. Start with PR [#11](https://github.com/cdddg/py-clean-arch/pull/11) and see [all subsequent PRs](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-16..2099-12-31).
+- **v2**: Check out the [v2 branch](https://github.com/cdddg/py-clean-arch/tree/v2).<br> Archived in July 2023. <br>
+  Description: Improvement from v1, For details, see [PR #1 to PR #10](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-04-09..2023-08-15)
+
+  > Core Refactor: Inspired by [go-clean-arch v3](https://github.com/bxcodec/go-clean-arch/tree/v3)<br>
+  > ☑️ Adopted Go project directory structure: `pkg/deliveries/`, `pkg/repositories/`, `pkg/usecases/`
+  >
+  > Clean Architecture Implementation<br>
+  > ☑️ Added `Unit of Work` and `Dependency Injection` design patterns<br>
+  > ☑️ Strict separation of layer responsibilities following Uncle Bob's `Clean Architecture` principles
+  >
+  > API Style Expansion<br>
+  > ☑️ Added comprehensive `GraphQL` API support (mutations, queries, schemas)
+  >
+  > Multi-Database Support<br>
+  > ☑️ Multi-database support: `MySQL`, `PostgreSQL`, `SQLite`<br>
+  > ☑️ Implemented async `SQLAlchemy 2.0`
+
+- **v3**: Check out the [v3 branch](https://github.com/cdddg/py-clean-arch/tree/v3).. <br> Archived in August 2025. <br>Description: Transition to Python-centric design from Go. For details, see [PR #11 to PR #46](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-15..2025-08-02).
+
+  > Go-style to Python-centric Transition<br>
+  > ☑️ Removed Go-idiomatic `pkg/` structure, adopted Python ecosystem conventions
+  >
+  > NoSQL Database Expansion<br>
+  > ☑️ Added `MongoDB` document database support (`document-oriented`)<br>
+  > ☑️ Added `Redis` key-value database support (`key-value store`)
+  >
+  > Testing Architecture Enhancement<br>
+  > ☑️ Established three-tier testing structure: `unit`, `integration`, `functional`
+  >
+  > DevOps and Toolchain<br>
+  > ☑️ Added `GitHub Actions` CI/CD pipeline<br>
+  > ☑️ Integrated code quality tools: `cspell`, `pylint`, `ruff`, `pyright`
+
+- ✏️ **v4**: **Under development on the `master` branch.** <br>
+  Description: Adding HTTP/2-based gRPC support to expand API protocols beyond HTTP-based REST and GraphQL
 
 ## Description
 
