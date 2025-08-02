@@ -6,8 +6,8 @@ from starlette.middleware.cors import CORSMiddleware
 
 from controllers.graphql.extension import customize_graphql_openapi
 from controllers.graphql.pokemon.router import router as pokemon_graphql_router
-from controllers.http.extension import add_exception_handlers as http_add_exception_handlers
-from controllers.http.pokemon.router import router as pokemon_http_router
+from controllers.rest.extension import add_exception_handlers as add_rest_exception_handlers
+from controllers.rest.pokemon.router import router as pokemon_rest_router
 from settings import APP_NAME, APP_VERSION
 from settings.db import IS_RELATIONAL_DB, initialize_db
 
@@ -35,9 +35,9 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
-# controllers/http
-app.include_router(pokemon_http_router, tags=['HTTP'])
-http_add_exception_handlers(app)
+# controllers/rest
+app.include_router(pokemon_rest_router, tags=['REST'])
+add_rest_exception_handlers(app)
 
 # controllers/graphql
 app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])

@@ -1,7 +1,7 @@
 """
 Unit Testing the Usecase Layer for Pokémon.
 
-In this module, we focus on testing the usecase layer of the Pokémon application. The usecase layer (often termed as the service layer in some architectures) coordinates complex operations and is a primary point of interaction between the outer layers (like HTTP or GraphQL interfaces) and the inner layers (like repositories or domain models).
+In this module, we focus on testing the usecase layer of the Pokémon application. The usecase layer (often termed as the service layer in some architectures) coordinates complex operations and is a primary point of interaction between the outer layers (like REST or GraphQL interfaces) and the inner layers (like repositories or domain models).
 
 Key Aspects Covered:
 
