@@ -3,7 +3,7 @@ Extensions for Controller Layer.
 
 This module provides utility functions to integrate FastAPI exception handlers with the application's
 domain-specific exceptions. It ensures that custom errors in the domain layer are transformed into appropriate
-HTTP responses when they propagate to the HTTP layer.
+HTTP responses when they propagate to the REST layer.
 
 Note:
     For simpler requirements, use extension.py. For more complex needs, consider extensions/$package.py for better clarity and scalability.

@@ -27,7 +27,7 @@ The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/u
 
 This project not only adheres to Uncle Bob's Clean Architecture principles but also incorporates modern adaptations and extended features to meet contemporary development needs:
 
-- **GraphQL vs HTTP**:<br>The `controllers` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `http` focuses on RESTful API routes and controls.
+- **GraphQL vs REST**:<br>The `controllers` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `rest` focuses on RESTful API routes and controls.
 - **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational databases (e.g., SQLite, MySQL, PostgreSQL) and NoSQL databases, including document-oriented stores (e.g., MongoDB, CouchDB) and key-value stores (e.g., Redis, Memcached).
 
 Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
@@ -53,9 +53,9 @@ Here's a glimpse of the project's high-level structure, highlighting primary dir
 │   │   ├── dependency_injection.py
 │   │   └── unit_of_work.py
 │   │
-│   ├── controllers/          - External interfaces like HTTP & GraphQL endpoints.
+│   ├── controllers/          - External interfaces like REST & GraphQL endpoints.
 │   │   ├── graphql/          - GraphQL components for a flexible API.
-│   │   └── http/             - RESTful API routes and controllers.
+│   │   └── rest/             - RESTful API routes and controllers.
 │   │                           ('Frameworks and Drivers' and part of 'Interface Adapters' in Clean Architecture)
 │   │
 │   ├── usecases/             - Contains application-specific business rules and implementations.
@@ -219,7 +219,7 @@ To validate your application across various databases like In-Memory SQLite, SQL
    src/common/utils.py                                        5      1  80.00%   9
    src/di/dependency_injection.py                            49      1  97.96%   139
    src/di/unit_of_work.py                                    58      2  96.55%   56-59
-   src/controllers/http/extension.py                         14      1  92.86%   28
+   src/controllers/rest/extension.py                         14      1  92.86%   28
    src/main.py                                               30      8  73.33%   20-26, 49, 54
    src/models/pokemon.py                                     48      2  95.83%   45, 57
    src/repositories/document_db/pokemon/repository.py        84      7  91.67%   117, 127-128, 167, 176, 216, 238

@@ -4,7 +4,7 @@ from tests.conftest import deep_compare
 
 
 @pytest.mark.anyio
-async def test_pokemon_evolution_scenario(client):
+async def test_pokemon_evolution_chain_lifecycle(client):
     # Step 1: Create Pokemon 'Ivysaur' with number '0002'
     response = await client.post(
         '/pokemons', json={'no': '0002', 'name': 'Ivysaur', 'type_names': ['Grass', 'Poison']}
