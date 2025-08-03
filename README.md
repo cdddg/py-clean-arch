@@ -35,7 +35,7 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
   > ☑️ Multi-database support: `MySQL`, `PostgreSQL`, `SQLite`<br>
   > ☑️ Implemented async `SQLAlchemy 2.0`
 
-- **v3**: Check out the [v3 branch](https://github.com/cdddg/py-clean-arch/tree/v3).. <br> Archived in August 2025. <br>Description: Transition to Python-centric design from Go. For details, see [PR #11 to PR #46](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-15..2025-08-02).
+- **v3**: Check out the [v3 branch](https://github.com/cdddg/py-clean-arch/tree/v3). <br> Archived in August 2025. <br>Description: Transition to Python-centric design from Go. For details, see [PR #11 to PR #46](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-15..2025-08-02).
 
   > Go-style to Python-centric Transition<br>
   > ☑️ Removed Go-idiomatic `pkg/` structure, adopted Python ecosystem conventions
@@ -50,9 +50,6 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
   > DevOps and Toolchain<br>
   > ☑️ Added `GitHub Actions` CI/CD pipeline<br>
   > ☑️ Integrated code quality tools: `cspell`, `pylint`, `ruff`, `pyright`
-
-- ✏️ **v4**: **Under development on the `master` branch.** <br>
-  Description: Adding HTTP/2-based gRPC support to expand API protocols beyond HTTP-based REST and GraphQL
 
 ## Description
 
@@ -208,7 +205,7 @@ $ DATABASE_URI=<database-uri> docker compose up app
 
 After setup, access the application at [http://localhost:8000](http://localhost:8000/).
 
-![fastapi-doc](./docs/fastapi-doc.png)
+![fastapi-doc](./docs/fastapi-swagger.png)
 
 ### 🧪 Testing the Application
 
