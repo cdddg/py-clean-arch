@@ -3,7 +3,7 @@ LABEL project=py-clean-arch
 
 COPY ./pyproject.toml ./poetry.lock /
 RUN pip install --upgrade pip \
-	&& pip install --root-user-action=ignore "poetry>=1.8,<1.9" \
+	&& pip install --root-user-action=ignore "poetry>=2.1,<2.2" \
 	&& poetry config virtualenvs.create false \
 	&& poetry install --no-interaction --no-ansi --no-cache -vv \
 	&& rm -f pyproject.toml poetry.lock

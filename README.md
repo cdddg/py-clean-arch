@@ -1,6 +1,6 @@
 # py-clean-arch
 
-This is an example of implementing a Pokémon API based on the Clean Architecture in a Python project, using the FastAPI framework.
+This Python project showcases the implementation of a Pokémon API following the Clean Architecture principles, built with the FastAPI framework. It serves as a practical example of designing a testable, maintainable, and scalable system architecture.
 
 ## Changelog
 
@@ -35,7 +35,7 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
   > ☑️ Multi-database support: `MySQL`, `PostgreSQL`, `SQLite`<br>
   > ☑️ Implemented async `SQLAlchemy 2.0`
 
-- **v3**: Check out the [v3 branch](https://github.com/cdddg/py-clean-arch/tree/v3).. <br> Archived in August 2025. <br>Description: Transition to Python-centric design from Go. For details, see [PR #11 to PR #46](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-15..2025-08-02).
+- **v3**: Check out the [v3 branch](https://github.com/cdddg/py-clean-arch/tree/v3). <br> Archived in August 2025. <br>Description: Transition to Python-centric design from Go. For details, see [PR #11 to PR #46](https://github.com/cdddg/py-clean-arch/pulls?q=is%3Apr+is%3Aclosed+merged%3A2023-08-15..2025-08-02).
 
   > Go-style to Python-centric Transition<br>
   > ☑️ Removed Go-idiomatic `pkg/` structure, adopted Python ecosystem conventions
@@ -51,9 +51,6 @@ This is an example of implementing a Pokémon API based on the Clean Architectur
   > ☑️ Added `GitHub Actions` CI/CD pipeline<br>
   > ☑️ Integrated code quality tools: `cspell`, `pylint`, `ruff`, `pyright`
 
-- ✏️ **v4**: **Under development on the `master` branch.** <br>
-  Description: Adding HTTP/2-based gRPC support to expand API protocols beyond HTTP-based REST and GraphQL
-
 ## Description
 
 The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), emphasizes several foundational principles:
@@ -66,20 +63,6 @@ The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/u
 
 ![clean-arch-01](./docs/clean-arch-01.png)
 \*source: [yoan-thirion.gitbook.io](https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture)
-
-### ✨ Additional Features and Patterns in This Project
-
-This project not only adheres to Uncle Bob's Clean Architecture principles but also incorporates modern adaptations and extended features to meet contemporary development needs:
-
-- **GraphQL vs REST**:<br>The `controllers` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `rest` focuses on RESTful API routes and controls.
-- **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational databases (e.g., SQLite, MySQL, PostgreSQL) and NoSQL databases, including document-oriented stores (e.g., MongoDB, CouchDB) and key-value stores (e.g., Redis, Memcached).
-
-Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
-
-- **Repository Pattern**:<br>An abstraction that simplifies the decoupling of the model layer from data storage, thereby promoting flexibility and maintainability in the codebase. [^1]
-- **Unit of Work Pattern**:<br>This pattern ensures that all operations within a single transaction are completed successfully, or none are completed at all. [^2]
-- **Dependency Injection Pattern**:<br>Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^3]
-- **Asynchronous SQLalchemy**:<br>By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^4]
 
 ### 🧱 Project Structure Overview & Clean Architecture Mapping
 
@@ -128,8 +111,6 @@ Here's a glimpse of the project's high-level structure, highlighting primary dir
     └── unit/                 - Unit tests for testing individual components in isolation.
 ```
 
-> 📌 **Note**: While this project uses `controllers` for the external interface layer, teams may prefer alternatives like `handlers` (event-driven), `endpoints` (API-focused), `routes` (Express.js style), `api` (simple), `interfaces` (DDD), `gateways` (microservices), or `entrypoints` (original Clean Architecture). Choose what best aligns with your team's vocabulary.
-
 #### Clean Architecture Flow Diagram
 
 The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture and how they interact. It consists of two images and an ASCII flow for clarity:
@@ -142,146 +123,144 @@ The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture 
 ![clean-arch-03](./docs/clean-arch-03.png)
 \*source: https://stackoverflow.com/a/73788685
 
+### ✨ Additional Features and Patterns in This Project
+
+This project not only adheres to Uncle Bob's Clean Architecture principles but also incorporates modern adaptations and extended features to meet contemporary development needs:
+
+- **GraphQL vs REST**:<br>The `controllers` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `rest` focuses on RESTful API routes and controls.
+- **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational databases (e.g., SQLite, MySQL, PostgreSQL) and NoSQL databases, including document-oriented stores (e.g., MongoDB, CouchDB) and key-value stores (e.g., Redis, Memcached).
+
+Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
+
+- **Repository Pattern**:<br>An abstraction that simplifies the decoupling of the model layer from data storage, thereby promoting flexibility and maintainability in the codebase. [^1]
+- **Unit of Work Pattern**:<br>This pattern ensures that all operations within a single transaction are completed successfully, or none are completed at all. [^2]
+- **Dependency Injection Pattern**:<br>Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^3]
+- **Asynchronous SQLalchemy**:<br>By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^4]
+
 ## Getting Started
 
-Here's everything you need to get this project running on your local machine for development and testing.
+Get this project up and running on your local machine for development and testing.
 
-### 🐳 Database Setup
+### ⚡︎ Quick Start
 
-This application is designed to support multiple databases. Choose one of the following setups:
+Start the application with a single command:
 
-#### Default Configuration (In-Memory SQLite)
+```sh
+$ docker compose up app
+```
 
-The application will default to using an **In-Memory SQLite** database if no `DATABASE_URI` is specified.
+Access the API documentation at [http://localhost:8000/docs](http://localhost:8000/docs) and try the interactive endpoints.
 
-#### Diverse Databases with Docker-Compose
+![fastapi-doc](./docs/fastapi-swagger.png)
 
-For utilizing other databases, Docker Compose can be employed:
+### 🐳 Database Options
 
+Choose from multiple supported database types:
+
+<a id="supported-database-uris"></a>
+
+**Supported Database URIs:**
+
+- `sqlite+aiosqlite:///<dbname>.db` (SQLite)
+- `sqlite+aiosqlite:///:memory:` (In-Memory SQLite) - **Default**
+- `mysql+asyncmy://<username>:<password>@<host>:<port>/<dbname>` (MySQL)
+- `postgresql+asyncpg://<username>:<password>@<host>:<port>/<dbname>` (PostgreSQL)
+- `mongodb://<username>:<password>@<host>:<port>/<dbname>` (MongoDB)
+- `redis://<username>:<password>@<host>:<port>/<dbname>` (Redis)
+
+> 📌 **Note**: If you encounter database initialization issues, append **`reinitialize=true`** to the `DATABASE_URI`, e.g., `sqlite+aiosqlite:///sqlite.db?reinitialize=true`.
+
+**Start databases with Docker Compose:**
 ```sh
 $ docker compose down --remove-orphans -v
 $ docker compose up dockerize
 ```
 
-### 🚀 Launching the Application
+### 🔧 Development Setup
 
-1. If employing a specific database, ensure the `DATABASE_URI` environment variable is set appropriately.
-2. Proceed to initiate the application.
+Set up your local development environment:
 
-<a id="supported-database-uris"></a>
+1. **Install prerequisites:** <u>Python 3.11+</u> and <u>Poetry 2.1.x+</u>
 
-> **Supported Database URIs:**:
->
-> - `sqlite+aiosqlite:///<dbname>.db` (SQLite)
-> - `sqlite+aiosqlite:///:memory:` (In-Memory SQLite)
-> - `mysql+asyncmy://<username>:<password>@<host>:<port>/<dbname>` (MySQL)
-> - `postgresql+asyncpg://<username>:<password>@<host>:<port>/<dbname>` (PostgreSQL)
-> - `mongodb://<username>:<password>@<host>:<port>/<dbname>` (MongoDB)
-> - `redis://<username>:<password>@<host>:<port>/<dbname>` (Redis)
->
-> 📌 **Note**: If encountering issues with database initialization, consider appending **`reinitialize=true`** to the `DATABASE_URI` for reconfiguration, e.g., `sqlite+aiosqlite:///sqlite.db?reinitialize=true`.
-
-#### Using Docker Compose:
-
-To run the application inside a Docker container:
-
-```sh
-$ DATABASE_URI=<database-uri> docker compose up app
-```
-
-#### Using Make (with Poetry):
-
-1. Ensure Python (version 3.11 or higher) and Poetry (version 2.1.x) are installed.
-
-2. Configure your environment: [^6]
-
+2. **Configure your environment:** [^6]
+   
    ```sh
    $ poetry env use python3.11
    $ poetry shell
    $ poetry install
    ```
-
-3. Launch the application:
+   
+3. **Launch the application:**
+   
    ```sh
+   # With default SQLite database
+   $ make up
+   
+   # With specific database
    $ DATABASE_URI=<database-uri> make up
    ```
+   
+4. **Access the application:** [http://localhost:8000](http://localhost:8000/)
 
-After setup, access the application at [http://localhost:8000](http://localhost:8000/).
+### 🧪 Testing
 
-![fastapi-doc](./docs/fastapi-doc.png)
+#### Single Database Testing
 
-### 🧪 Testing the Application
-
-#### Single Database Testing:
-
-To conduct tests against a single database, specify its URI by configuring the `DATABASE_URI` environment variable:
+Test against a specific database by setting the `DATABASE_URI` environment variable:
 
 ```sh
 $ DATABASE_URI=<database-uri> pytest
 ```
 
-> For the list of supported database URIs, please refer to the [**Supported Database URIs**](#supported-database-uris)
+> For supported database URIs, see [**Database Options**](#supported-database-uris)
 >
-> 📌 **Note**: For testing, it's recommended to use a different `dbname`, preferably with a "\_test" suffix (e.g., "mydatabase_test"). This ensures your tests don't interfere with your main application data.
+> 📌 **Note**: Use a different `dbname` with "\_test" suffix for testing (e.g., "mydatabase_test") to avoid interfering with your main application data.
 
-#### Multi-Database Testing and Code Coverage: [^5]
+#### Multi-Database Testing with Coverage [^5]
 
-To validate your application across various databases like In-Memory SQLite, SQLite, MySQL, Postgres and MongoDB, you'll utilize the tool called `bats`.
+Test across all supported databases (SQLite, MySQL, PostgreSQL, MongoDB, Redis) using `bats`:
 
-1. Installing `bats`
+1. **Install bats:** Follow the [installation guide](https://bats-core.readthedocs.io/en/stable/installation.html)
 
-   **-** On macOS: use [Homebrew](https://brew.sh/)
+2. **Run comprehensive tests:**
 
-   ```sh
-   $ brew install bats
-   ```
+```sh
+$ make test
+api_db_test.bats
+ ✓ Test using in-memory SQLite [9671]
+ ✓ Test using MySQL [10551]
+ ✓ Test using PostgreSQL [9104]
+ ✓ Test using MongoDB [10780]
+ ✓ Test using Redis [8422]
 
-   **-** On Linux: compile from the official [GitHub repository](https://github.com/bats-core/bats-core)
+5 tests, 0 failures in 49 seconds
 
-   ```sh
-   $ git clone https://github.com/bats-core/bats-core.git
-   $ cd bats-core
-   $ ./install.sh /usr/local
-   ```
+Name                                                   Stmts   Miss   Cover   Missing
+-------------------------------------------------------------------------------------
+src/common/type.py                                        15      2  86.67%   15, 30
+src/common/utils.py                                        5      1  80.00%   9
+src/di/dependency_injection.py                            49      1  97.96%   139
+src/di/unit_of_work.py                                    58      2  96.55%   56-59
+src/controllers/rest/extension.py                         14      1  92.86%   28
+src/main.py                                               30      8  73.33%   20-26, 49, 54
+src/models/pokemon.py                                     48      2  95.83%   45, 57
+src/repositories/document_db/pokemon/repository.py        84      7  91.67%   117, 127-128, 167, 176, 216, 238
+src/repositories/key_value_db/pokemon/repository.py      148      6  95.95%   71, 82, 128, 142, 210-211
+src/repositories/relational_db/pokemon/repository.py      72      3  95.83%   52, 73, 79
+src/usecases/pokemon.py                                   40      6  85.00%   16, 19-21, 47, 51
+-------------------------------------------------------------------------------------
+TOTAL                                                    881     39  95.57%
 
-2. Running Multi-DB tests and generating a test coverage report.
+36 files skipped due to complete coverage.
+Wrote HTML report to htmlcov/index.html
+```
 
-   ```shell
-   $ make test
-   api_db_test.bats
-    ✓ Test using in-memory SQLite [9671]
-    ✓ Test using MySQL [10551]
-    ✓ Test using PostgreSQL [9104]
-    ✓ Test using MongoDB [10780]
-    ✓ Test using Redis [8422]
-   
-   5 tests, 0 failures in 49 seconds
-   
-   Name                                                   Stmts   Miss   Cover   Missing
-   -------------------------------------------------------------------------------------
-   src/common/type.py                                        15      2  86.67%   15, 30
-   src/common/utils.py                                        5      1  80.00%   9
-   src/di/dependency_injection.py                            49      1  97.96%   139
-   src/di/unit_of_work.py                                    58      2  96.55%   56-59
-   src/controllers/rest/extension.py                         14      1  92.86%   28
-   src/main.py                                               30      8  73.33%   20-26, 49, 54
-   src/models/pokemon.py                                     48      2  95.83%   45, 57
-   src/repositories/document_db/pokemon/repository.py        84      7  91.67%   117, 127-128, 167, 176, 216, 238
-   src/repositories/key_value_db/pokemon/repository.py      148      6  95.95%   71, 82, 128, 142, 210-211
-   src/repositories/relational_db/pokemon/repository.py      72      3  95.83%   52, 73, 79
-   src/usecases/pokemon.py                                   40      6  85.00%   16, 19-21, 47, 51
-   -------------------------------------------------------------------------------------
-   TOTAL                                                    881     39  95.57%
-   
-   36 files skipped due to complete coverage.
-   Wrote HTML report to htmlcov/index.html
-   ```
+  ## Frequently Asked Questions
+Questions about the architecture? Check our [FAQ](./docs/faq.md).
 
-<br>
+## Enjoying the Project .ᐣ
 
-## Enjoying the Project?
-
-A simple ⭐ can go a long way in showing your appreciation!
+If this project helped you, a ⭐ would be greatly appreciated!
 
 [^1]: https://www.cosmicpython.com/book/chapter_02_repository.html
 
