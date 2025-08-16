@@ -51,6 +51,9 @@ This Python project showcases the implementation of a Pokémon API following the
   > ☑️ Added `GitHub Actions` CI/CD pipeline<br>
   > ☑️ Integrated code quality tools: `cspell`, `pylint`, `ruff`, `pyright`
 
+- ✏️ **v4**: **Under development on the `master` branch.** <br>
+  - [ ] Adding HTTP/2-based gRPC support to expand API protocols beyond HTTP-based REST and GraphQL
+
 ## Description
 
 The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), emphasizes several foundational principles:
