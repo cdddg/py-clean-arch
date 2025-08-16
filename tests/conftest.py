@@ -104,7 +104,7 @@ if IS_RELATIONAL_DB:
         #   https://stackoverflow.com/questions/65528675
         #   https://github.com/sqlalchemy/sqlalchemy/issues/5811#issuecomment-756269881
         async with AsyncRelationalDBEngine.connect() as conn:
-            # TODO: Not sure why `await conn.begin()` doesn't work when DB is sqlite
+            # XXX: SQLite connection issue - await conn.begin() doesn't work as expected
             await conn.execute(text('BEGIN'))
             await conn.begin_nested()
 
