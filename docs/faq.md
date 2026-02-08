@@ -73,3 +73,25 @@ Its main limitations include:
 - **Testing**: ood unit and integration test coverage, but lacking end-to-end tests and load tests.
 
 Therefore, if you want to use this for a production environment, you will need to enhance the relevant features and security mechanisms based on your actual requirements.
+
+---
+
+### 7. Do all database implementations behave identically?
+
+No. All five databases share the same `AbstractPokemonRepository` interface, but their runtime guarantees differ:
+
+- **Relational databases** (SQLite, MySQL, PostgreSQL) provide full ACID transactions via SQLAlchemy's async session.
+- **MongoDB** transactions require a replica set; a standalone instance does not support them.
+- **Redis** has no transaction or rollback support in this implementation (see `AsyncRedisUnitOfWork`).
+
+The shared interface demonstrates that **layer isolation** is achievable across different storage paradigms — not that all paradigms behave equivalently.
+
+---
+
+### 8. Why does this project share the same models across layers instead of separating entities and DTOs?
+
+This is a deliberate simplification. With only one entity (Pokémon), splitting into separate domain entities and DTOs would add boilerplate without meaningful benefit.
+
+Currently, `models/` dataclasses are shared across the usecase and repository layers, while the controller layer maintains its own schemas (`CreatePokemonRequest`, `PokemonResponse`, `CreatePokemonInput`, `PokemonNode`) to keep external API boundaries explicit.
+
+If the domain grows — multiple entities, complex business rules, or divergent read/write models — separating entities from DTOs becomes worthwhile.

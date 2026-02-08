@@ -35,7 +35,7 @@ async def get_pokemons(async_unit_of_work: AbstractUnitOfWork) -> list[PokemonMo
 
 async def update_pokemon(
     async_unit_of_work: AbstractUnitOfWork, no: PokemonNumberStr, data: UpdatePokemonModel
-):
+) -> PokemonModel:
     async with async_unit_of_work as auow:
         await auow.pokemon_repo.update(no, data)
 
@@ -54,6 +54,6 @@ async def update_pokemon(
         return await auow.pokemon_repo.get(no)
 
 
-async def delete_pokemon(async_unit_of_work: AbstractUnitOfWork, no: PokemonNumberStr):
+async def delete_pokemon(async_unit_of_work: AbstractUnitOfWork, no: PokemonNumberStr) -> None:
     async with async_unit_of_work as auow:
         await auow.pokemon_repo.delete(no)

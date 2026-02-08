@@ -170,7 +170,7 @@ class RedisPokemonRepository(AbstractPokemonRepository):
         async with self.client.pipeline() as pipe:
             for number in numbers:
                 pipe.exists(self._build_info_key(number))
-            return any(await pipe.execute())
+            return all(await pipe.execute())
 
     async def replace_types(self, pokemon_no: PokemonNumberStr, type_names: List[str]):
         key = self._build_type_key(pokemon_no)

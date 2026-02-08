@@ -1,6 +1,6 @@
 # py-clean-arch
 
-This Python project showcases the implementation of a Pokémon API following the Clean Architecture principles, built with the FastAPI framework. It serves as a practical example of designing a testable, maintainable, and scalable system architecture.
+This Python project showcases the implementation of a Pokémon API following the Clean Architecture principles, built with the FastAPI framework. It serves as a practical example of how Clean Architecture enables swapping infrastructure — databases, API protocols — without changing business logic.
 
 ## Changelog
 
@@ -51,12 +51,11 @@ This Python project showcases the implementation of a Pokémon API following the
   > ☑️ Added `GitHub Actions` CI/CD pipeline<br>
   > ☑️ Integrated code quality tools: `cspell`, `pylint`, `ruff`, `pyright`
 
-- ✏️ **v4**: **Under development on the `master` branch.** <br>
-  - [ ] Adding HTTP/2-based gRPC support to expand API protocols beyond HTTP-based REST and GraphQL
+- ✏️ **v4**: Currently making minor refinements on the [master](https://github.com/cdddg/py-clean-arch/tree/master) branch. The scope for the next major iteration has not been decided yet.
 
 ## Description
 
-The Clean Architecture, popularized by [Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), emphasizes several foundational principles:
+The Clean Architecture, popularized by **[Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)**, emphasizes several foundational principles:
 
 1. **Framework Independence**: The system isn't reliant on external libraries or frameworks.
 2. **Testability**: Business rules can be validated without any external elements.
@@ -118,7 +117,7 @@ Here's a glimpse of the project's high-level structure, highlighting primary dir
 
 The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture and how they interact. It consists of two images and an ASCII flow for clarity:
 
-> For a detailed explanation of the ASCII flow, refer to [ascii-flow.md](./docs/ascii-flow.md).
+> For a detailed explanation of the ASCII flow, refer to **[ascii-flow.md](./docs/ascii-flow.md)**.
 
 ![clean-arch-02](./docs/clean-arch-02.png)
 \*source: [yoan-thirion.gitbook.io](https://yoan-thirion.gitbook.io/knowledge-base/software-craftsmanship/code-katas/clean-architecture)
@@ -126,19 +125,25 @@ The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture 
 ![clean-arch-03](./docs/clean-arch-03.png)
 \*source: https://stackoverflow.com/a/73788685
 
-### ✨ Additional Features and Patterns in This Project
+### 🔀 Design Decisions
 
-This project not only adheres to Uncle Bob's Clean Architecture principles but also incorporates modern adaptations and extended features to meet contemporary development needs:
+Both **REST and GraphQL** share the same usecases layer, showing that the API protocol can change independently. Similarly, **5 databases** (SQLite, MySQL, PostgreSQL, MongoDB, Redis) run behind the same `AbstractPokemonRepository`, proving that storage can be swapped without touching business logic. In practice, you would pick one protocol and one database.
 
-- **GraphQL vs REST**:<br>The `controllers` module contains two API interfaces. `graphql` provides for a robust GraphQL API, while `rest` focuses on RESTful API routes and controls.
-- **RelationalDB vs NoSQL**:<br>The `repositories` module supports both relational databases (e.g., SQLite, MySQL, PostgreSQL) and NoSQL databases, including document-oriented stores (e.g., MongoDB, CouchDB) and key-value stores (e.g., Redis, Memcached).
+This is enabled by several design patterns:
 
-Apart from following Uncle Bob's Clean Architecture, this project also incorporates:
+- **Repository Pattern** [^1] — decouples the model layer from data storage
+- **Unit of Work Pattern** [^2] — ensures transactional consistency
+- **Dependency Injection** [^3] — reduces coupling between modules
+- **Asynchronous SQLAlchemy 2.0** [^4] — async database operations
 
-- **Repository Pattern**:<br>An abstraction that simplifies the decoupling of the model layer from data storage, thereby promoting flexibility and maintainability in the codebase. [^1]
-- **Unit of Work Pattern**:<br>This pattern ensures that all operations within a single transaction are completed successfully, or none are completed at all. [^2]
-- **Dependency Injection Pattern**:<br>Helps in reducing direct dependencies between codes, increasing the testability and flexibility of modules. [^3]
-- **Asynchronous SQLalchemy**:<br>By utilizing the asynchronous capabilities of SQLAlchemy 2.0, database operations are optimized for performance and efficiently handle multitasking. [^4]
+To keep the focus on architecture, this project makes several deliberate simplifications:
+
+- Database credentials are hardcoded in `docker-compose.yml` and CORS allows all origins — production requires secrets management and scoped CORS
+- Error responses expose full exception details — production should use standardized error codes
+- GraphQL loads all relations regardless of requested fields ([optimization notes](./src/controllers/graphql/pokemon/query.py)) — production would use the DataLoader pattern
+- Database engines initialize at import time — larger apps benefit from lazy initialization
+
+For deeper discussion, see the **[FAQ](./docs/faq.md)**.
 
 ## Getting Started
 
@@ -227,43 +232,15 @@ Test across all supported databases (SQLite, MySQL, PostgreSQL, MongoDB, Redis) 
 
 2. **Run comprehensive tests:**
 
-```sh
-$ make test
-api_db_test.bats
- ✓ Test using in-memory SQLite [9671]
- ✓ Test using MySQL [10551]
- ✓ Test using PostgreSQL [9104]
- ✓ Test using MongoDB [10780]
- ✓ Test using Redis [8422]
+   ```shell
+   $ make test
+   ```
 
-5 tests, 0 failures in 49 seconds
-
-Name                                                   Stmts   Miss   Cover   Missing
--------------------------------------------------------------------------------------
-src/common/type.py                                        15      2  86.67%   15, 30
-src/common/utils.py                                        5      1  80.00%   9
-src/di/dependency_injection.py                            49      1  97.96%   139
-src/di/unit_of_work.py                                    58      2  96.55%   56-59
-src/controllers/rest/extension.py                         14      1  92.86%   28
-src/main.py                                               30      8  73.33%   20-26, 49, 54
-src/models/pokemon.py                                     48      2  95.83%   45, 57
-src/repositories/document_db/pokemon/repository.py        84      7  91.67%   117, 127-128, 167, 176, 216, 238
-src/repositories/key_value_db/pokemon/repository.py      148      6  95.95%   71, 82, 128, 142, 210-211
-src/repositories/relational_db/pokemon/repository.py      72      3  95.83%   52, 73, 79
-src/usecases/pokemon.py                                   40      6  85.00%   16, 19-21, 47, 51
--------------------------------------------------------------------------------------
-TOTAL                                                    881     39  95.57%
-
-36 files skipped due to complete coverage.
-Wrote HTML report to htmlcov/index.html
-```
-
-  ## Frequently Asked Questions
-Questions about the architecture? Check our [FAQ](./docs/faq.md).
 
 ## Enjoying the Project .ᐣ
 
-If this project helped you, a ⭐ would be greatly appreciated!
+If this project helped you, a ⭐ would be greatly appreciated!<br>
+Have questions or ideas? Feel free to [open an issue](https://github.com/cdddg/py-clean-arch/issues) or submit a PR.
 
 [^1]: https://www.cosmicpython.com/book/chapter_02_repository.html
 

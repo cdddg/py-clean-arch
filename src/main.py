@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from starlette.middleware.cors import CORSMiddleware
 
 from controllers.graphql.extension import customize_graphql_openapi
 from controllers.graphql.pokemon.router import router as pokemon_graphql_router
@@ -27,13 +26,6 @@ async def lifespan(app: FastAPI):  # pylint: disable=redefined-outer-name
 
 
 app = FastAPI(title=APP_NAME, version=APP_VERSION, lifespan=lifespan)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=['*'],
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*'],
-)
 
 # controllers/rest
 app.include_router(pokemon_rest_router, tags=['REST'])
@@ -44,6 +36,8 @@ app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
 customize_graphql_openapi(app)
 
 
+# NOTE: Intentionally exposes exception details for debugging in this demo project.
+#       Production should return standardized error codes without internal details.
 @app.exception_handler(Exception)
 async def universal_exception_handler(_, exc):
     return JSONResponse(content={'error': f'{type(exc).__name__}: {exc}'}, status_code=500)
