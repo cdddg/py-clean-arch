@@ -1,4 +1,4 @@
-from typing import Callable, List, Optional
+from typing import List, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -16,8 +16,6 @@ from models.pokemon import (
 from ...abstraction import AbstractPokemonRepository
 from .mapper import PokemonOrmMapper
 from .orm import Pokemon, PokemonEvolution, PokemonType, Type
-
-func: Callable
 
 
 class RelationalDBPokemonRepository(AbstractPokemonRepository):

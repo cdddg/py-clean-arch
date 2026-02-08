@@ -5,7 +5,7 @@ import pytest
 @pytest.mark.dependency
 async def test_create_pokemon(client):
     # test create 0004, 0005, 0006
-    mutation = '''
+    mutation = """
         mutation {
             mutation1: createPokemon(input: {
                 no: "0004",
@@ -43,7 +43,7 @@ async def test_create_pokemon(client):
                 }
             }
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': mutation})
     data = response.json()
     for _, v in data.items():
@@ -74,7 +74,7 @@ async def test_create_pokemon(client):
 @pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_get_pokemon(client):
     # pre-work
-    mutation = '''
+    mutation = """
         mutation {
             createPokemon(input: {
                 no: "0004",
@@ -84,14 +84,14 @@ async def test_get_pokemon(client):
                 no
             }
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': mutation})
     data = response.json()
     assert response.status_code == 200
     assert data.get('error') is None
 
     # test get existed
-    query = '''
+    query = """
         query {
             pokemon(no: "0004") {
                 no
@@ -109,7 +109,7 @@ async def test_get_pokemon(client):
                 }
             }
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': query})
     data = response.json()
     data.get('data', {}).get('types', []).sort(key=lambda k: k['name'])
@@ -134,7 +134,7 @@ async def test_get_pokemon(client):
 @pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_get_pokemons(client):
     # pre-work
-    mutation = '''
+    mutation = """
         mutation {
             mutation1: createPokemon(input: {
                 no: "0004",
@@ -160,14 +160,14 @@ async def test_get_pokemons(client):
                 no
             }
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': mutation})
     data = response.json()
     assert response.status_code == 200
     assert data.get('error') is None
 
     # test get list
-    query = '''
+    query = """
         query {
             pokemons {
                 no
@@ -183,7 +183,7 @@ async def test_get_pokemons(client):
                 }
             }
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': query})
     data = response.json()
     data.get('data', {}).get('types', []).sort(key=lambda k: k['name'])
@@ -227,7 +227,7 @@ async def test_get_pokemons(client):
 @pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_update_pokemon(client):
     # pre-work
-    mutation = '''
+    mutation = """
         mutation {
             mutation1: createPokemon(input: {
                 no: "9004",
@@ -252,14 +252,14 @@ async def test_update_pokemon(client):
                 no
             }
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': mutation})
     data = response.json()
     assert response.status_code == 200
     assert data.get('error') is None
 
     # test update
-    mutation = '''
+    mutation = """
         mutation {
             updatePokemon(no: "9006", input: {
                 name: "XXX",
@@ -282,7 +282,7 @@ async def test_update_pokemon(client):
                 }
             }
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': mutation})
     data = response.json()
     assert response.status_code == 200
@@ -304,7 +304,7 @@ async def test_update_pokemon(client):
 @pytest.mark.dependency(depends=['test_create_pokemon'])
 async def test_delete_pokemon(client):
     # pre-work
-    mutation = '''
+    mutation = """
         mutation {
             createPokemon(input: {
                 no: "9004",
@@ -314,18 +314,18 @@ async def test_delete_pokemon(client):
                 no
             }
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': mutation})
     data = response.json()
     assert response.status_code == 200
     assert data.get('error') is None
 
     # test delete
-    mutation = '''
+    mutation = """
         mutation {
             deletePokemon(no: "9004")
         }
-    '''
+    """
     response = await client.post('/graphql', json={'query': mutation})
     data = response.json()
     assert response.status_code == 200

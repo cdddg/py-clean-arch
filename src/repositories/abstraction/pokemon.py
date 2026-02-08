@@ -14,7 +14,7 @@ class AbstractPokemonRepository(abc.ABC):
     session: Any
 
     @abc.abstractmethod
-    async def get(self, no: PokemonNumberStr):
+    async def get(self, no: PokemonNumberStr) -> PokemonModel:
         raise NotImplementedError
 
     @abc.abstractmethod

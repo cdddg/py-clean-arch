@@ -2,6 +2,8 @@
     "language": "en",
     "ignorePaths": [
         ".cspell.jsonc",
+        ".github/workflows/ci.yml",
+        ".gitignore",
         "Dockerfile",
         "Makefile",
         "docker-compose.yml",
@@ -19,7 +21,9 @@
         {
             "filename": "tests/conftest.py",
             "ignoreWords": [
-                "ASGI"
+                "ASGI",
+                "fspath",
+                "modifyitems"
             ]
         },
         {

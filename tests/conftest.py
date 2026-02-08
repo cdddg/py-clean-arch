@@ -9,6 +9,18 @@ from main import app as fastapi_app
 from settings.db import IS_DOCUMENT_DB, IS_KEY_VALUE_DB, IS_RELATIONAL_DB, initialize_db
 
 
+def pytest_collection_modifyitems(items):
+    module_order = ['unit', 'integration', 'functional']
+
+    def get_order(item):
+        for i, module in enumerate(module_order):
+            if f'tests/{module}/' in str(item.fspath):
+                return i
+        return len(module_order)
+
+    items.sort(key=get_order)
+
+
 def pytest_configure(config: Config):
     echo = print  # ignore: remove-print-statements
     echo(__file__)
@@ -77,7 +89,7 @@ async def client():
         yield ac
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 async def mock_async_unit_of_work():
     auow = MagicMock()
     auow.__aenter__.return_value = auow
@@ -130,8 +142,30 @@ if IS_RELATIONAL_DB:
         ):
             yield
 
-elif IS_DOCUMENT_DB or IS_KEY_VALUE_DB:
+elif IS_DOCUMENT_DB:
+    from settings.db.mongodb import AsyncMongoDBEngine
 
     @pytest.fixture(scope='function', autouse=True)
     async def engine():
         await initialize_db()
+        yield
+
+        # XXX: Motor's AsyncIOMotorClient caches the event loop on first use and never
+        # refreshes it. Since anyio's pytest plugin creates a separate event loop per
+        # function-scoped async fixture, the cached reference goes stale and causes
+        # "RuntimeError: Event loop is closed". Reset it so Motor picks up the next loop.
+        AsyncMongoDBEngine._io_loop = None  # pylint: disable=protected-access
+
+elif IS_KEY_VALUE_DB:
+    from settings.db.redis import async_redis
+
+    @pytest.fixture(scope='function', autouse=True)
+    async def engine():
+        await initialize_db()
+        yield
+
+        # XXX: Close all pooled connections while the event loop is still alive. anyio's
+        # pytest plugin creates a separate event loop per function-scoped async fixture;
+        # without this, stale connections bound to the previous loop cause
+        # "RuntimeError: Event loop is closed" in subsequent tests.
+        await async_redis.connection_pool.disconnect()

@@ -10,25 +10,25 @@ jobs:
     name: Check Format and Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Python & Dependencies
-        uses: ./.github/actions/setup-poetry-deps
+        uses: ./.github/actions/setup-uv-deps
 
       - name: Install CSpell
         run: npm install -g cspell
 
       - name: Format check
         run: |
-          autoflake --check --quiet --remove-all-unused-imports --ignore-init-module-imports -r .
-          black --check --config pyproject.toml .
+          uv run ruff check --select F401,Q,I --quiet .
+          uv run black --check --config pyproject.toml .
 
       - name: Lint
         run: |
           cspell --gitignore --no-progress --no-summary --no-must-find-files .
-          pylint --rcfile=pyproject.toml $(git ls-files '*.py')
-          ruff check .
-          pyright .
+          uv run pylint --rcfile=pyproject.toml $(git ls-files '*.py')
+          uv run ruff check .
+          uv run pyright .
 
   test:
     name: Run API DB Tests
@@ -38,7 +38,7 @@ jobs:
       MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: root
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up MySQL
         run: |
@@ -59,13 +59,13 @@ jobs:
           docker ps
 
       - name: Setup Python & Dependencies
-        uses: ./.github/actions/setup-poetry-deps
+        uses: ./.github/actions/setup-uv-deps
 
       - name: Install Bats
         run: |
           sudo apt-get update && sudo apt-get install -y bats
 
       - name: Run API DB tests via Makefile
-        run: |
-          export MYSQL_URL="mysql+asyncmy://$MYSQL_ROOT_USER:$MYSQL_ROOT_PASSWORD@localhost:3306/$MYSQL_DATABASE?reinitialize=true"
-          make test
+        env:
+          MYSQL_URL: "mysql+asyncmy://${{ env.MYSQL_ROOT_USER }}:${{ env.MYSQL_ROOT_PASSWORD }}@localhost:3306/${{ env.MYSQL_DATABASE }}?reinitialize=true"
+        run: make test

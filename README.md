@@ -53,6 +53,9 @@ This Python project showcases the implementation of a Pokémon API following the
 
 - ✏️ **v4**: Currently making minor refinements on the [master](https://github.com/cdddg/py-clean-arch/tree/master) branch. The scope for the next major iteration has not been decided yet.
 
+  > Toolchain Migration<br>
+  > ☑️ Migrated package manager from `Poetry` to `uv`
+
 ## Description
 
 The Clean Architecture, popularized by **[Uncle Bob](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)**, emphasizes several foundational principles:
@@ -138,7 +141,7 @@ This is enabled by several design patterns:
 
 To keep the focus on architecture, this project makes several deliberate simplifications:
 
-- Database credentials are hardcoded in `docker-compose.yml` and CORS allows all origins — production requires secrets management and scoped CORS
+- Database credentials are hardcoded in `docker-compose.yml` — production requires secrets management
 - Error responses expose full exception details — production should use standardized error codes
 - GraphQL loads all relations regardless of requested fields ([optimization notes](./src/controllers/graphql/pokemon/query.py)) — production would use the DataLoader pattern
 - Database engines initialize at import time — larger apps benefit from lazy initialization
@@ -188,14 +191,12 @@ $ docker compose up dockerize
 
 Set up your local development environment:
 
-1. **Install prerequisites:** <u>Python 3.11+</u> and <u>Poetry 2.1.x+</u>
+1. **Install prerequisites:** <u>Python 3.11+</u> and <u>[uv](https://docs.astral.sh/uv/)</u>
 
 2. **Configure your environment:** [^6]
-   
+
    ```sh
-   $ poetry env use python3.11
-   $ poetry shell
-   $ poetry install
+   $ uv sync
    ```
    
 3. **Launch the application:**
@@ -217,7 +218,7 @@ Set up your local development environment:
 Test against a specific database by setting the `DATABASE_URI` environment variable:
 
 ```sh
-$ DATABASE_URI=<database-uri> pytest
+$ DATABASE_URI=<database-uri> uv run pytest
 ```
 
 > For supported database URIs, see [**Database Options**](#supported-database-uris)
@@ -250,6 +251,6 @@ Have questions or ideas? Feel free to [open an issue](https://github.com/cdddg/p
 
 [^4]: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
 
-[^5]: The coverage rate for this 'py-clean-arch' project stands at 95.57%, based on test results from October 11, 2024.
+[^5]: The coverage rate for this 'py-clean-arch' project stands at 95.55%, based on test results from February 9, 2026.
 
-[^6]: The `poetry install` command installs all required packages for running and developing the application. However, it does not include `cspell`. If you need `cspell` for spell checking, please refer to the official installation guide at [cspell installation guide](https://cspell.org/docs/installation/)
+[^6]: The `uv sync` command installs all required packages for running and developing the application. However, it does not include `cspell`. If you need `cspell` for spell checking, please refer to the official installation guide at [cspell installation guide](https://cspell.org/docs/installation/)

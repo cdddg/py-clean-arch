@@ -12,6 +12,8 @@ from .schema import CreatePokemonInput, EvolutionNode, PokemonNode, TypeNode, Up
 
 __doc__ = MAPPER_DOCSTRING
 
+# pylint: disable=duplicate-code
+
 
 class PokemonInputMapper:
     @staticmethod
@@ -33,14 +35,16 @@ class PokemonInputMapper:
         return UpdatePokemonModel(
             name=instance.name,
             type_names=instance.type_names,
-            previous_evolution_numbers=list(
-                map(PokemonNumberStr, instance.previous_evolution_numbers)
-            )
-            if instance.previous_evolution_numbers is not None
-            else None,
-            next_evolution_numbers=list(map(PokemonNumberStr, instance.next_evolution_numbers))
-            if instance.next_evolution_numbers is not None
-            else None,
+            previous_evolution_numbers=(
+                list(map(PokemonNumberStr, instance.previous_evolution_numbers))
+                if instance.previous_evolution_numbers is not None
+                else None
+            ),
+            next_evolution_numbers=(
+                list(map(PokemonNumberStr, instance.next_evolution_numbers))
+                if instance.next_evolution_numbers is not None
+                else None
+            ),
         )
 
 

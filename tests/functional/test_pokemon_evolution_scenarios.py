@@ -25,7 +25,9 @@ async def test_pokemon_evolution_chain_lifecycle(client):
     )
 
     # Step 1-1: Attempt to create a duplicate 'Ivysaur' should fail
-    response = await client.post('/pokemons', json={'no': '0002', 'name': 'Ivysaur'})
+    response = await client.post(
+        '/pokemons', json={'no': '0002', 'name': 'Ivysaur', 'type_names': ['Grass', 'Poison']}
+    )
     assert response.status_code == 409
 
     # Step 2: Create Pokemon 'Bulbasaur' with number '0001'
@@ -48,7 +50,9 @@ async def test_pokemon_evolution_chain_lifecycle(client):
     )
 
     # Step 2-2: Attempt to create a duplicate 'Bulbasaur' should fail
-    response = await client.post('/pokemons', json={'no': '0001', 'name': 'Bulbasaur'})
+    response = await client.post(
+        '/pokemons', json={'no': '0001', 'name': 'Bulbasaur', 'type_names': ['Grass', 'Poison']}
+    )
     assert response.status_code == 409
 
     # Step 2-3: Update 'Bulbasaur' to add 'Ivysaur' as next evolution
@@ -90,7 +94,9 @@ async def test_pokemon_evolution_chain_lifecycle(client):
     )
 
     # Step 3-1: Attempt to create a duplicate 'Venusaur' should fail
-    response = await client.post('/pokemons', json={'no': '0003', 'name': 'Venusaur'})
+    response = await client.post(
+        '/pokemons', json={'no': '0003', 'name': 'Venusaur', 'type_names': ['Grass', 'Poison']}
+    )
     assert response.status_code == 409
 
     # Step 3-2: Update 'Venusaur' to add 'Bulbasaur' and 'Ivysaur' as previous evolutions

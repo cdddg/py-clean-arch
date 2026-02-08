@@ -1,12 +1,10 @@
-FROM python:3.11-slim-buster
+FROM python:3.11-slim-bookworm
 LABEL project=py-clean-arch
 
-COPY ./pyproject.toml ./poetry.lock /
+COPY ./pyproject.toml ./uv.lock /
 RUN pip install --upgrade pip \
-	&& pip install --root-user-action=ignore "poetry>=2.1,<2.2" \
-	&& poetry config virtualenvs.create false \
-	&& poetry install --no-interaction --no-ansi --no-cache -vv \
-	&& rm -f pyproject.toml poetry.lock
+    && pip install --root-user-action=ignore uv \
+    && uv sync --all-groups --frozen
 
 COPY ./src /app/
 EXPOSE 8000
