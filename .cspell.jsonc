@@ -1,11 +1,11 @@
 {
     "language": "en",
     "ignorePaths": [
+        ".cspell.jsonc",
         "Dockerfile",
         "Makefile",
         "docker-compose.yml",
         "pyproject.toml",
-        ".cspell.jsonc",
         "scripts/mongodb-init.sh"
     ],
     "overrides": [
@@ -85,6 +85,7 @@
         "evos",
         "pokemons",
         "ucase",
-        "usecases"
+        "usecases",
+        "dataclasses"
     ]
 }
