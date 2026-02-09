@@ -13,7 +13,7 @@ run_database_test() {
   local extra_args=$2
 
   export DATABASE_URI="$db_uri"
-  run pytest $extra_args
+  run uv run pytest $extra_args
 
   if [ $status -ne 0 ]; then
     echo "Test failed with status $status. Output: $output"

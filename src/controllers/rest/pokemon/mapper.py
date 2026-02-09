@@ -19,13 +19,16 @@ from .schema import (
 __doc__ = MAPPER_DOCSTRING
 
 
+# pylint: disable=duplicate-code
+
+
 class PokemonRequestMapper:
     @staticmethod
     def create_request_to_entity(instance: CreatePokemonRequest) -> CreatePokemonModel:
         return CreatePokemonModel(
             no=PokemonNumberStr(instance.no),
             name=instance.name,
-            type_names=instance.type_names or [],
+            type_names=instance.type_names,
             previous_evolution_numbers=list(
                 map(PokemonNumberStr, instance.previous_evolution_numbers or [])
             ),
@@ -36,16 +39,10 @@ class PokemonRequestMapper:
 
     @staticmethod
     def update_request_to_entity(instance: UpdatePokemonRequest) -> UpdatePokemonModel:
-        if instance.previous_evolution_numbers:
-            instance.previous_evolution_numbers = list(
-                map(PokemonNumberStr, instance.previous_evolution_numbers)
-            )
-        if instance.next_evolution_numbers:
-            instance.next_evolution_numbers = list(
-                map(PokemonNumberStr, instance.next_evolution_numbers)
-            )
         kwargs = instance.model_dump(exclude_unset=True)
-
+        for field in ('previous_evolution_numbers', 'next_evolution_numbers'):
+            if field in kwargs:
+                kwargs[field] = list(map(PokemonNumberStr, kwargs[field]))
         return UpdatePokemonModel(**kwargs)
 
 

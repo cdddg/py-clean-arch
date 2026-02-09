@@ -12,7 +12,7 @@ class UUIDStr(str):
         instance = super().__new__(cls, *args, **kwargs)
 
         if not cls.UUID_PATTERN.match(instance):
-            raise ValueError(f'\'{instance}\' is not a valid UUID hexadecimal string')
+            raise ValueError(f"'{instance}' is not a valid UUID hexadecimal string")
 
         return instance
 

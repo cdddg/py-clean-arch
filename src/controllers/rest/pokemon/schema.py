@@ -8,7 +8,7 @@ from common.type import PokemonNumberStr, UUIDStr
 class CreatePokemonRequest(BaseModel):
     no: str = Field(..., description=PokemonNumberStr.__doc__)
     name: str
-    type_names: Optional[list[str]] = None
+    type_names: list[str]
     previous_evolution_numbers: Optional[list[str]] = Field(
         default=[], description=PokemonNumberStr.__doc__
     )

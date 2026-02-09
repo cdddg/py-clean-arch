@@ -9,7 +9,6 @@ Note:
     For simpler requirements, use extension.py. For more complex needs, consider extensions/$package.py for better clarity and scalability.
 """
 
-
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 

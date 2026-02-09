@@ -70,7 +70,7 @@ Its main limitations include:
 
 - **Features**: It lacks production-grade features such as **OAuth2 authentication**, **structured logging**, **error recovery mechanisms**, and **API rate limiting**.
 - **Performance**: It is not optimized for high-traffic scenarios, and its configurations are relatively simplified.
-- **Testing**: ood unit and integration test coverage, but lacking end-to-end tests and load tests.
+- **Testing**: Good unit and integration test coverage, but lacking end-to-end tests and load tests.
 
 Therefore, if you want to use this for a production environment, you will need to enhance the relevant features and security mechanisms based on your actual requirements.
 

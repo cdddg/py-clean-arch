@@ -2,7 +2,7 @@ import os
 
 # application name and version
 APP_NAME = 'Pokédex API'
-APP_VERSION = '3'
+APP_VERSION = '4'
 
 # enable/disable logging of SQL statements
 SQLALCHEMY_ECHO = os.environ.get('SQLALCHEMY_ECHO', '').lower() == 'true'

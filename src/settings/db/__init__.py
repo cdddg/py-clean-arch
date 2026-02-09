@@ -45,5 +45,5 @@ elif DATABASE_TYPE == 'redis':
 
 else:
     raise RuntimeError(
-        f'Invalid database type \'{DATABASE_TYPE}\' provided in DATABASE_URI: {DATABASE_URI}'
+        f"Invalid database type '{DATABASE_TYPE}' provided in DATABASE_URI: {DATABASE_URI}"
     )

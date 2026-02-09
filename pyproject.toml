@@ -1,64 +1,66 @@
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.9,<1"]
+build-backend = "uv_build"
 
-[tool.poetry]
+[project]
 name = "py-clean-arch"
-version = "3.0.0"
+version = "4.0.0"
 description = ""
-authors = ["cdddg2@gmail.com"]
+authors = [{ name = "cdddg2@gmail.com" }]
+requires-python = ">=3.11,<4"
 readme = "README.md"
-package-mode = false
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+  "fastapi>=0.128,<1",
+  "injector>=0.24,<1",
+  "pydantic>=2.12,<3",
+  "strawberry-graphql>=0.291,<1",
+  "uvicorn>=0.40,<1",
+]
 
-[tool.poetry.requires-plugins]
-poetry-plugin-up = ">=0.9.0"
+[dependency-groups]
+dev = [
+  "black>=24.10,<25",
+  "pre-commit>=3.8,<4",
+  "pylint>=2.17,<3",
+  "pyright>=1.1,<2",
+  "ruff>=0.15,<1",
+  "types-redis>=4.6,<5",
+]
+test = [
+  "gevent>=24.11,<25",
+  "httpx>=0.28,<1",
+  "pytest>=8.4,<9",
+  "pytest-cov>=5.0,<6",
+  "pytest-dependency>=0.6,<1",
+  "pytest-env>=1.2,<2",
+]
+db = [
+  "aiosqlite>=0.22,<1",
+  "asyncmy>=0.2,<1",
+  "asyncpg>=0.31,<1",
+  "motor>=3.7,<4",
+  "redis>=5.3,<6",
+  "sqlalchemy>=2.0,<3",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-fastapi = "<=1.0.0"
-injector = "^0.21.0"
-pydantic = ">2.4.0,<3"
-strawberry-graphql = "^0.204.0"
-uvicorn = "^0.23.2"
+[tool.uv]
+package = false
+default-groups = ["dev", "test", "db"]
 
-[tool.poetry.group.dev.dependencies]
-autoflake = "^2.3.1"
-black = "^23.12.1"
-pre-commit = "^3.8.0"
-pylint = "^2.17.7"
-pylint-quotes = "^0.2.3"
-pyright = "^1.1.401"
-remove-print-statements = "^0.5.2"
-ruff = "^0.1.15"
-types-redis = "^4.6.0.20241004"
-
-[tool.poetry.group.test.dependencies]
-gevent = "^23.9.1"
-httpx = "^0.28.0"
-pytest = "^8.3.0"
-pytest-cov = "^4.1.0"
-pytest-dependency = "^0.5.1"
-pytest-env = "^0.8.2"
-
-[tool.poetry.group.db.dependencies]
-aiosqlite = "^0.19.0"
-asyncmy = "^0.2.10"
-asyncpg = "^0.28.0"
-motor = "^3.7.1"
-redis = "^5.3.0"
-sqlalchemy = ">=2.0.41"
 
 [tool.black]
 line-length = 100
 skip-string-normalization = true
 
-[tool.isort]
-profile = "black"
-line_length = 100
-
 [tool.pylint]
 extension-pkg-whitelist = ["pydantic"]
-load-plugins = ["pylint_quotes"]
 max-line-length = 100
 disable = [
   "W0613", # unused-argument
@@ -71,10 +73,9 @@ disable = [
   "C0103", # invalid-name
   "W0707", # raise-missing-from
   "C0123", # unidiomatic-typecheck
-  "W0613", # unused-argument
-  "C0301", # line-too-long
   "R0903", # too-few-public-methods
   "W1203", # logging-fstring-interpolation
+  "E1102", # not-callable (false positive with sqlalchemy.sql.func)
 ]
 
 [tool.pylint.master]
@@ -82,37 +83,50 @@ init-hook = 'import sys; sys.path.append("./src")'
 
 [tool.ruff]
 line-length = 100
-
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["F401"]
+src = ["src"]
 
 [tool.ruff.lint]
 select = [
   "D",   # pydocstyle
   "E",   # pycodestyle errors
   "W",   # pycodestyle warnings
+  "F",   # pyflakes (includes F401 unused imports)
   "T20", # flake8-print
+  "Q",   # flake8-quotes
+  "I",   # isort (import sorting)
 ]
 ignore = [
-  "E501", # line too long, handled by black
-  "D10",  # Missing docstring
-  "D203", # https://github.com/PyCQA/pydocstyle/issues/141#issuecomment-146903063
-  "D212",
+  "E501", # line-too-long (handled by black)
+  "D10",  # missing-docstring-* (https://docs.astral.sh/ruff/rules/#pydocstyle-d)
+  "D203", # incorrect-blank-line-before-class (https://github.com/PyCQA/pydocstyle/issues/141#issuecomment-146903063)
+  "D212", # multi-line-summary-first-line
 ]
+fixable = [
+  "F401", # unused import
+  "Q",    # flake8-quotes
+  "I",    # isort (import sorting)
+  "T20",  # flake8-print
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+  "F401", # unused import
+]
+
+[tool.ruff.lint.flake8-quotes]
+inline-quotes = "single"
+multiline-quotes = "double"
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.pyright]
-typeCheckingMode = "basic"
-reportIncompatibleMethodOverride = true
-reportPrivateUsage = true
-reportUnusedCoroutine = true
+typeCheckingMode = "standard"
 reportUnusedVariable = true
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-minversion = "7.2"
+minversion = "8.4"
 addopts = """
 -sxvv
 -p no:logging

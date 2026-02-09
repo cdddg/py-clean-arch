@@ -136,9 +136,7 @@ class DatabaseModuleFactory:
         if IS_KEY_VALUE_DB:
             return KeyValueDBModule()
 
-        raise RuntimeError(
-            'Invalid database type configuration. It\'s neither relational nor NoSQL'
-        )
+        raise RuntimeError("Invalid database type configuration. It's neither relational nor NoSQL")
 
 
 injector = Injector([DatabaseModuleFactory().create_module()])
