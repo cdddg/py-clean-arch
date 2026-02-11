@@ -1,6 +1,6 @@
 # py-clean-arch
 
-This Python project showcases the implementation of a Pokémon API following the Clean Architecture principles, built with the FastAPI framework. It serves as a practical example of how Clean Architecture enables swapping infrastructure — databases, API protocols — without changing business logic.
+This Python project showcases Clean Architecture principles through a Pokémon and Trainer API built with FastAPI. It serves as a practical example of how Clean Architecture enables swapping infrastructure — databases, API protocols — without changing business logic.
 
 ## Description
 
@@ -76,7 +76,9 @@ The Clean Architecture Flow Diagram visualizes the layers of Clean Architecture 
 
 ### 🔀 Design Decisions
 
-Both **REST and GraphQL** share the same usecases layer, showing that the API protocol can change independently. Similarly, **5 databases** (SQLite, MySQL, PostgreSQL, MongoDB, Redis) run behind the same `AbstractPokemonRepository`, proving that storage can be swapped without touching business logic. In practice, you would pick one protocol and one database.
+Both **REST and GraphQL** share the same usecases layer, showing that the API protocol can change independently. Similarly, **5 databases** (SQLite, MySQL, PostgreSQL, MongoDB, Redis) run behind the same repository abstractions, proving that storage can be swapped without touching business logic. In practice, you would pick one protocol and one database.
+
+The project includes two entities — **Pokemon** (basic CRUD) and **Trainer** (team management with catch, release, and trade). The Trainer entity demonstrates that the UseCase layer handles real business rules (team size limits, ownership checks, atomic trades) while remaining fully decoupled from infrastructure choices.
 
 This is enabled by several design patterns:
 
@@ -107,8 +109,6 @@ $ docker compose up app
 ```
 
 The app starts with an **in-memory SQLite** database by default. Access the API documentation at [http://localhost:8000/docs](http://localhost:8000/docs) and try the interactive endpoints.
-
-![fastapi-doc](./docs/fastapi-swagger.png)
 
 ### 🐳 Database Options
 

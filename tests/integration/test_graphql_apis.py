@@ -331,3 +331,385 @@ async def test_delete_pokemon(client):
     assert response.status_code == 200
     assert data.get('error') is None
     assert data == {'data': {'deletePokemon': None}}
+
+
+@pytest.mark.anyio
+@pytest.mark.dependency
+async def test_create_trainer(client):
+    mutation = """
+        mutation {
+            createTrainer(input: {
+                name: "Ash",
+                region: "Kanto",
+                badgeCount: 0
+            }) {
+                id
+                name
+                region
+                badgeCount
+                team {
+                    no
+                    name
+                }
+            }
+        }
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    data = response.json()
+    assert response.status_code == 200
+    assert data.get('errors') is None
+    trainer = data['data']['createTrainer']
+    assert trainer['id'] is not None
+    assert data == {
+        'data': {
+            'createTrainer': {
+                'id': trainer['id'],
+                'name': 'Ash',
+                'region': 'Kanto',
+                'badgeCount': 0,
+                'team': [],
+            }
+        }
+    }
+
+
+@pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_trainer'])
+async def test_get_trainer(client):
+    # pre-work
+    mutation = """
+        mutation {
+            createTrainer(input: {
+                name: "Ash",
+                region: "Kanto",
+                badgeCount: 0
+            }) {
+                id
+            }
+        }
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    trainer_id = response.json()['data']['createTrainer']['id']
+
+    # test get
+    query = f"""
+        query {{
+            trainer(id: "{trainer_id}") {{
+                id
+                name
+                region
+                badgeCount
+                team {{
+                    no
+                    name
+                }}
+            }}
+        }}
+    """
+    response = await client.post('/graphql', json={'query': query})
+    data = response.json()
+    assert response.status_code == 200
+    assert data.get('errors') is None
+    assert data == {
+        'data': {
+            'trainer': {
+                'id': trainer_id,
+                'name': 'Ash',
+                'region': 'Kanto',
+                'badgeCount': 0,
+                'team': [],
+            }
+        }
+    }
+
+
+@pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_trainer'])
+async def test_get_trainers(client):
+    # pre-work
+    mutation = """
+        mutation {
+            t1: createTrainer(input: { name: "Ash", region: "Kanto", badgeCount: 0 }) { id }
+            t2: createTrainer(input: { name: "Misty", region: "Kanto", badgeCount: 2 }) { id }
+        }
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    assert response.status_code == 200
+    assert response.json().get('errors') is None
+
+    # test get list
+    query = """
+        query {
+            trainers {
+                id
+                name
+                region
+                badgeCount
+            }
+        }
+    """
+    response = await client.post('/graphql', json={'query': query})
+    data = response.json()
+    assert response.status_code == 200
+    assert data.get('errors') is None
+    assert len(data['data']['trainers']) >= 2
+
+
+@pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_trainer'])
+async def test_update_trainer(client):
+    # pre-work
+    mutation = """
+        mutation {
+            createTrainer(input: { name: "Ash", region: "Kanto", badgeCount: 0 }) {
+                id
+            }
+        }
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    trainer_id = response.json()['data']['createTrainer']['id']
+
+    # test update
+    mutation = f"""
+        mutation {{
+            updateTrainer(id: "{trainer_id}", input: {{
+                name: "Ash Ketchum",
+                badgeCount: 3
+            }}) {{
+                id
+                name
+                region
+                badgeCount
+            }}
+        }}
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    data = response.json()
+    assert response.status_code == 200
+    assert data.get('errors') is None
+    assert data == {
+        'data': {
+            'updateTrainer': {
+                'id': trainer_id,
+                'name': 'Ash Ketchum',
+                'region': 'Kanto',
+                'badgeCount': 3,
+            }
+        }
+    }
+
+
+@pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_trainer'])
+async def test_delete_trainer(client):
+    # pre-work
+    mutation = """
+        mutation {
+            createTrainer(input: { name: "Ash", region: "Kanto", badgeCount: 0 }) {
+                id
+            }
+        }
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    trainer_id = response.json()['data']['createTrainer']['id']
+
+    # test delete
+    mutation = f"""
+        mutation {{
+            deleteTrainer(id: "{trainer_id}")
+        }}
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    data = response.json()
+    assert response.status_code == 200
+    assert data.get('errors') is None
+    assert data == {'data': {'deleteTrainer': None}}
+
+
+@pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_trainer'])
+async def test_catch_pokemon(client):
+    # pre-work: create pokemon and trainer
+    pokemon_mutation = """
+        mutation {
+            createPokemon(input: {
+                no: "0025",
+                name: "Pikachu",
+                typeNames: ["Electric"]
+            }) {
+                no
+            }
+        }
+    """
+    await client.post('/graphql', json={'query': pokemon_mutation})
+
+    trainer_mutation = """
+        mutation {
+            createTrainer(input: { name: "Ash", region: "Kanto", badgeCount: 0 }) {
+                id
+            }
+        }
+    """
+    response = await client.post('/graphql', json={'query': trainer_mutation})
+    trainer_id = response.json()['data']['createTrainer']['id']
+
+    # test catch
+    mutation = f"""
+        mutation {{
+            catchPokemon(id: "{trainer_id}", input: {{
+                pokemonNo: "0025"
+            }}) {{
+                id
+                name
+                team {{
+                    no
+                    name
+                }}
+            }}
+        }}
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    data = response.json()
+    assert response.status_code == 200
+    assert data.get('errors') is None
+    assert len(data['data']['catchPokemon']['team']) == 1
+    assert data['data']['catchPokemon']['team'][0]['no'] == '0025'
+
+
+@pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_trainer'])
+async def test_release_pokemon(client):
+    # pre-work
+    await client.post(
+        '/graphql',
+        json={
+            'query': """
+            mutation {
+                createPokemon(input: { no: "0025", name: "Pikachu", typeNames: ["Electric"] }) { no }
+            }
+        """
+        },
+    )
+    response = await client.post(
+        '/graphql',
+        json={
+            'query': """
+            mutation {
+                createTrainer(input: { name: "Ash", region: "Kanto", badgeCount: 0 }) { id }
+            }
+        """
+        },
+    )
+    trainer_id = response.json()['data']['createTrainer']['id']
+
+    # catch first
+    await client.post(
+        '/graphql',
+        json={
+            'query': f"""
+            mutation {{
+                catchPokemon(id: "{trainer_id}", input: {{ pokemonNo: "0025" }}) {{ id }}
+            }}
+        """
+        },
+    )
+
+    # test release
+    mutation = f"""
+        mutation {{
+            releasePokemon(id: "{trainer_id}", input: {{
+                pokemonNo: "0025"
+            }}) {{
+                id
+                team {{
+                    no
+                    name
+                }}
+            }}
+        }}
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    data = response.json()
+    assert response.status_code == 200
+    assert data.get('errors') is None
+    assert len(data['data']['releasePokemon']['team']) == 0
+
+
+@pytest.mark.anyio
+@pytest.mark.dependency(depends=['test_create_trainer'])
+async def test_trade_pokemon(client):
+    # pre-work: create 2 pokemon and 2 trainers
+    await client.post(
+        '/graphql',
+        json={
+            'query': """
+            mutation {
+                p1: createPokemon(input: { no: "0025", name: "Pikachu", typeNames: ["Electric"] }) { no }
+                p2: createPokemon(input: { no: "0004", name: "Charmander", typeNames: ["Fire"] }) { no }
+            }
+        """
+        },
+    )
+    response = await client.post(
+        '/graphql',
+        json={
+            'query': """
+            mutation {
+                t1: createTrainer(input: { name: "Ash", region: "Kanto", badgeCount: 0 }) { id }
+                t2: createTrainer(input: { name: "Gary", region: "Kanto", badgeCount: 0 }) { id }
+            }
+        """
+        },
+    )
+    data = response.json()['data']
+    trainer_id = data['t1']['id']
+    other_trainer_id = data['t2']['id']
+
+    # catch pokemon
+    await client.post(
+        '/graphql',
+        json={
+            'query': f"""
+            mutation {{
+                catchPokemon(id: "{trainer_id}", input: {{ pokemonNo: "0025" }}) {{ id }}
+            }}
+        """
+        },
+    )
+    await client.post(
+        '/graphql',
+        json={
+            'query': f"""
+            mutation {{
+                catchPokemon(id: "{other_trainer_id}", input: {{ pokemonNo: "0004" }}) {{ id }}
+            }}
+        """
+        },
+    )
+
+    # test trade
+    mutation = f"""
+        mutation {{
+            tradePokemon(input: {{
+                trainerId: "{trainer_id}",
+                otherTrainerId: "{other_trainer_id}",
+                pokemonNo: "0025",
+                otherPokemonNo: "0004"
+            }}) {{
+                trainer {{
+                    id
+                    team {{ no name }}
+                }}
+                otherTrainer {{
+                    id
+                    team {{ no name }}
+                }}
+            }}
+        }}
+    """
+    response = await client.post('/graphql', json={'query': mutation})
+    data = response.json()
+    assert response.status_code == 200
+    assert data.get('errors') is None
+    assert data['data']['tradePokemon']['trainer']['team'][0]['no'] == '0004'
+    assert data['data']['tradePokemon']['otherTrainer']['team'][0]['no'] == '0025'

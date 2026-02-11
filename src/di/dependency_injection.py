@@ -28,9 +28,9 @@ from injector import Injector, Module, provider, singleton
 from motor.motor_asyncio import AsyncIOMotorCollection
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from repositories.document_db import MongoDBPokemonRepository
-from repositories.key_value_db import RedisPokemonRepository
-from repositories.relational_db import RelationalDBPokemonRepository
+from repositories.document_db import MongoDBPokemonRepository, MongoDBTrainerRepository
+from repositories.key_value_db import RedisPokemonRepository, RedisTrainerRepository
+from repositories.relational_db import RelationalDBPokemonRepository, RelationalDBTrainerRepository
 from settings.db import IS_DOCUMENT_DB, IS_KEY_VALUE_DB, IS_RELATIONAL_DB
 
 from .unit_of_work import (
@@ -71,7 +71,9 @@ class RelationalDBModule(Module):
         injector.get(AbstractUnitOfWork)
             ├─> provide_async_sqlalchemy_unit_of_work()
             │     ├─> provide_async_session()         # Returns a session scoped to the current asyncio task
-            │     └─> provide_pokemon_repository()
+            │     ├─> provide_pokemon_repository()
+            │     │     └─> provide_async_session()   # Reuses the same session instance as above
+            │     └─> provide_trainer_repository()
             │           └─> provide_async_session()   # Reuses the same session instance as above
         ```
         """
@@ -84,21 +86,28 @@ class RelationalDBModule(Module):
         return RelationalDBPokemonRepository(session)
 
     @provider
+    def provide_trainer_repository(self, session: AsyncSession) -> RelationalDBTrainerRepository:
+        return RelationalDBTrainerRepository(session)
+
+    @provider
     def provide_async_sqlalchemy_unit_of_work(
-        self, session: AsyncSession, pokemon_repo: RelationalDBPokemonRepository
+        self,
+        session: AsyncSession,
+        pokemon_repo: RelationalDBPokemonRepository,
+        trainer_repo: RelationalDBTrainerRepository,
     ) -> AbstractUnitOfWork:
-        return AsyncSQLAlchemyUnitOfWork(session, pokemon_repo)
+        return AsyncSQLAlchemyUnitOfWork(session, pokemon_repo, trainer_repo)
 
 
 class DocumentDBModule(Module):
     @singleton
     @provider
-    def provide_async_mongo_collection(
+    def provide_async_mongo_pokemon_collection(
         self,
     ) -> AsyncIOMotorCollection:  # pyright: ignore[reportInvalidTypeForm]
-        from settings.db.mongodb import COLLECTION_NAME, DATABASE_NAME, AsyncMongoDBEngine
+        from settings.db.mongodb import DATABASE_NAME, POKEMON_COLLECTION_NAME, AsyncMongoDBEngine
 
-        return AsyncMongoDBEngine[DATABASE_NAME][COLLECTION_NAME]
+        return AsyncMongoDBEngine[DATABASE_NAME][POKEMON_COLLECTION_NAME]
 
     @provider
     def provide_pokemon_repository(
@@ -108,12 +117,24 @@ class DocumentDBModule(Module):
         return MongoDBPokemonRepository(collection, session=None)
 
     @provider
+    def provide_trainer_repository(
+        self,
+        pokemon_collection: AsyncIOMotorCollection,  # pyright: ignore[reportInvalidTypeForm]
+    ) -> MongoDBTrainerRepository:
+        from settings.db.mongodb import DATABASE_NAME, TRAINER_COLLECTION_NAME, AsyncMongoDBEngine
+
+        trainer_collection = AsyncMongoDBEngine[DATABASE_NAME][TRAINER_COLLECTION_NAME]
+        return MongoDBTrainerRepository(trainer_collection, pokemon_collection, session=None)
+
+    @provider
     def provide_async_motor_unit_of_work(
-        self, pokemon_repo: MongoDBPokemonRepository
+        self,
+        pokemon_repo: MongoDBPokemonRepository,
+        trainer_repo: MongoDBTrainerRepository,
     ) -> AbstractUnitOfWork:
         from settings.db.mongodb import AsyncMongoDBEngine
 
-        return AsyncMotorUnitOfWork(AsyncMongoDBEngine, pokemon_repo)
+        return AsyncMotorUnitOfWork(AsyncMongoDBEngine, pokemon_repo, trainer_repo)
 
 
 class KeyValueDBModule(Module):
@@ -123,8 +144,9 @@ class KeyValueDBModule(Module):
 
         client = get_async_client()
         pokemon_repo = RedisPokemonRepository(client)
+        trainer_repo = RedisTrainerRepository(client)
 
-        return AsyncRedisUnitOfWork(client, pokemon_repo)
+        return AsyncRedisUnitOfWork(client, pokemon_repo, trainer_repo)
 
 
 class DatabaseModuleFactory:

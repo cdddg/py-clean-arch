@@ -32,7 +32,12 @@ elif DATABASE_TYPE == 'postgresql':
     IS_RELATIONAL_DB = True
 
 elif DATABASE_TYPE == 'mongodb':
-    from .mongodb import COLLECTION_NAME, DATABASE_NAME, AsyncMongoDBEngine
+    from .mongodb import (
+        DATABASE_NAME,
+        POKEMON_COLLECTION_NAME,
+        TRAINER_COLLECTION_NAME,
+        AsyncMongoDBEngine,
+    )
     from .mongodb import initialize_mongo_db as initialize_db
 
     IS_DOCUMENT_DB = True

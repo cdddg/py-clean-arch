@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel, Field
 
 from common.type import PokemonNumberStr, UUIDStr
@@ -9,21 +7,21 @@ class CreatePokemonRequest(BaseModel):
     no: str = Field(..., description=PokemonNumberStr.__doc__)
     name: str
     type_names: list[str]
-    previous_evolution_numbers: Optional[list[str]] = Field(
+    previous_evolution_numbers: list[str] | None = Field(
         default=[], description=PokemonNumberStr.__doc__
     )
-    next_evolution_numbers: Optional[list[str]] = Field(
+    next_evolution_numbers: list[str] | None = Field(
         default=[], description=PokemonNumberStr.__doc__
     )
 
 
 class UpdatePokemonRequest(BaseModel):
-    name: Optional[str] = None
-    type_names: Optional[list[str]] = None
-    previous_evolution_numbers: Optional[list[str]] = Field(
+    name: str | None = None
+    type_names: list[str] | None = None
+    previous_evolution_numbers: list[str] | None = Field(
         default=None, description=PokemonNumberStr.__doc__
     )
-    next_evolution_numbers: Optional[list[str]] = Field(
+    next_evolution_numbers: list[str] | None = Field(
         default=None, description=PokemonNumberStr.__doc__
     )
 

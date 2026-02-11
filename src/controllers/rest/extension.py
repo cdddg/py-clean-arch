@@ -16,20 +16,25 @@ from models.exception import (
     PokemonAlreadyExists,
     PokemonError,
     PokemonNotFound,
-    PokemonUnknownError,
+    TrainerAlreadyOwnsPokemon,
+    TrainerError,
+    TrainerNotFound,
 )
+
+_EXCEPTION_STATUS_MAP: dict[type[Exception], int] = {
+    PokemonNotFound: 404,
+    PokemonAlreadyExists: 409,
+    TrainerNotFound: 404,
+    TrainerAlreadyOwnsPokemon: 409,
+}
 
 
 def add_exception_handlers(app: FastAPI):
     @app.exception_handler(PokemonError)
-    @app.exception_handler(PokemonUnknownError)
-    async def handle_general_pokemon_error(_, exc):
-        return JSONResponse(content={'error': f'{type(exc).__name__}: {exc}'}, status_code=400)
-
-    @app.exception_handler(PokemonNotFound)
-    async def handle_pokemon_not_found_error(_, exc):
-        return JSONResponse(content={'error': f'{type(exc).__name__}: {exc}'}, status_code=404)
-
-    @app.exception_handler(PokemonAlreadyExists)
-    async def handle_pokemon_already_exists_error(_, exc):
-        return JSONResponse(content={'error': f'{type(exc).__name__}: {exc}'}, status_code=409)
+    @app.exception_handler(TrainerError)
+    async def handle_domain_error(_, exc):
+        status_code = _EXCEPTION_STATUS_MAP.get(type(exc), 400)
+        return JSONResponse(
+            content={'error': f'{type(exc).__name__}: {exc}'},
+            status_code=status_code,
+        )

@@ -1,6 +1,7 @@
 {
     "language": "en",
     "ignorePaths": [
+        ".claude/",
         ".cspell.jsonc",
         ".github/workflows/ci.yml",
         ".gitignore",
@@ -73,6 +74,8 @@
         "HGETALL",
         "HSET",
         "HMSET",
+        "SISMEMBER",
+        "SCARD",
         // Pokémon names
         "Bulbasaur",
         "Ivysaur",
@@ -80,6 +83,11 @@
         "Charizard",
         "Charmander",
         "Charmeleon",
+        "Pikachu",
+        "Squirtle",
+        "Ketchum",
+        // Pokémon world
+        "Kanto",
         // Customized words
         "NoSQL",
         "Pokédex",

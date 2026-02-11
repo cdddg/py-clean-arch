@@ -4,9 +4,10 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 from controllers.graphql.extension import customize_graphql_openapi
-from controllers.graphql.pokemon.router import router as pokemon_graphql_router
+from controllers.graphql.router import router as graphql_router
 from controllers.rest.extension import add_exception_handlers as add_rest_exception_handlers
 from controllers.rest.pokemon.router import router as pokemon_rest_router
+from controllers.rest.trainer.router import router as trainer_rest_router
 from settings import APP_NAME, APP_VERSION
 from settings.db import IS_RELATIONAL_DB, initialize_db
 
@@ -18,7 +19,8 @@ async def lifespan(app: FastAPI):  # pylint: disable=redefined-outer-name
 
     kwargs = {}
     if IS_RELATIONAL_DB:
-        from repositories.relational_db.pokemon.orm import Base  # fmt: skip
+        from repositories.relational_db import Base
+
         kwargs = {'declarative_base': Base}
 
     await initialize_db(**kwargs)
@@ -28,11 +30,12 @@ async def lifespan(app: FastAPI):  # pylint: disable=redefined-outer-name
 app = FastAPI(title=APP_NAME, version=APP_VERSION, lifespan=lifespan)
 
 # controllers/rest
-app.include_router(pokemon_rest_router, tags=['REST'])
+app.include_router(pokemon_rest_router, tags=['REST - Pokemon'])
+app.include_router(trainer_rest_router, tags=['REST - Trainer'])
 add_rest_exception_handlers(app)
 
 # controllers/graphql
-app.include_router(pokemon_graphql_router, prefix='/graphql', tags=['GraphQL'])
+app.include_router(graphql_router, prefix='/graphql', tags=['GraphQL'])
 customize_graphql_openapi(app)
 
 

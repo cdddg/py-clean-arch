@@ -1,3 +1,4 @@
+# pylint: disable=duplicate-code
 from asyncio import current_task
 from typing import AsyncGenerator, Type
 
@@ -11,9 +12,6 @@ from sqlalchemy.orm import DeclarativeBase
 
 from .. import DATABASE_URI, SQLALCHEMY_ECHO, SQLALCHEMY_ISOLATION_LEVEL
 from .base import has_reinitialize, normalize_uri
-
-# pylint: disable=duplicate-code
-# Disabling due to similar implementation in postgres.py and mysql.py, leading to code duplication.
 
 AsyncMySQLEngine = create_async_engine(
     normalize_uri(DATABASE_URI),

@@ -13,7 +13,7 @@ from .schema import CreatePokemonInput, PokemonNode, UpdatePokemonInput
 
 
 @strawberry.type
-class Mutation:
+class PokemonMutation:
     @strawberry.field
     async def create_pokemon(
         self,

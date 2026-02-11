@@ -1,30 +1,25 @@
 import abc
 from abc import abstractmethod
-from typing import Any, Generic, Optional, Type, TypeVar
+from typing import Any
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from redis.asyncio import Redis as AsyncRedis
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from repositories.abstraction import AbstractPokemonRepository
-from repositories.document_db import MongoDBPokemonRepository
-from repositories.key_value_db import RedisPokemonRepository
-from repositories.relational_db import RelationalDBPokemonRepository
+from repositories.abstraction import AbstractPokemonRepository, AbstractTrainerRepository
+from repositories.document_db import MongoDBPokemonRepository, MongoDBTrainerRepository
+from repositories.key_value_db import RedisPokemonRepository, RedisTrainerRepository
+from repositories.relational_db import RelationalDBPokemonRepository, RelationalDBTrainerRepository
 
 # pylint: disable=import-outside-toplevel,attribute-defined-outside-init
 
 
-T = TypeVar('T', bound=AbstractPokemonRepository)
-
-
-class AbstractUnitOfWork(Generic[T], abc.ABC):
+class AbstractUnitOfWork(abc.ABC):
     pokemon_repo: AbstractPokemonRepository
-
-    def __init__(self, pokemon_repo: T):
-        self.pokemon_repo = pokemon_repo
+    trainer_repo: AbstractTrainerRepository
 
     @abstractmethod
-    async def __aenter__(self) -> 'AbstractUnitOfWork[T]':
+    async def __aenter__(self) -> 'AbstractUnitOfWork':
         raise NotImplementedError
 
     @abstractmethod
@@ -32,16 +27,22 @@ class AbstractUnitOfWork(Generic[T], abc.ABC):
         raise NotImplementedError
 
 
-class AsyncSQLAlchemyUnitOfWork(AbstractUnitOfWork[RelationalDBPokemonRepository]):
-    def __init__(self, session: AsyncSession, pokemon_repo: RelationalDBPokemonRepository):
-        super().__init__(pokemon_repo)
+class AsyncSQLAlchemyUnitOfWork(AbstractUnitOfWork):
+    def __init__(
+        self,
+        session: AsyncSession,
+        pokemon_repo: RelationalDBPokemonRepository,
+        trainer_repo: RelationalDBTrainerRepository,
+    ):
+        self.pokemon_repo = pokemon_repo
+        self.trainer_repo = trainer_repo
         self._session = session
 
     async def __aenter__(self):
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc: Optional[BaseException], tb: Any
+        self, exc_type: type[BaseException] | None, exc: BaseException | None, tb: Any
     ):
         try:
             if exc_type is None:
@@ -59,24 +60,27 @@ class AsyncSQLAlchemyUnitOfWork(AbstractUnitOfWork[RelationalDBPokemonRepository
         await AsyncScopedSession.remove()
 
 
-class AsyncMotorUnitOfWork(AbstractUnitOfWork[MongoDBPokemonRepository]):
+class AsyncMotorUnitOfWork(AbstractUnitOfWork):
     def __init__(
         self,
         engine: AsyncIOMotorClient,  # pyright: ignore[reportInvalidTypeForm]
         pokemon_repo: MongoDBPokemonRepository,
+        trainer_repo: MongoDBTrainerRepository,
     ):
-        super().__init__(pokemon_repo)
+        self.pokemon_repo = pokemon_repo
+        self.trainer_repo = trainer_repo
         self._engine = engine
 
     async def __aenter__(self):
         self._session = await self._engine.start_session()
         self._session.start_transaction()
         self.pokemon_repo.session = self._session
+        self.trainer_repo.session = self._session
 
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc: Optional[BaseException], tb: Any
+        self, exc_type: type[BaseException] | None, exc: BaseException | None, tb: Any
     ):
         try:
             if exc_type is None:
@@ -87,7 +91,7 @@ class AsyncMotorUnitOfWork(AbstractUnitOfWork[MongoDBPokemonRepository]):
             await self._session.end_session()
 
 
-class AsyncRedisUnitOfWork(AbstractUnitOfWork[RedisPokemonRepository]):
+class AsyncRedisUnitOfWork(AbstractUnitOfWork):
     """
     This implementation does not support transactions.
 
@@ -99,15 +103,21 @@ class AsyncRedisUnitOfWork(AbstractUnitOfWork[RedisPokemonRepository]):
     For more information, see: https://en.wikipedia.org/wiki/Compensating_transaction
     """
 
-    def __init__(self, client: AsyncRedis, pokemon_repo: RedisPokemonRepository):
+    def __init__(
+        self,
+        client: AsyncRedis,
+        pokemon_repo: RedisPokemonRepository,
+        trainer_repo: RedisTrainerRepository,
+    ):
         self._client = client
-        super().__init__(pokemon_repo)
+        self.pokemon_repo = pokemon_repo
+        self.trainer_repo = trainer_repo
 
     async def __aenter__(self):
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]], exc: Optional[BaseException], tb: Any
+        self, exc_type: type[BaseException] | None, exc: BaseException | None, tb: Any
     ) -> None:
         # Not supported yet, see https://github.com/python/typeshed/blob/main/stubs/redis/redis/asyncio/client.pyi#L27
         await self._client.aclose()  # type: ignore
