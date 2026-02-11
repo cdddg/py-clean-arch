@@ -94,6 +94,7 @@ async def mock_async_unit_of_work():
     auow = MagicMock()
     auow.__aenter__.return_value = auow
     auow.pokemon_repo = AsyncMock()
+    auow.trainer_repo = AsyncMock()
 
     yield auow
 

@@ -1,14 +1,10 @@
-from typing import Optional
-
 from sqlalchemy import ForeignKey, Integer, String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from common.type import PokemonNumberStr, UUIDStr
 from common.utils import build_uuid4_str
 
-
-class Base(DeclarativeBase):
-    pass
+from ..base import Base
 
 
 class Pokemon(Base):
@@ -18,12 +14,12 @@ class Pokemon(Base):
         String(8), primary_key=True, comment='pokemon number'
     )
     name: Mapped[str] = mapped_column(String(256))
-    hp: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    attack: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    defense: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    sp_atk: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    sp_def: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
-    speed: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    hp: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    attack: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    defense: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    sp_atk: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    sp_def: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    speed: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     types: Mapped[list['Type']] = relationship(
         'Type', secondary='pokemon_type', backref='pokemon', lazy='raise', order_by='Type.name'
@@ -69,9 +65,9 @@ class PokemonEvolution(Base):
     next_no: Mapped[PokemonNumberStr] = mapped_column(
         String(8), ForeignKey(f'{Pokemon.__tablename__}.no', ondelete='CASCADE')
     )
-    previous_pokemon: Mapped[Optional['Pokemon']] = relationship(
+    previous_pokemon: Mapped['Pokemon | None'] = relationship(
         'Pokemon', foreign_keys=[previous_no], back_populates='next_evolutions', lazy='raise'
     )
-    next_pokemon: Mapped[Optional['Pokemon']] = relationship(
+    next_pokemon: Mapped['Pokemon | None'] = relationship(
         'Pokemon', foreign_keys=[next_no], back_populates='previous_evolutions', lazy='raise'
     )

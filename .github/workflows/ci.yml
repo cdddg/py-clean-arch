@@ -20,15 +20,15 @@ jobs:
 
       - name: Format check
         run: |
-          uv run ruff check --select F401,Q,I --quiet .
+          uv run ruff check --select F401,Q,I .
           uv run black --check --config pyproject.toml .
 
       - name: Lint
         run: |
-          cspell --gitignore --no-progress --no-summary --no-must-find-files .
           uv run pylint --rcfile=pyproject.toml $(git ls-files '*.py')
           uv run ruff check .
           uv run pyright .
+          cspell --gitignore --no-progress --no-summary --no-must-find-files .
 
   test:
     name: Run API DB Tests

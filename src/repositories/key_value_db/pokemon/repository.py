@@ -1,5 +1,5 @@
 import re
-from typing import List, Optional
+from typing import List
 
 from redis.asyncio import StrictRedis as AsyncRedis
 
@@ -62,7 +62,7 @@ class RedisPokemonRepository(AbstractPokemonRepository):
                 },
             )
 
-    async def list(self, params: Optional[GetPokemonParamsModel] = None) -> List[PokemonModel]:
+    async def list(self, params: GetPokemonParamsModel | None = None) -> List[PokemonModel]:
         pokemon_map = {}
         async with self.client.pipeline() as pipe:
             async for key in self.client.scan_iter(match='POKEMON:*:INFO'):

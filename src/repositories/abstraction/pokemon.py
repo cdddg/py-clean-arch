@@ -1,5 +1,6 @@
+# pylint: disable=duplicate-code
 import abc
-from typing import Any, List, Optional
+from typing import Any, List
 
 from common.type import PokemonNumberStr
 from models.pokemon import (
@@ -18,7 +19,7 @@ class AbstractPokemonRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
-    async def list(self, params: Optional[GetPokemonParamsModel] = None) -> List[PokemonModel]:
+    async def list(self, params: GetPokemonParamsModel | None = None) -> List[PokemonModel]:
         raise NotImplementedError
 
     @abc.abstractmethod

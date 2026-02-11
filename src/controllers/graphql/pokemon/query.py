@@ -13,7 +13,7 @@ from .schema import PokemonNode
 
 
 @strawberry.type
-class Query:
+class PokemonQuery:
     """
     GraphQL Performance Optimization Notes.
 

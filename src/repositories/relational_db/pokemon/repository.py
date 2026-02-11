@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -40,7 +40,7 @@ class RelationalDBPokemonRepository(AbstractPokemonRepository):
 
         return PokemonOrmMapper.orm_to_entity(pokemon)
 
-    async def list(self, params: Optional[GetPokemonParamsModel] = None) -> List[PokemonModel]:
+    async def list(self, params: GetPokemonParamsModel | None = None) -> List[PokemonModel]:
         stmt = select(Pokemon).options(
             selectinload(Pokemon.types),
             selectinload(Pokemon.previous_evolutions).joinedload(PokemonEvolution.previous_pokemon),

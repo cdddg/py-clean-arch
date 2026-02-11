@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from typing import Optional
 
 from common.type import PokemonNumberStr, UUIDStr
 
@@ -7,8 +6,8 @@ from common.type import PokemonNumberStr, UUIDStr
 @dataclass
 class GetTypeParamsModel:
     page: int = 0
-    size: Optional[int] = None
-    pokemon_numbers: Optional[list[str]] = None
+    size: int | None = None
+    pokemon_numbers: list[str] | None = None
 
 
 @dataclass
@@ -47,10 +46,10 @@ class CreatePokemonModel:
 
 @dataclass
 class UpdatePokemonModel:
-    name: Optional[str] = None
-    type_names: Optional[list[str]] = None
-    previous_evolution_numbers: Optional[list[PokemonNumberStr]] = None
-    next_evolution_numbers: Optional[list[PokemonNumberStr]] = None
+    name: str | None = None
+    type_names: list[str] | None = None
+    previous_evolution_numbers: list[PokemonNumberStr] | None = None
+    next_evolution_numbers: list[PokemonNumberStr] | None = None
 
     def validate_no_not_in_evolutions(self, no: PokemonNumberStr):
         if no in ((self.previous_evolution_numbers or []) + (self.next_evolution_numbers or [])):

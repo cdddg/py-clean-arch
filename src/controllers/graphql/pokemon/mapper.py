@@ -1,3 +1,4 @@
+# pylint: disable=duplicate-code
 from common.docstring import MAPPER_DOCSTRING
 from common.type import PokemonNumberStr
 from models.pokemon import (
@@ -11,8 +12,6 @@ from models.pokemon import (
 from .schema import CreatePokemonInput, EvolutionNode, PokemonNode, TypeNode, UpdatePokemonInput
 
 __doc__ = MAPPER_DOCSTRING
-
-# pylint: disable=duplicate-code
 
 
 class PokemonInputMapper:

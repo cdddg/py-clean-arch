@@ -56,4 +56,5 @@ async def update_pokemon(
 
 async def delete_pokemon(async_unit_of_work: AbstractUnitOfWork, no: PokemonNumberStr) -> None:
     async with async_unit_of_work as auow:
+        await auow.trainer_repo.remove_pokemon_from_all_teams(no)
         await auow.pokemon_repo.delete(no)

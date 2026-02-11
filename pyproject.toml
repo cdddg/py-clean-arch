@@ -76,6 +76,7 @@ disable = [
   "R0903", # too-few-public-methods
   "W1203", # logging-fstring-interpolation
   "E1102", # not-callable (false positive with sqlalchemy.sql.func)
+  "W0622", # redefined-builtin (common use of 'id' as parameter name)
 ]
 
 [tool.pylint.master]

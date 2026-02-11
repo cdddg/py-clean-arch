@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClientSession, AsyncIOMotorCollection
@@ -30,7 +30,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
     def __init__(
         self,
         collection: AsyncIOMotorCollection,  # pyright: ignore[reportInvalidTypeForm]
-        session: Optional[AsyncIOMotorClientSession] = None,  # pyright: ignore[reportInvalidTypeForm]
+        session: AsyncIOMotorClientSession | None = None,  # pyright: ignore[reportInvalidTypeForm]
     ):
         self.collection = collection
         self.session = session
@@ -120,7 +120,7 @@ class MongoDBPokemonRepository(AbstractPokemonRepository):
 
         return PokemonDictMapper.dict_to_entity(document)
 
-    async def list(self, params: Optional[GetPokemonParamsModel] = None) -> List[PokemonModel]:
+    async def list(self, params: GetPokemonParamsModel | None = None) -> List[PokemonModel]:
         pipeline = self._build_evolution_pipeline()
         pipeline.append({self.SORT: {'no': 1}})
         if params:
