@@ -72,6 +72,8 @@ Its main limitations include:
 - **Performance**: It is not optimized for high-traffic scenarios, and its configurations are relatively simplified.
 - **Testing**: Good unit and integration test coverage, but lacking end-to-end tests and load tests.
 
+Additionally, the GraphQL implementation loads all relations regardless of which fields the client requests. A production system would use the [DataLoader pattern](https://strawberry.rocks/docs/guides/dataloaders) to avoid unnecessary queries. See the [optimization notes](../src/controllers/graphql/pokemon/query.py) in the source code for details.
+
 Therefore, if you want to use this for a production environment, you will need to enhance the relevant features and security mechanisms based on your actual requirements.
 
 ---
