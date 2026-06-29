@@ -9,4 +9,4 @@ RUN pip install --upgrade pip \
 COPY ./src /app/
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn main:app --app-dir ./app  --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "uv run uvicorn main:app --app-dir ./app  --host 0.0.0.0 --port 8000"]
